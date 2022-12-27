@@ -1,5 +1,8 @@
 local paths = require("Git/BoolyScript/globals/paths")
 require("Git/BoolyScript/globals/stuff")
+local parse = require("Git/BoolyScript/util/parse")
+local fs = require("Git/BoolyScript/util/file_system")
+local json = require("Git/BoolyScript/modules/JSON")
 require("Git/BoolyScript/system/events_listener")
 
 local config = {
@@ -25,13 +28,23 @@ local config = {
     offset_y = 300,
 }
 
+local controls = {
+    open = 106,
+    down = 98,
+    up = 104, 
+    left = 100,
+    right = 102,
+    enter = 101,
+    back = 96,
+}
+
 Stuff.controlsState = {
-    [104] = {false, nil, nil},
-    [98] = {false, nil, nil},
-    [96] = {false, nil, nil},
-    [101] = {false, nil, nil},
-    [100] = {false, nil, nil},
-    [102] = {false, nil, nil},
+    [controls.up] = {false, nil, nil},
+    [controls.down] = {false, nil, nil},
+    [controls.back] = {false, nil, nil},
+    [controls.enter] = {false, nil, nil},
+    [controls.left] = {false, nil, nil},
+    [controls.right] = {false, nil, nil},
 }
 
 local id_to_key = {
@@ -117,9 +130,11 @@ OPTIONS = {
     STATE_BAR = 7,
     TEXT_INPUT = 8,
     SUB = 9,
+    RAW_INPUT = 10,
 }
 
 local submenus = {}
+local options = {}
 
 Submenu = {
     ID = nil,
@@ -154,6 +169,8 @@ Option = {
     execOnSelection = nil,
     getter = nil,
     hint = "",
+    default = nil,
+    configIgnore = false,
 }
 Option.__index = Option
 
@@ -184,7 +201,7 @@ function Submenu.add_dynamic_submenu(name_s, hash_s, indexGetter_f, optionGetter
     submenu.indexGetter = indexGetter_f
     submenu.optionGetter = optionGetter_f
     submenu.options = {}
-    table.insert(submenu, submenu)
+    table.insert(submenus, submenu)
     return submenu
 end
 
@@ -198,6 +215,7 @@ function Option.new(submenu_mt, name_s, hash_s, type_n, value_n, callback_f)
     option.value = value_n
     option.submenu = submenu_mt
     table.insert(submenu_mt.options, option)
+    table.insert(options, option)
     return option
 end
 
@@ -229,6 +247,7 @@ end
 
 function Submenu:add_click_option(name_s, hash_s, callback_f)
     local option = Option.new(self, name_s, hash_s, OPTIONS.CLICK, nil, callback_f)
+    option:setConfigIgnore()
     return option
 end
 
@@ -274,12 +293,14 @@ end
 
 function Submenu:add_separator(name_s, hash_s)
     local option = Option.new(self, name_s, hash_s, OPTIONS.SEPARATOR, nil, nil)
+    option:setConfigIgnore()
     return option
 end
 
 function Submenu:add_state_bar(name_s, hash_s, getter_f)
     local option = Option.new(self, name_s, hash_s, OPTIONS.STATE_BAR, nil, nil)
     option.getter = getter_f
+    option:setConfigIgnore()
     return option
 end
 
@@ -288,6 +309,13 @@ function Submenu:add_text_input(name_s, hash_s, callback_f)
     option.value = ""
     return option
 end
+
+-- function Submenu:add_raw_input(name_s, hash_s, callback_f)
+--     local option = Option.new(self, name_s, hash_s, OPTIONS.RAW_INPUT, nil, callback_f)
+--     option.value = nil
+--     return option
+-- end
+
 
 function Submenu:getName()
     return self.name
@@ -345,7 +373,7 @@ end
 
 function Option:reset(ignoreCallback_b)
     if self.type == OPTIONS.NUM or self.type == OPTIONS.FLOAT then
-        self.value = 0
+        self.value = self.minValue
         if self.callback and not ignoreCallback_b then self.callback(self.value) end
         return self
     elseif self.type == OPTIONS.CHOOSE then
@@ -397,6 +425,11 @@ end
 
 function Option:getName()
     return self.name
+end
+
+function Option:setConfigIgnore()
+    self.configIgnore = true
+    return self
 end
 
 function Option:setLimits(min_n, max_n, step_n)
@@ -457,6 +490,43 @@ local function toggleInputBox(state, option)
     end
 end
 
+Configs = {}
+Configs.saveConfig = function ()
+    local out = {}
+    for _, option in ipairs(options) do
+        if not option.configIgnore then
+            out[option.hash] = option.value
+        end
+    end
+    local file = io.open(paths.files.config, "w+")
+    if not file then return end
+    file:write(json:encode_pretty(out))
+    file:close()
+    log.success("Settings", "Config has been updated.")
+end
+
+Configs.loadConfig = function ()
+    if filesys.doesFileExist(paths.files.config) then
+        parse.json(paths.files.config, function (config)        
+            for _, option in ipairs(options) do
+                if not option.configIgnore then
+                    local value = config[option.hash]
+                    if value then
+                        option:setValue(value)
+                    end
+                end
+            end
+            -- log.success("Settings", "Config has been loaded.")
+        end)
+    else
+        log.warning("Settings", "Config doesn't exist.")
+    end
+end
+
+listener.register("Settings_LoadConfig", GET_EVENTS_LIST().OnInit, function ()
+    Configs.loadConfig()
+end)
+
 local function onControl(key, isDown, ignoreControlsState)
     local numZeroDelay = 0
     if Stuff.controlsState[key] and not ignoreControlsState then
@@ -466,18 +536,18 @@ local function onControl(key, isDown, ignoreControlsState)
     end
     if isDown then
         local submenu = config.path[#config.path]
-        if key == 106 then
+        if key == controls.open then
             config.isOpened = not config.isOpened
         end
         if config.isInputBoxDisplayed and id_to_key[key] then
             config.inputBoxText = config.inputBoxText .. id_to_key[key]
         end
-        if key == 13 and config.isInputBoxDisplayed then -- ENTER
+        if key == controls.enter and config.isInputBoxDisplayed then -- ENTER
             local data = submenu.options[submenu.selectedOption]
             toggleInputBox(false, data)
 
         end
-        if (key == 27 or key == 96) and config.isInputBoxDisplayed then -- escape / num0
+        if (key == 27 or key == controls.back) and config.isInputBoxDisplayed then -- escape / num0
             toggleInputBox(false)
             numZeroDelay = os.clock() + 0.1
         end 
@@ -487,7 +557,7 @@ local function onControl(key, isDown, ignoreControlsState)
     end
     if not config.isOpened then return end
     if isDown then
-        if (key == 8 or key == 96) and os.clock() > numZeroDelay then 
+        if (key == 8 or key == controls.back) and os.clock() > numZeroDelay then 
             if #config.path == 1 then
                 config.isOpened = false
             else
@@ -495,7 +565,7 @@ local function onControl(key, isDown, ignoreControlsState)
                 numZeroDelay = 0
             end
         end
-        if key == 104 then -- UP
+        if key == controls.up then -- UP
             local submenu = config.path[#config.path]
             
             local function getClickableOption(selectedOption)
@@ -529,7 +599,7 @@ local function onControl(key, isDown, ignoreControlsState)
             config.isActionDown = false
             config.test = 0
         end
-        if key == 98 then -- DOWN
+        if key == controls.down then -- DOWN
             local submenu = config.path[#config.path]
 
             local function getClickableOption(selectedOption)
@@ -562,7 +632,7 @@ local function onControl(key, isDown, ignoreControlsState)
             config.isActionDown = true
             config.test = 0.0
         end
-        if key == 101 then -- ENTER
+        if key == controls.enter then -- ENTER
             local submenu = config.path[#config.path]
             local selected = submenu.options[submenu.selectedOption]
             if selected then
@@ -583,7 +653,7 @@ local function onControl(key, isDown, ignoreControlsState)
                 end
             end
         end
-        if key == 100 then -- OPTION LEFT
+        if key == controls.left then -- OPTION LEFT
             local submenu = config.path[#config.path]
             local selected = submenu.options[submenu.selectedOption]
             if selected then
@@ -606,7 +676,7 @@ local function onControl(key, isDown, ignoreControlsState)
                 end
             end
         end
-        if key == 102 then --OPTION RIGHT
+        if key == controls.right then --OPTION RIGHT
             local submenu = config.path[#config.path]
             local selected = submenu.options[submenu.selectedOption]
             if selected then
@@ -670,6 +740,12 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings_Submenu")
     settings:add_float_option("UI input delay", "Main_Settings_InputDelay", 0.0, 1.0, 0.05, function (val)
         config.inputDelay = val
     end):setValue(config.inputDelay)
+    -- local keys = Submenu.add_static_submenu("Keys", "Main_Settings_Keys_Submenu") do
+    --     keys:add_text_input()
+    -- end
+    settings:add_separator("Config", "Main_Settings_Config")
+    settings:add_click_option("Save config", "Main_Settings_SaveConfig", Configs.saveConfig)
+    settings:add_click_option("Load config", "Main_Settings_LoadConfig", Configs.loadConfig)
 end
 
 listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()

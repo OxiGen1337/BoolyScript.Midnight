@@ -1,9 +1,3 @@
-local gui = require("Git/BoolyScript/globals/gui")
-require("Git/BoolyScript/system/events_listener")
-require("Git/BoolyScript/util/notify_system")
-local scripts = require("Git/BoolyScript/rage/scripts")
-local features = require("Git/BoolyScript/rage/features")
-
 local players = {}
 local connectedPlayers = {}
 
@@ -99,7 +93,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         entity.request_control(vehicle, function (hdl)
             ENTITY.FREEZE_ENTITY_POSITION(hdl, state)
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_choose_option("Boost", "BS_PlayerList_Player_Vehicle_Boost", false, {"Forward", "Back", "Right", "Left", "Up", "Down"}, function (value, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -127,7 +121,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         entity.request_control(vehicle, function (hdl)
             ENTITY.APPLY_FORCE_TO_ENTITY(hdl, vector.x, vector.y, vector.z, 0.0, 0.0, 0.0, 0, true, true, true, false, true)
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_choose_option("Upgrade", "BS_PlayerList_Player_Vehicle_Upgrade", false, {"Default", "Random", "Power", "Max"}, function (pos, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -135,7 +129,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         addActiveAction(pid, option, pos)
         local vehicle = player.get_vehicle_handle(pid)
         features.setVehiclePreset(vehicle, pos)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Burst tyres", "BS_PlayerList_Player_Vehicle_BurstTyres", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -156,7 +150,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         entity.request_control(vehicle, function (hdl)
             ENTITY.SET_ENTITY_INVINCIBLE(hdl, state)
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Smash windows", "BS_PlayerList_Player_Vehicle_SmashWindows", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -187,7 +181,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         entity.request_control(vehicle, function (hdl)
             VEHICLE.SET_VEHICLE_ALARM(hdl, state)
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_bool_option("Lock vehicle", "BS_PlayerList_Player_Vehicle_Lock", function (state, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -201,7 +195,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
                 VEHICLE.SET_VEHICLE_DOORS_LOCKED(hdl, 1)
             end
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_bool_option("Disable gravity", "BS_PlayerList_Player_Vehicle_NoGravity", function (state, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -211,7 +205,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         entity.request_control(vehicle, function (hdl)
             VEHICLE.SET_VEHICLE_GRAVITY(hdl, not state)
         end)
-    end)
+    end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Vehicle", "BS_PlayerList_Player_Vehicle_SubOption", PlayerVehicle)
     table.insert(submenus, PlayerVehicle)
 end
@@ -245,7 +239,7 @@ PlayerBlocks = Submenu.add_static_submenu("Block", "BS_PlayerList_Player_Block_S
         elseif not state and player.is_banned(pid) then 
             player.unban(pid) 
         end
-    end)
+    end):setConfigIgnore()
     PlayerBlocks:add_bool_option("Block all script events", "BS_PlayerList_Player_Block_SE", function (state, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -264,7 +258,7 @@ PlayerBlocks = Submenu.add_static_submenu("Block", "BS_PlayerList_Player_Block_S
             listener.remove(name, GET_EVENTS_LIST().OnScriptEvent)
             listener.remove(name, GET_EVENTS_LIST().OnFeatureTick)
         end
-    end)
+    end):setConfigIgnore()
     PlayerBlocks:add_bool_option("Block all network events", "BS_PlayerList_Player_Block_NE", function (state, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -283,7 +277,7 @@ PlayerBlocks = Submenu.add_static_submenu("Block", "BS_PlayerList_Player_Block_S
             listener.remove(name, GET_EVENTS_LIST().OnNetworkEvent)
             listener.remove(name, GET_EVENTS_LIST().OnFeatureTick)
         end
-    end)
+    end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Block", "BS_PlayerList_Player_Block_SubOption", PlayerBlocks)
     table.insert(submenus, PlayerBlocks)
 end

@@ -1,4 +1,4 @@
-local fs = require("Git/BoolyScript/util/file_system")
+local filesys = require("Git/BoolyScript/util/file_system")
 
 local paths = {}
 paths.files = {}
@@ -6,7 +6,7 @@ paths.folders = {}
 paths.logs = {}
 
 -- TODO:fix path
-paths.folders.main = fs.getInitScriptPath() .. "\\BoolyScript"
+paths.folders.main = filesys.getInitScriptPath() .. "\\BoolyScript"
 paths.folders.user = paths.folders.main .. '\\user'
 paths.folders.dumps = paths.folders.main .. '\\dumps'
 paths.folders.loadouts = paths.folders.user .. '\\loadouts'

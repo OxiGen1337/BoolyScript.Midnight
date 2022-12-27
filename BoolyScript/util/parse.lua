@@ -1,11 +1,7 @@
-local json = require("Git/BoolyScript/modules/JSON")
-require("Git/BoolyScript/util/notify_system")
-local fs = require("Git/BoolyScript/util/file_system")
-
 local parse = {}
 
 parse.json = function (path_s, callback_f)
-    if not fs.doesFileExist(path_s) then 
+    if not filesys.doesFileExist(path_s) then 
         log.error("PARSE", string.format("Failed to parse: %s | File doesnt exist.", path_s))
         return nil
     end

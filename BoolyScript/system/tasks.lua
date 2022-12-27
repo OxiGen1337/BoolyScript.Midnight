@@ -1,5 +1,3 @@
-require("Git/BoolyScript/util/notify_system")
-
 local activeTasks = {}
 
 GET_ACTIVE_TASKS = function ()

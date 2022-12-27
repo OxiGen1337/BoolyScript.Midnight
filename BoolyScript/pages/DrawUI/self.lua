@@ -1,8 +1,4 @@
-local scripts = require("Git/BoolyScript/rage/scripts")
-require("Git/BoolyScript/util/notify_system")
 local gui = require("Git/BoolyScript/globals/gui")
-require("Git/BoolyScript/system/events_listener")
-local features = require("Git/BoolyScript/rage/features")
 
 Self = Submenu.add_static_submenu("Self", "BS_Self_Submenu")
 Main:add_sub_option("Self", "BS_Self_SubOption", Self)
@@ -96,43 +92,33 @@ Self:add_bool_option("Debug gun [E]", "BS_Self_Weapon_DebugGun", function (state
     end
 end):setHint("Prints entity info in console. Aim at it and press E.")
 
-local aimingState = nil
 
-Self:add_choose_option("When aiming", "BS_Self_Weapon_OnAiming", true, {"None", "Set night vision", "Set thermal vision"}, function (pos)
-    if pos > 1 then
-        aimingState = memory.alloc(4)
-    elseif aimingState then
-        memory.free(aimingState)
-    end
+Self:add_choose_option("When aiming", "BS_Self_Weapon_OnAiming", true, {"None", "Set night vision", "Set thermal vision"}, function (pos, option)
     local taskName = "BS_Self_Weapon_OnAiming"
-
-    local function f()
-        local state = memory.read_int64(aimingState) == 1
-        local function action(value)
-            GRAPHICS.SET_NIGHTVISION(value)
-        end
-        if pos == 3 then
-            action = function(value)
-                GRAPHICS.SET_SEETHROUGH(value)
+    local state = false
+    if pos > 1 then
+        task.createTask(taskName, 0.0, nil, function ()
+            local function action(value)
+                GRAPHICS.SET_NIGHTVISION(value)
             end
-        end
-        if player.is_aiming(PLAYER.PLAYER_ID()) then
-            if not state then
-                action(true)
-                memory.write_int64(aimingState, 1)
+            if option:getValue() == 3 then
+                action = function(value)
+                    GRAPHICS.SET_SEETHROUGH(value)
+                end
             end
-        elseif state then
-            action(false)
-            memory.write_int64(aimingState, 0)
-        end
+            if player.is_aiming(PLAYER.PLAYER_ID()) then
+                if not state then
+                    action(true)
+                    state = true
+                end
+            elseif state then
+                action(false)
+                state = false
+            end
+        end)
+    elseif task.exists(taskName) then
+        task.removeTask(taskName)
     end
-
-    if task.exists(taskName) then
-        task.setCallback(taskName, f)
-    else
-        task.createTask(taskName, 0.0, nil, f)
-    end
-    
 end):setHint("Works only in SP.")
 
 Self:add_separator("Visual", "BS_Self_Visual")
@@ -188,38 +174,44 @@ Self:add_bool_option("Skip cutscene", "BS_Self_Visual_SkipCutscene", function ()
 end)
 
 Self:add_separator("Area cleanup", "BS_Self_AreaCleanup")
+local cleanupRadius
 
 Self:add_looped_option("Peds cleanup", "BS_Self_World_PedsCleanup", 0.0, function ()
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), true)
-    local radius = GET_OPTIONS().sliderInt['BS_Self_World_CleanupRadius']:get() + .0
+    local radius = cleanupRadius:getValue() + .0
+    
     MISC.CLEAR_AREA_OF_PEDS(coords.x, coords.y, coords.z, radius, 0)
 end)
 
 Self:add_looped_option("Vehicles cleanup", "BS_Self_World_VehiclesCleanup", 0.0, function ()
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), true)
-    local radius = GET_OPTIONS().sliderInt['BS_Self_World_CleanupRadius']:get() + .0
+    local radius = cleanupRadius:getValue() + .0
+
     MISC.CLEAR_AREA_OF_VEHICLES(coords.x, coords.y, coords.z, radius, false, false, false, false, false, 0)
 end)
 
 Self:add_looped_option("Cops cleanup", "BS_Self_World_CopsCleanup", 0.0, function ()
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), true)
-    local radius = GET_OPTIONS().sliderInt['BS_Self_World_CleanupRadius']:get() + .0
+    local radius = cleanupRadius:getValue() + .0
+
     MISC.CLEAR_AREA_OF_COPS(coords.x, coords.y, coords.z, radius, 0)
 end)
 
 Self:add_looped_option("Objects cleanup", "BS_Self_World_ObjectsCleanup", 0.0, function ()
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), true)
-    local radius = GET_OPTIONS().sliderInt['BS_Self_World_CleanupRadius']:get() + .0
+    local radius = cleanupRadius:getValue() + .0
+
     MISC.CLEAR_AREA_OF_OBJECTS(coords.x, coords.y, coords.z, radius, 0)
 end)
 
 Self:add_looped_option("Projectiles cleanup", "BS_Self_World_ProjCleanup", 0.0, function ()
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), true)
-    local radius = GET_OPTIONS().sliderInt['BS_Self_World_CleanupRadius']:get() + .0
+    local radius = cleanupRadius:getValue() + .0
+
     MISC.CLEAR_AREA_OF_PROJECTILES(coords.x, coords.y, coords.z, radius, 0)
 end)
 
-Self:add_num_option("Cleanup raduis", "BS_Self_World_CleanupRadius", 0, 600, 100):setValue(300)
+cleanupRadius = Self:add_num_option("Cleanup raduis", "BS_Self_World_CleanupRadius", 0, 600, 100):setValue(300)
 
 Self:add_separator("World", "BS_Self_World")
 

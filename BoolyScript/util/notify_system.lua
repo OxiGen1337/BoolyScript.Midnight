@@ -78,13 +78,16 @@ log = {
         console.log(consoleColors.Purple, string.format("[DEBUG] %s\n", text_s))
     end,
     error = function (page_s, text_s)
-        console.log(consoleColors.Red, string.format("[ERROR] [%s] %s\n", page_s, text_s))
+        console.log(consoleColors.Red, string.format("[Error] [%s] %s\n", page_s, text_s))
     end,
     default = function (page_s, text_s)
-        console.log(consoleColors.Grey, string.format("[LOGS] [%s] %s\n", page_s, text_s))
+        console.log(consoleColors.Grey, string.format("[Logs] [%s] %s\n", page_s, text_s))
     end,
     success = function (page_s, text_s)
-        console.log(consoleColors.LightGreen, string.format("[SUCCESS] [%s] %s\n", page_s, text_s))
+        console.log(consoleColors.LightGreen, string.format("[Success] [%s] %s\n", page_s, text_s))
+    end,
+    warning = function (page_s, text_s)
+        console.log(consoleColors.Yellow, string.format("[Warning] [%s] %s\n", page_s, text_s))
     end,
     init = function (text_s)
         console.log(consoleColors.LightBlue, string.format("[INIT] %s\n", text_s))

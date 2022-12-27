@@ -1,10 +1,3 @@
-local filesys = require("Git/BoolyScript/util/file_system")
-local paths = require("Git/BoolyScript/globals/paths")
-require("Git/BoolyScript/globals/stuff")
-require("Git/BoolyScript/system/events_listener")
-require("Git/BoolyScript/util/notify_system")
-local scripts = require("Git/BoolyScript/rage/scripts")
-
 Network = Submenu.add_static_submenu("Network", "BS_Network_Submenu")
 Main:add_sub_option("Network", "BS_Network_SubOption", Network)
 
