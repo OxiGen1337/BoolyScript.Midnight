@@ -26,7 +26,7 @@ end
 
 -- TODO: fix path
 function filesys.getInitScriptPath()
-	return fs.get_dir_script():gsub("\\\\lua", "\\lua")
+	return fs.get_dir_script():gsub("\\\\lua", "\\lua") .. "\\Git"
 end
 
 function filesys.logInFile(path_s, header_s, text_s)
