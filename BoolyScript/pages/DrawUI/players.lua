@@ -172,7 +172,6 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
 			VEHICLE.SET_VEHICLE_BODY_HEALTH(hdl, -4000)
 			VEHICLE.SET_VEHICLE_PETROL_TANK_HEALTH(hdl, -4000)
         end)
-    end)
     end):setConfigIgnore()
     PlayerVehicle:add_click_option("Smash windows", "BS_PlayerList_Player_Vehicle_SmashWindows", function ()
         local pid = selectedPlayer
