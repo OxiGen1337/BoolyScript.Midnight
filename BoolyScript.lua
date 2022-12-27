@@ -1,11 +1,11 @@
-require("BoolyScript/util/menu")
-require("BoolyScript/util/DrawUI")
-require("BoolyScript/system/on_tick")
-local fs = require("BoolyScript/util/file_system")
-require("BoolyScript/system/events_listener")
-local paths = require("BoolyScript/globals/paths")
-require("BoolyScript/globals/stuff")
-local parse = require("BoolyScript/util/parse")
+require("Git/BoolyScript/util/menu")
+require("Git/BoolyScript/util/DrawUI")
+require("Git/BoolyScript/system/on_tick")
+local fs = require("Git/BoolyScript/util/file_system")
+require("Git/BoolyScript/system/events_listener")
+local paths = require("Git/BoolyScript/globals/paths")
+require("Git/BoolyScript/globals/stuff")
+local parse = require("Git/BoolyScript/util/parse")
 
 listener.register("BS_Init", GET_EVENTS_LIST().OnDone, function ()
     for _, handle in pairs(GET_PAGES()) do -- Pages cleanup after script unload
@@ -50,7 +50,7 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         for line in io.popen("dir \"" .. path .. "\" /a /b", "r"):lines() do
             if fs.doesFileExist(path .. "\\" .. line .. "\\" .. "init.lua") then
                 log.init(string.format("Initializing \'%s\' page...", line))
-                require("BoolyScript/pages/" .. line .. "/" .. "init")
+                require("Git/BoolyScript/pages/" .. line .. "/" .. "init")
             end
         end
     end

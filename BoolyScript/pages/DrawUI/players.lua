@@ -1,8 +1,8 @@
-local gui = require("BoolyScript/globals/gui")
-require("BoolyScript/system/events_listener")
-require("BoolyScript/util/notify_system")
-local scripts = require("BoolyScript/rage/scripts")
-local features = require("BoolyScript/rage/features")
+local gui = require("Git/BoolyScript/globals/gui")
+require("Git/BoolyScript/system/events_listener")
+require("Git/BoolyScript/util/notify_system")
+local scripts = require("Git/BoolyScript/rage/scripts")
+local features = require("Git/BoolyScript/rage/features")
 
 local players = {}
 local connectedPlayers = {}

@@ -1,6 +1,6 @@
-local json = require("BoolyScript/modules/JSON")
-require("BoolyScript/util/notify_system")
-local fs = require("BoolyScript/util/file_system")
+local json = require("Git/BoolyScript/modules/JSON")
+require("Git/BoolyScript/util/notify_system")
+local fs = require("Git/BoolyScript/util/file_system")
 
 local parse = {}
 

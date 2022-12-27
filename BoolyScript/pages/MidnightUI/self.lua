@@ -1,10 +1,10 @@
-require("BoolyScript/util/menu")
-local callbacks = require("BoolyScript/rage/callbacks")
-local scripts = require("BoolyScript/rage/scripts")
-require("BoolyScript/util/notify_system")
-local gui = require("BoolyScript/globals/gui")
-require("BoolyScript/system/events_listener")
-local features = require("BoolyScript/rage/features")
+require("Git/BoolyScript/util/menu")
+local callbacks = require("Git/BoolyScript/rage/callbacks")
+local scripts = require("Git/BoolyScript/rage/scripts")
+require("Git/BoolyScript/util/notify_system")
+local gui = require("Git/BoolyScript/globals/gui")
+require("Git/BoolyScript/system/events_listener")
+local features = require("Git/BoolyScript/rage/features")
 
 local page = GET_PAGES()['BS_Main']
 local self = menu.add_mono_block(page, "Self", "BS_Self", BLOCK_ALIGN_LEFT)

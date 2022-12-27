@@ -1,5 +1,5 @@
-require("BoolyScript/util/menu")
-require("BoolyScript/system/events_listener")
+require("Git/BoolyScript/util/menu")
+require("Git/BoolyScript/system/events_listener")
 
 local page = GET_PAGES()['BS_Main']
 local self = menu.add_mono_block(page, "Settings", "BS_Settings", BLOCK_ALIGN_RIGHT)

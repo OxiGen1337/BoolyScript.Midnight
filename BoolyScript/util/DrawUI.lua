@@ -1,6 +1,6 @@
-local paths = require("BoolyScript/globals/paths")
-require("BoolyScript/globals/stuff")
-require("BoolyScript/system/events_listener")
+local paths = require("Git/BoolyScript/globals/paths")
+require("Git/BoolyScript/globals/stuff")
+require("Git/BoolyScript/system/events_listener")
 
 local config = {
     width = 325,

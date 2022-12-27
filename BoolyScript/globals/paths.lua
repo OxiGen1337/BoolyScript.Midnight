@@ -1,4 +1,4 @@
-local fs = require("BoolyScript/util/file_system")
+local fs = require("Git/BoolyScript/util/file_system")
 
 local paths = {}
 paths.files = {}

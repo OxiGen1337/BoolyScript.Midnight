@@ -1,7 +1,7 @@
-require("BoolyScript/util/notify_system")
-local json = require("BoolyScript/modules/JSON")
-require("BoolyScript/system/tasks")
-require("BoolyScript/system/events_listener")
+require("Git/BoolyScript/util/notify_system")
+local json = require("Git/BoolyScript/modules/JSON")
+require("Git/BoolyScript/system/tasks")
+require("Git/BoolyScript/system/events_listener")
 
 Player = {}
 Player.__index = Player

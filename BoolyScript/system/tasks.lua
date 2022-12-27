@@ -1,4 +1,4 @@
-require("BoolyScript/util/notify_system")
+require("Git/BoolyScript/util/notify_system")
 
 local activeTasks = {}
 

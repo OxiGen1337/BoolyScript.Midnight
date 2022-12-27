@@ -1,8 +1,8 @@
-require("BoolyScript/system/tasks")
-require("BoolyScript/util/notify_system")
-local json = require("BoolyScript/modules/JSON")
-local filesys = require("BoolyScript/util/file_system")
-local paths = require("BoolyScript/globals/paths")
+require("Git/BoolyScript/system/tasks")
+require("Git/BoolyScript/util/notify_system")
+local json = require("Git/BoolyScript/modules/JSON")
+local filesys = require("Git/BoolyScript/util/file_system")
+local paths = require("Git/BoolyScript/globals/paths")
 
 local options = {
     checkbox = {},

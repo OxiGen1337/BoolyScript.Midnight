@@ -1,7 +1,7 @@
-local callbacks = require("BoolyScript/rage/callbacks")
-require("BoolyScript/util/notify_system")
-local gui = require("BoolyScript/globals/gui")
-require("BoolyScript/system/events_listener")
+local callbacks = require("Git/BoolyScript/rage/callbacks")
+require("Git/BoolyScript/util/notify_system")
+local gui = require("Git/BoolyScript/globals/gui")
+require("Git/BoolyScript/system/events_listener")
 
 Vehicle = Submenu.add_static_submenu("Vehicle", "BS_Vehicle_Submenu")
 Main:add_sub_option("Vehicle", "BS_Vehicle_SubOption", Vehicle)

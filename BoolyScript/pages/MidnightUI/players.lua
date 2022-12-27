@@ -1,10 +1,10 @@
-require("BoolyScript/util/menu")
-local gui = require("BoolyScript/globals/gui")
-require("BoolyScript/system/events_listener")
-require("BoolyScript/util/notify_system")
-local scripts = require("BoolyScript/rage/scripts")
---local json = require("BoolyScript/modules/JSON")
-require("BoolyScript/rage/players_mgr")
+require("Git/BoolyScript/util/menu")
+local gui = require("Git/BoolyScript/globals/gui")
+require("Git/BoolyScript/system/events_listener")
+require("Git/BoolyScript/util/notify_system")
+local scripts = require("Git/BoolyScript/rage/scripts")
+--local json = require("Git/BoolyScript/modules/JSON")
+require("Git/BoolyScript/rage/players_mgr")
 
 local page = GET_PAGES()['BS_Main']
 local self = menu.add_mono_block(page, "Players", "BS_Players", BLOCK_ALIGN_RIGHT)

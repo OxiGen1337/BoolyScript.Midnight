@@ -1,6 +1,6 @@
-require("BoolyScript/util/notify_system")
-require("BoolyScript/util/menu")
-require("BoolyScript/globals/stuff")
+require("Git/BoolyScript/util/notify_system")
+require("Git/BoolyScript/util/menu")
+require("Git/BoolyScript/globals/stuff")
 
 local onEventFunctions = {}
 
