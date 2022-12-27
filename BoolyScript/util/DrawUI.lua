@@ -15,6 +15,7 @@ local config = {
     scrollOffset = 0,
     isInputBoxDisplayed = false,
     inputBoxText = "",
+    inputBoxCallback = nil,
     inputBoxHeight = 70,
     inputBoxWidth = 150,
     isOpened = true,
@@ -28,7 +29,18 @@ local config = {
     offset_y = 300,
 }
 
-local controls = {
+
+local arrowsControls = {
+    open = 119,
+    down = 40,
+    up = 38, 
+    left = 37,
+    right = 39,
+    enter = 13,
+    back = 8,
+}
+
+local numpadControls = {
     open = 106,
     down = 98,
     up = 104, 
@@ -37,6 +49,8 @@ local controls = {
     enter = 101,
     back = 96,
 }
+
+local controls = arrowsControls
 
 Stuff.controlsState = {
     [controls.up] = {false, nil, nil},
@@ -470,26 +484,6 @@ function Option:remove()
     return nil
 end
 
-local function toggleInputBox(state, option)
-    if state then
-        config.isInputBoxDisplayed = true
-        config.isOpened = false
-    else
-        if option then
-            if option.type == OPTIONS.FLOAT or option.type == OPTIONS.NUM then
-                option.value = tonumber(config.inputBoxText)
-                if option.callback then option.callback(option.value) end
-            else
-                option.value = config.inputBoxText
-                if option.callback then option.callback(config.inputBoxText) end
-            end
-        end
-        config.inputBoxText = ""
-        config.isInputBoxDisplayed = false
-        config.isOpened = true
-    end
-end
-
 Configs = {}
 Configs.saveConfig = function ()
     local out = {}
@@ -506,7 +500,7 @@ Configs.saveConfig = function ()
 end
 
 Configs.loadConfig = function ()
-    if filesys.doesFileExist(paths.files.config) then
+    if fs.doesFileExist(paths.files.config) then
         parse.json(paths.files.config, function (config)        
             for _, option in ipairs(options) do
                 if not option.configIgnore then
@@ -528,41 +522,38 @@ listener.register("Settings_LoadConfig", GET_EVENTS_LIST().OnInit, function ()
 end)
 
 local function onControl(key, isDown, ignoreControlsState)
-    local numZeroDelay = 0
     if Stuff.controlsState[key] and not ignoreControlsState then
         Stuff.controlsState[key][1] = isDown
         Stuff.controlsState[key][2] = os.clock()
         Stuff.controlsState[key][3] = os.clock() + config.inputDelay
     end
     if isDown then
-        local submenu = config.path[#config.path]
         if key == controls.open then
             config.isOpened = not config.isOpened
         end
-        if config.isInputBoxDisplayed and id_to_key[key] then
-            config.inputBoxText = config.inputBoxText .. id_to_key[key]
-        end
-        if key == controls.enter and config.isInputBoxDisplayed then -- ENTER
-            local data = submenu.options[submenu.selectedOption]
-            toggleInputBox(false, data)
-
-        end
-        if (key == 27 or key == controls.back) and config.isInputBoxDisplayed then -- escape / num0
-            toggleInputBox(false)
-            numZeroDelay = os.clock() + 0.1
-        end 
-        if key == 8 and config.isInputBoxDisplayed then -- BACKSPACE
-            config.inputBoxText = config.inputBoxText:sub(1, -2)
+        if config.isInputBoxDisplayed then
+            if key == 13 then -- ENTER
+                if config.inputBoxCallback then config.inputBoxCallback(config.inputBoxText) end
+                config.inputBoxText = ""
+                config.isInputBoxDisplayed = false
+                return
+            elseif key == 8 then -- BACKSPACE
+                config.inputBoxText = config.inputBoxText:sub(1, -2)
+            elseif key == 27 then -- ESCAPE
+                config.inputBoxText = ""
+                config.isInputBoxDisplayed = false
+            else
+                config.inputBoxText = config.inputBoxText .. id_to_key[key]
+            end
         end
     end
-    if not config.isOpened then return end
+    if not config.isOpened or config.isInputBoxDisplayed then return end
     if isDown then
-        if (key == 8 or key == controls.back) and os.clock() > numZeroDelay then 
+        if key == controls.back then 
             if #config.path == 1 then
                 config.isOpened = false
             else
                 table.remove(config.path)
-                numZeroDelay = 0
             end
         end
         if key == controls.up then -- UP
@@ -642,14 +633,22 @@ local function onControl(key, isDown, ignoreControlsState)
                     selected.value = not selected.value
                     if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.NUM or selected.type == OPTIONS.FLOAT then
-                    toggleInputBox(true, selected)
-                    --selected.callback(selected.value)
+                    config.isInputBoxDisplayed = true
+                    config.inputBoxCallback = function (text)
+                        if not tonumber(text) then return end
+                        selected:setValue(tonumber(text))
+                        if selected.callback then selected.callback(selected.value) end
+                    end
                 elseif selected.type == OPTIONS.CHOOSE then
                     if selected.callback then selected.callback(selected.table[selected.value], selected) end
                 elseif selected.type == OPTIONS.SUB then
                     if selected.callback then selected.callback(selected) end
                 elseif selected.type == OPTIONS.TEXT_INPUT then
-                    toggleInputBox(true, selected)
+                    config.isInputBoxDisplayed = true
+                    config.inputBoxCallback = function (text)
+                        selected:setValue(text)
+                        if selected.callback then selected.callback(selected.value) end
+                    end
                 end
             end
         end
@@ -719,6 +718,15 @@ HOME_SUBMENU = Submenu.add_main_submenu("Home", "home_sub")
 
 local settings = Submenu.add_static_submenu("Settings", "Main_Settings_Submenu") do
     HOME_SUBMENU:add_sub_option("Settings", "Main_Settings_SubOption", settings)
+    settings:add_choose_option("Controls", "Main_Settings_Controls", true, {"Arrows", "Numpad"}, function (pos, option)
+        if pos == 1 then
+            controls = arrowsControls
+            option:setHint("F8 - open key; arrows; Backspace and Enter.")
+        else
+            controls = numpadControls
+            option:setHint("Num * - open key; Numpad for everything.")
+        end
+    end)
     settings:add_float_option("UI width", "Main_Settings_Width", 0.0, 800.0, 5.0, function (val)
         config.width = val
     end):setValue(config.width)
