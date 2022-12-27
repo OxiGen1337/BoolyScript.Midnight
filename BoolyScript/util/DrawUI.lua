@@ -28,6 +28,7 @@ local config = {
 Stuff.controlsState = {
     [104] = {false, nil, nil},
     [98] = {false, nil, nil},
+    [96] = {false, nil, nil},
     [101] = {false, nil, nil},
     [100] = {false, nil, nil},
     [102] = {false, nil, nil},
@@ -457,6 +458,7 @@ local function toggleInputBox(state, option)
 end
 
 local function onControl(key, isDown, ignoreControlsState)
+    local numZeroDelay = 0
     if Stuff.controlsState[key] and not ignoreControlsState then
         Stuff.controlsState[key][1] = isDown
         Stuff.controlsState[key][2] = os.clock()
@@ -475,8 +477,9 @@ local function onControl(key, isDown, ignoreControlsState)
             toggleInputBox(false, data)
 
         end
-        if key == 27 and config.isInputBoxDisplayed then -- escape
+        if (key == 27 or key == 96) and config.isInputBoxDisplayed then -- escape / num0
             toggleInputBox(false)
+            numZeroDelay = os.clock() + 0.1
         end 
         if key == 8 and config.isInputBoxDisplayed then -- BACKSPACE
             config.inputBoxText = config.inputBoxText:sub(1, -2)
@@ -484,12 +487,12 @@ local function onControl(key, isDown, ignoreControlsState)
     end
     if not config.isOpened then return end
     if isDown then
-        if key == 8 then 
-            if #config.path == 1 then 
+        if (key == 8 or key == 96) and os.clock() > numZeroDelay then 
+            if #config.path == 1 then
                 config.isOpened = false
             else
                 table.remove(config.path)
-
+                numZeroDelay = 0
             end
         end
         if key == 104 then -- UP
