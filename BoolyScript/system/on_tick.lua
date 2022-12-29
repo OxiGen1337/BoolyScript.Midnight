@@ -28,7 +28,8 @@ listener.register("System_Tick", GET_EVENTS_LIST().OnFeatureTick, function ()
                     else 
                         count[hash] = count[hash] + 1 
                     end 
-                    params.callback(count[hash])
+                    local out = params.callback(count[hash])
+                    if out == false then removeTask(hash) end
                     timers[hash] = os.clock()
                 else
                     log.error("TASKS", string.format("Task with hash \'%s\' has the invalid callback.", hash))

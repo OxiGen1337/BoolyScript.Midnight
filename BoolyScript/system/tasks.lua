@@ -16,6 +16,16 @@ task.createTask = function (hash_s, delay_n, count_n, callback_f)
     return true
 end
 
+task.executeAsScript = function (hash_s, callback_f)
+    if activeTasks[hash_s] then 
+        log.error("TASKS", string.format("Task with hash: \'%s\' already exists.", hash_s))
+        return false
+    end
+    activeTasks[hash_s] = {delay = 0.0, callback = callback_f, count = 1}
+    -- log.dbg(string.format("[TASKS] Created as script execution task\'%s\'.", hash_s))
+    return true
+end
+
 task.removeTask = function (hash_s)
     if not activeTasks[hash_s] then
         log.error("TASKS", string.format("Task with hash: \'%s\' doesnt exist.", hash_s))

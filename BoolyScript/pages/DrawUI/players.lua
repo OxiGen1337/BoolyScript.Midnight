@@ -34,7 +34,7 @@ PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Te
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         local coords = ENTITY.GET_ENTITY_COORDS(vehicle, false)
-        for seat = -1, VEHICLE.GET_VEHICLE_MODEL_NUMBER_OF_SEATS(string.joaat(ENTITY.GET_ENTITY_MODEL(vehicle))) - 1 do
+        for seat = -1, VEHICLE.GET_VEHICLE_MODEL_NUMBER_OF_SEATS(ENTITY.GET_ENTITY_MODEL(vehicle)) - 1 do
             if VEHICLE.IS_VEHICLE_SEAT_FREE(vehicle, seat, false) then
                 utils.teleport(coords)
                 PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), vehicle, seat)
@@ -381,6 +381,24 @@ PlayerBlocks = Submenu.add_static_submenu("Block", "BS_PlayerList_Player_Block_S
     table.insert(submenus, PlayerBlocks)
 end
 
+PlayerNeutral = Submenu.add_static_submenu("Neutral", "BS_Players_Neutral_Submenu") do
+    PlayerNeutral:add_click_option("Copy outfit", "BS_Players_Neutral_CopyOutfit", function ()
+        local pid = selectedPlayer
+        if not player.is_connected(pid) then return end
+        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        for i = 0, 11 do
+            PED.SET_PED_COMPONENT_VARIATION(PLAYER.PLAYER_PED_ID(), i, PED.GET_PED_DRAWABLE_VARIATION(ped, i), PED.GET_PED_TEXTURE_VARIATION(ped, i), PED.GET_PED_PALETTE_VARIATION(ped, i))
+        end
+        for i = 0, 7 do
+            if PED.GET_PED_PROP_INDEX(ped, i) >= 0 and PED.GET_PED_PROP_TEXTURE_INDEX(ped, i) >= 0 then
+                PED.SET_PED_PROP_INDEX(PLAYER.PLAYER_PED_ID(), i, PED.GET_PED_PROP_INDEX(ped, i), PED.GET_PED_PROP_TEXTURE_INDEX(ped, i), true)
+            end
+        end
+    end)
+    PlayerInteractions:add_sub_option("Neutral", "BS_Players_Neutral_SubOption", PlayerNeutral)
+end
+
+
 -- PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Griefing_Submenu") do
 --     -- PlayerGriefing:add_click_option("tt", "", function ()
 --     --     local pid = selectedPlayer
@@ -420,16 +438,16 @@ end
 
 local function getPlayerFlags(pid)
     if not player.is_connected(pid) then return "" end
-    local out = ""
-    if player.is_local(pid) then out = out .. "[ME] " end
-    if player.is_god(pid) then out = out .. "[G] " end
-    if player.is_script_host(pid) then out = out .. "[SH] " end
-    if player.is_session_host(pid) then out = out .. "[H] " end
-    if player.is_in_interior(pid) then out = out .. "[I] " end    
-    if player.is_in_vehicle(pid) then out = out .. "[V] " end
-    if player.is_in_cutscene(pid) then out = out .. "[CS] " end
-    if player.is_modder(pid) then out = out .. "[M] " end
-    if player.is_friend(pid) then out = out .. "[F] " end
+    local out = {}
+    if player.is_local(pid) then table.insert(out, {"[ME]", 255, 255, 51}) end
+    if player.is_god(pid) then table.insert(out, {"[G]", 0, 153, 255}) end
+    if player.is_script_host(pid) then table.insert(out, {"[SH]", 204, 51, 204}) end
+    if player.is_session_host(pid) then table.insert(out, {"[H]", 255, 102, 102}) end
+    if player.is_in_interior(pid) then table.insert(out, {"[I]", 0, 204, 204}) end    
+    if player.is_in_vehicle(pid) then table.insert(out, {"[V]", 204, 255, 0}) end
+    if player.is_in_cutscene(pid) then table.insert(out, {"[CS]", 204, 204, 204}) end
+    if player.is_modder(pid) then table.insert(out, {"[M]", 255, 0, 102}) end
+    if player.is_friend(pid) then table.insert(out, {"[F]", 0, 255, 153}) end
     return out
 end
 
@@ -439,7 +457,9 @@ PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList_Submenu"
         for pid = 0, 32 do
             if player.is_connected(pid) then
                 table.insert(connectedPlayers, players[pid+1])
-                connectedPlayers[#connectedPlayers].name = player.get_name(pid) .. " " .. getPlayerFlags(pid)
+                local name = player.get_name(pid)
+                connectedPlayers[#connectedPlayers].name = player.get_name(pid)
+                connectedPlayers[#connectedPlayers].tags = getPlayerFlags(pid)
             else
                 activeActions[pid + 1] = nil
             end
@@ -452,89 +472,12 @@ PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList_Submenu"
 
 Main:add_sub_option("Players", "BS_PlayerList_SubOption", PlayerList)
 
-
--- local playerList = menu.add_combo_ex(self, "Player list", "BS_Players_PLayerList", function (_, index)
---     local player_m = connectedPlayers[index]
---     return string.format("%i. %s", player_m.pid, player_m.name)
--- end, function ()
---     return #connectedPlayers
--- end)
-
--- function getSelectedPlayer()
---     local comboVal = playerList:get_long()
---     local player_m = connectedPlayers[comboVal]
---     if player_m == nil then return -1 end
---     return player_m
--- end
-
--- menu.add_checkbox(self, "Check players GeoIP", "BS_Players_CheckGeoIP", function (_, state)
---     local listName = "BS_Players_CheckGeoIP"
---     if state then
---         listener.register(listName, GET_EVENTS_LIST().OnPlayerActive, function (pid)
---             local ip = player.get_ip_string(pid)
---             http.get("http://ip-api.com/json/"..ip, function (code, _, rawContent)
---                 if code == 200 then
---                     local content = json.decode(rawContent)
---                     playersGeoIP[pid] = string.format("%s, %s", content["countryCode"], content["city"])
---                 else
---                     log.error("HTTP", string.format("Failed to get GeoIP | Error code: %i", code))
---                 end
---             end)
---         end)
---     elseif listener.exists(listName) then
---         listener.remove(listName)
---     end
--- end)
-
--- menu.add_dynamic_text(self, "BS_Players_Info", function ()
---     local player_m = getSelectedPlayer()
---     return string.format("Player info\nName: %s\nRID: %i\nIP: %s\nGeoIP: %s", player_m.name, player_m.rid, player_m.ip, player_m.GeoIP)
--- end)
-
--- menu.add_button(self, "Copy info", "BS_Players_Info_CopyInfo", function ()
---     local player_m = getSelectedPlayer()
---     if not player.is_connected(player_m.pid) then return end
---     local out = string.format("Player info\nName: %s\nRID: %i\nIP: %s\nGeoIP: %s", player_m.name, player_m.rid, player_m.ip, player_m.GeoIP)
---     utils.set_clipboard(out)
---     notify.success("Players", "Copied player info into your clipboard.", gui.icons.players)
--- end)
-
--- menu.add_static_text(self, "Removals", "BS_Players_Removals")
-
--- menu.add_button(self, "IDM kick", "BS_Players_Removals_Kick", function ()
---     local player_m = getSelectedPlayer()
---     if not player.is_connected(player_m.pid) then return end
---     player.kick_idm(player_m.pid)
--- end)
-
--- menu.add_button(self, "SE crash", "BS_Players_Removals_Crash", function ()
---     local player_m = getSelectedPlayer()
---     if not player.is_connected(player_m.pid) then return end
---     scripts.events.crash(player_m.pid)
--- end)
-
--- menu.add_static_text(self, "Neutral", "BS_Players_Neutral")
-
--- menu.add_button(self, "Copy outfit", "BS_Players_Neutral_CopyOutfit", function ()
---     local player_m = getSelectedPlayer()
---     if not player.is_connected(player_m.pid) then return end
---     local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(player_m.pid)
---     for i = 0, 11 do
--- 		PED.SET_PED_COMPONENT_VARIATION(PLAYER.PLAYER_PED_ID(), i, PED.GET_PED_DRAWABLE_VARIATION(ped, i), PED.GET_PED_TEXTURE_VARIATION(ped, i), PED.GET_PED_PALETTE_VARIATION(ped, i))
--- 	end
--- 	for i = 0, 7 do
---         if PED.GET_PED_PROP_INDEX(ped, i) >= 0 and PED.GET_PED_PROP_TEXTURE_INDEX(ped, i) >= 0 then
--- 		    PED.SET_PED_PROP_INDEX(PLAYER.PLAYER_PED_ID(), i, PED.GET_PED_PROP_INDEX(ped, i), PED.GET_PED_PROP_TEXTURE_INDEX(ped, i), true)
---         end
--- 	end
--- end)
-
--- menu.add_button(self, "Teleport (Me -> Player)", "BS_Players_Neutral_TeleportMeToPlayer", function ()
---     local player_m = getSelectedPlayer()
---     if not player.is_connected(player_m.pid) then return end
---     local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(player_m.pid)
---     local playerCoords = ENTITY.GET_ENTITY_COORDS(ped, true)
---     utils.teleport(playerCoords)
--- end)
+PlayerInteractions:add_click_option("Copy info", "BS_Players_Info_CopyInfo", function ()
+    local pid = selectedPlayer
+    if not player.is_connected(pid) then return end
+    local out = string.format("Player info\nName: %s\nRID: %i\nIP: %s", player.get_name(pid), player.get_rid(pid), player.get_ip_string(pid))
+    utils.set_clipboard(out)
+    notify.success("Players", "Copied player info into your clipboard.")
+end)
 
 -- END

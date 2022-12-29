@@ -7,5 +7,6 @@ require("Git/BoolyScript/pages/DrawUI/network")
 require("Git/BoolyScript/pages/DrawUI/players")
 require("Git/BoolyScript/pages/DrawUI/presets_mgr")
 
-
-
+task.executeAsScript("Settings_LoadConfig", function ()
+    Configs.loadConfig()
+end)

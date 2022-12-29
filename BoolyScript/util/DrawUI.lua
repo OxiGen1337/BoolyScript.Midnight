@@ -191,6 +191,7 @@ Option = {
     hint = "",
     default = nil,
     configIgnore = false,
+    tags = nil,
 }
 Option.__index = Option
 
@@ -217,12 +218,12 @@ function NotifyService:notify(title_s, text_s, r, g, b)
     local textSize = draw.get_text_size(text_s)
     local notifyHeight = 10 + titleTextSize.y + 10 + textSize.y + 10
     local notifyWidth = 10 + math.max(titleTextSize.x, textSize.x) + 10
-    config.notifies[notifyHash] = notifyHeight
-    config.renderedNotifies = config.renderedNotifies + 1
     local yOffset = 20.0
     for _, height in pairs(config.notifies) do
         yOffset = yOffset + height + 10
     end
+    config.renderedNotifies = config.renderedNotifies + 1
+    config.notifies[notifyHash] = notifyHeight
     local notifyTime = os.clock() + config.notifyTime
     local notifyStep = 5
     local alphaStep = math.ceil(255 / (notifyWidth / notifyStep))
@@ -311,6 +312,7 @@ function NotifyService:notify(title_s, text_s, r, g, b)
                 config.notifies = {}
             end
         end
+        draw.set_rounding(0)
     end)
 end
 
@@ -645,13 +647,11 @@ Configs.loadConfig = function ()
     end
 end
 
-listener.register("Settings_LoadConfig", GET_EVENTS_LIST().OnInit, function ()
-    Configs.loadConfig()
-end)
-
 local function playClickSound()
     if not config.isClickSoundEnabled then return end
-    AUDIO.PLAY_SOUND_FRONTEND(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+    task.createTask("DrawUI_PlayClickSound_" .. os.clock(), 0.0, 1, function ()
+        AUDIO.PLAY_SOUND_FRONTEND(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+    end)
 end
 
 local function onControl(key, isDown, ignoreControlsState)
@@ -678,7 +678,7 @@ local function onControl(key, isDown, ignoreControlsState)
                 config.inputBoxText = ""
                 config.isInputBoxDisplayed = false
                 playClickSound()
-            else
+            elseif id_to_key[key] then
                 config.inputBoxText = config.inputBoxText .. id_to_key[key]
             end
         end
@@ -913,6 +913,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                 x = draw.get_window_width()/2 + config.inputBoxWidth, 
                 y = draw.get_window_height()/2 + config.inputBoxHeight, 
             }
+            draw.set_rounding(5)
             draw.set_color(0, 0, 0, 0, 255)
             draw.rect_filled(
                 lu.x, lu.y, rd.x, rd.y
@@ -954,6 +955,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                 rd.y + 15,
                 footer
             )
+            draw.set_rounding(0)
         end
         
         if not config.isOpened then return end
@@ -1007,8 +1009,6 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             (bg.lu.y - config.optionHeight) + config.optionHeight/2 - draw.get_text_size_y(pos)/2,
             pos
         )
-
-
 
         -- draw.set_color(0, 10, 10, 10, 255) -- SUBMENU NAME BG
         -- draw.rect_filled(
@@ -1203,6 +1203,19 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                     (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(name)/2,
                     name
                 )
+                if data.tags then
+                    local offset = 5.0
+                    for _, t in ipairs(data.tags) do                      
+                        draw.set_color(0, t[2], t[3], t[4], 255)
+                        draw.text(
+                            lu.x + 10 + draw.get_text_size_x(name) + offset,
+                            (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(t[1])/2,
+                            t[1]
+                        )
+                        offset = offset + draw.get_text_size_x(t[1]) + 4
+                    end
+                end
+                draw.set_color(0, 255, 255, 255, 255)
                 config.iconsSize = 40.0
                 local symbol = nil
                 local material = nil
@@ -1243,7 +1256,6 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                     )
                 end
             end
-
         end
     end
 end)
