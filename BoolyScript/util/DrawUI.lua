@@ -33,6 +33,7 @@ local config = {
     notifyTime = 5.0,
     lastNotifyOffset = 0,
     notifies = {},
+    isClickSoundEnabled = true,
 }
 
 
@@ -205,110 +206,111 @@ function string.split(string_s)
 end
 
 function NotifyService:notify(title_s, text_s, r, g, b)
-    task.createTask("NotifyService_" .. os.clock() .. math.random(1337), 0.0, 1, function ()
-        title_s, text_s = tostring(title_s), tostring(text_s)
-        if not title_s then
-            return(log.error("NotifyService", string.format("Wrong title value type | Received '%s'; expected 'string'/'num'.", type(title_s))))
-        elseif not text_s then 
-            return(log.error("NotifyService", string.format("Wrong text value type | Received '%s'; expected 'string'/'num'.", type(text_s))))
+    title_s, text_s = tostring(title_s), tostring(text_s)
+    if not title_s then
+        return(log.error("NotifyService", string.format("Wrong title value type | Received '%s'; expected 'string'/'num'.", type(title_s))))
+    elseif not text_s then 
+        return(log.error("NotifyService", string.format("Wrong text value type | Received '%s'; expected 'string'/'num'.", type(text_s))))
+    end
+    local notifyHash = "Notify_Render_" .. os.clock() .. math.random(1337)
+    local titleTextSize = draw.get_text_size(title_s)
+    local textSize = draw.get_text_size(text_s)
+    local notifyHeight = 10 + titleTextSize.y + 10 + textSize.y + 10
+    local notifyWidth = 10 + math.max(titleTextSize.x, textSize.x) + 10
+    config.notifies[notifyHash] = notifyHeight
+    config.renderedNotifies = config.renderedNotifies + 1
+    local yOffset = 20.0
+    for _, height in pairs(config.notifies) do
+        yOffset = yOffset + height + 10
+    end
+    local notifyTime = os.clock() + config.notifyTime
+    local notifyStep = 5
+    local alphaStep = math.ceil(255 / (notifyWidth / notifyStep))
+    local state = 0
+    local function cropString(text_s, len_n)
+        if len_n <= 0 then return "" end
+        if string.len(text_s) == 0 then return "" end
+        if draw.get_text_size(text_s).x <= len_n then return text_s end
+        return cropString(text_s:sub(1, -2), len_n)
+    end
+    local value = 0
+    local alpha = 0
+    local line = 0
+    listener.register(notifyHash, GET_EVENTS_LIST().OnFrame, function ()
+        if os.clock() >= notifyTime then
+            state = 2
         end
-        local notifyHash = "Notify_Render_" .. os.clock() .. math.random(1337)
-        local titleTextSize = draw.get_text_size(title_s)
-        local textSize = draw.get_text_size(text_s)
-        local notifyHeight = 10 + titleTextSize.y + 10 + textSize.y + 10
-        local notifyWidth = 10 + math.max(titleTextSize.x, textSize.x) + 10
-        config.notifies[notifyHash] = notifyHeight
-        config.renderedNotifies = config.renderedNotifies + 1
-        local yOffset = 20.0
-        for _, height in pairs(config.notifies) do
-            yOffset = yOffset + height + 10
+        if state == 0 then
+            if value + notifyStep < notifyWidth then
+                value = value + notifyStep
+            else
+                value = notifyWidth
+                state = 1
+            end
+            if alpha + alphaStep < 255 then
+                alpha = alpha + alphaStep
+            else
+                alpha = 255
+            end
+        elseif state == 2 then
+            if value - notifyStep > 0 then
+                value = value - notifyStep
+            else
+                value = 0
+                state = 3
+            end
+            if alpha - alphaStep > 0 then
+                alpha = alpha - alphaStep
+            else
+                alpha = 0
+            end
         end
-        local notifyTime = os.clock() + config.notifyTime
-        local notifyStep = 5
-        local state = 0
-        local function cropString(text_s, len_n)
-            if len_n <= 0 then return "" end
-            if string.len(text_s) == 0 then return "" end
-            if draw.get_text_size(text_s).x <= len_n then return text_s end
-            return cropString(text_s:sub(1, -2), len_n)
+        local leftUpper = {
+            x = draw.get_window_width() - value - 20,
+            y = yOffset + 20
+        }
+        local rightDown = {
+            x = draw.get_window_width() - 20,
+            y = leftUpper.y + notifyHeight
+        }
+        draw.set_color(0, 25, 25, 25, alpha)
+        draw.set_rounding(5)
+        draw.rect_filled(
+            leftUpper.x,
+            leftUpper.y,
+            rightDown.x,
+            rightDown.y
+        )
+        draw.set_color(0, r, g, b, alpha)
+        draw.set_rounding(50)
+        draw.rect_filled(
+            leftUpper.x,
+            leftUpper.y,
+            leftUpper.x + 4,
+            rightDown.y
+        )
+        draw.set_rounding(0)
+        draw.set_color(0, r, g, b, alpha)
+        draw.text(
+            leftUpper.x + 10,
+            leftUpper.y + 10,
+            cropString(title_s, math.abs(leftUpper.x - rightDown.x) - 10)
+        )
+        draw.set_color(0, r, g, b, alpha)
+        draw.set_rounding(5)
+        draw.set_color(0, 255, 255, 255, alpha)
+        draw.text(
+            leftUpper.x + 10,
+            leftUpper.y + titleTextSize.y + 10 + 10,
+            cropString(text_s, math.abs(leftUpper.x - rightDown.x) - 10)
+        )
+        if state == 3 then
+            listener.remove(notifyHash, GET_EVENTS_LIST().OnFrame)
+            config.renderedNotifies = config.renderedNotifies - 1
+            if config.renderedNotifies == 0 then
+                config.notifies = {}
+            end
         end
-        local value = 0
-        local alpha = 0
-        listener.register(notifyHash, GET_EVENTS_LIST().OnFrame, function ()
-            if os.clock() >= notifyTime then
-                state = 2
-            end
-            if state == 0 then
-                if value + notifyStep < notifyWidth then
-                    value = value + notifyStep
-                else
-                    value = notifyWidth
-                    state = 1
-                end
-                if alpha < 255 then
-                    alpha = alpha + 5
-                else
-                    alpha = 255
-                end
-            elseif state == 2 then
-                if value - notifyStep > 0 then
-                    value = value - notifyStep
-                else
-                    value = 0
-                    state = 3
-                end
-                if alpha > 0 then
-                    alpha = alpha - 5
-                else
-                    alpha = 0
-                end
-            end
-
-            local leftUpper = {
-                x = draw.get_window_width() - value - 20,
-                y = yOffset + 20
-            }
-            local rightDown = {
-                x = draw.get_window_width() - 20,
-                y = leftUpper.y + notifyHeight
-            }
-            draw.set_color(0, 25, 25, 25, alpha)
-            draw.set_rounding(5)
-            draw.rect_filled(
-                leftUpper.x,
-                leftUpper.y,
-                rightDown.x,
-                rightDown.y
-            )
-            draw.set_color(0, r, g, b, alpha)
-            draw.set_rounding(50)
-            draw.rect_filled(
-                leftUpper.x,
-                leftUpper.y,
-                leftUpper.x + 4,
-                rightDown.y
-            )
-            draw.set_rounding(0)
-            draw.set_color(0, r, g, b, alpha)
-            draw.text(
-                leftUpper.x + 10,
-                leftUpper.y + 10,
-                cropString(title_s, math.abs(leftUpper.x - rightDown.x) - 10)
-            )
-            draw.set_color(0, 255, 255, 255, alpha)
-            draw.text(
-                leftUpper.x + 10,
-                leftUpper.y + titleTextSize.y + 10 + 10,
-                cropString(text_s, math.abs(leftUpper.x - rightDown.x) - 10)
-            )
-            if state == 3 then
-                listener.remove(notifyHash, GET_EVENTS_LIST().OnFrame)
-                config.renderedNotifies = config.renderedNotifies - 1
-                if config.renderedNotifies == 0 then
-                    config.notifies = {}
-                end
-            end
-        end)
     end)
 end
 
@@ -490,20 +492,21 @@ function Option:getValue()
 end
 
 function Option:setValue(value, ignoreCallback_b)
+    if not self then return end
     if (self.type == OPTIONS.NUM or self.type == OPTIONS.FLOAT or self.type == OPTIONS.CHOOSE) and type(value) == "number" then
         self.value = value
-        if self.callback and not ignoreCallback_b then self.callback(self.value) end
+        if self.callback and not ignoreCallback_b then self.callback(self.value, self) end
         return self
     elseif (self.type == OPTIONS.BOOL and type(value) == "boolean") then
         self.value = value
-        if self.callback and not ignoreCallback_b then self.callback(self.value) end
+        if self.callback and not ignoreCallback_b then self.callback(self.value, self) end
         return self
     elseif (self.type == OPTIONS.CLICK) then
-        if self.callback and not ignoreCallback_b then self.callback() end
+        if self.callback and not ignoreCallback_b then self.callback(self) end
         return self
     elseif (self.type == OPTIONS.TEXT_INPUT and type(value) == "string") then
         self.value = value
-        if self.callback and not ignoreCallback_b then self.callback(self.value) end
+        if self.callback and not ignoreCallback_b then self.callback(self.value, self) end
         return self
     end
     log.error("DrawUI", "Wrong option type or value for Option:setValue() function.")
@@ -631,7 +634,7 @@ Configs.loadConfig = function ()
                 if not option.configIgnore then
                     local value = config[option.hash]
                     if value then
-                        option:setValue(value)
+                        Option.setValue(option,value)
                     end
                 end
             end
@@ -645,6 +648,11 @@ end
 listener.register("Settings_LoadConfig", GET_EVENTS_LIST().OnInit, function ()
     Configs.loadConfig()
 end)
+
+local function playClickSound()
+    if not config.isClickSoundEnabled then return end
+    AUDIO.PLAY_SOUND_FRONTEND(-1, "SELECT", "HUD_FRONTEND_DEFAULT_SOUNDSET")
+end
 
 local function onControl(key, isDown, ignoreControlsState)
     if Stuff.controlsState[key] and not ignoreControlsState then
@@ -661,12 +669,15 @@ local function onControl(key, isDown, ignoreControlsState)
                 if config.inputBoxCallback then config.inputBoxCallback(config.inputBoxText) end
                 config.inputBoxText = ""
                 config.isInputBoxDisplayed = false
+                playClickSound()
                 return
             elseif key == 8 then -- BACKSPACE
                 config.inputBoxText = config.inputBoxText:sub(1, -2)
+                playClickSound()
             elseif key == 27 then -- ESCAPE
                 config.inputBoxText = ""
                 config.isInputBoxDisplayed = false
+                playClickSound()
             else
                 config.inputBoxText = config.inputBoxText .. id_to_key[key]
             end
@@ -680,6 +691,7 @@ local function onControl(key, isDown, ignoreControlsState)
             else
                 table.remove(config.path)
             end
+            playClickSound()
         end
         if key == controls.up then -- UP
             local submenu = config.path[#config.path]
@@ -711,7 +723,7 @@ local function onControl(key, isDown, ignoreControlsState)
                     submenu.scrollOffset = 0
                 end
             end
-
+            playClickSound()
             config.isActionDown = false
             config.test = 0
         end
@@ -745,6 +757,7 @@ local function onControl(key, isDown, ignoreControlsState)
                     submenu.scrollOffset = 0
                 end
             end
+            playClickSound()
             config.isActionDown = true
             config.test = 0.0
         end
@@ -775,6 +788,7 @@ local function onControl(key, isDown, ignoreControlsState)
                         if selected.callback then selected.callback(selected.value) end
                     end
                 end
+                playClickSound()
             end
         end
         if key == controls.left then -- OPTION LEFT
@@ -787,6 +801,7 @@ local function onControl(key, isDown, ignoreControlsState)
                     else
                         selected.value = selected.value - selected.step + .0
                     end
+                    playClickSound()
                     if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.CHOOSE then
                     if selected.value == 1 then
@@ -794,6 +809,7 @@ local function onControl(key, isDown, ignoreControlsState)
                     else
                         selected.value = selected.value - 1
                     end
+                    playClickSound()
                     if selected.execOnSelection then
                         if selected.callback then selected.callback(selected.value, selected) end
                     end
@@ -810,6 +826,7 @@ local function onControl(key, isDown, ignoreControlsState)
                     else
                         selected.value = selected.value + selected.step + .0
                     end
+                    playClickSound()
                     if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.CHOOSE then
                     if selected.value == #selected.table then
@@ -817,6 +834,7 @@ local function onControl(key, isDown, ignoreControlsState)
                     else
                         selected.value = selected.value + 1
                     end
+                    playClickSound()
                     if selected.execOnSelection then
                         if selected.callback then selected.callback(selected.value, selected) end
                     end
@@ -873,6 +891,9 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings_Submenu")
     settings:add_float_option("UI input delay", "Main_Settings_InputDelay", 0.0, 1.0, 0.05, function (val)
         config.inputDelay = val
     end):setValue(config.inputDelay)
+    settings:add_bool_option("Play menu sounds", "Main_Settings_PlayMenuSounds", function (state)
+        config.isClickSoundEnabled = state
+    end):setValue(false)
     -- local keys = Submenu.add_static_submenu("Keys", "Main_Settings_Keys_Submenu") do
     --     keys:add_text_input()
     -- end
