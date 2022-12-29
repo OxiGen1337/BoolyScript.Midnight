@@ -27,6 +27,12 @@ local config = {
     enabelSmoothScroller = false,
     offset_x = 1400,
     offset_y = 300,
+    renderedNotifies = 0,
+    notifyHeight = 60,
+    notifyWidth = 200,
+    notifyTime = 5.0,
+    lastNotifyOffset = 0,
+    notifies = {},
 }
 
 
@@ -133,7 +139,6 @@ materials.toggleOn = draw.create_texture_from_file(paths.files.imgs.toggleOn)
 materials.toggleOff = draw.create_texture_from_file(paths.files.imgs.toggleOff)
 materials.sub = draw.create_texture_from_file(paths.files.imgs.sub)
 
-
 OPTIONS = {
     CLICK = 1,
     BOOL = 2,
@@ -188,6 +193,125 @@ Option = {
 }
 Option.__index = Option
 
+NotifyService = {}
+NotifyService.__index = NotifyService
+
+function string.split(string_s)
+    local words = {}
+    for word in string_s:gmatch("%w+") do 
+        table.insert(words, word) 
+    end
+    return words
+end
+
+function NotifyService:notify(title_s, text_s, r, g, b)
+    task.createTask("NotifyService_" .. os.clock() .. math.random(1337), 0.0, 1, function ()
+        title_s, text_s = tostring(title_s), tostring(text_s)
+        if not title_s then
+            return(log.error("NotifyService", string.format("Wrong title value type | Received '%s'; expected 'string'/'num'.", type(title_s))))
+        elseif not text_s then 
+            return(log.error("NotifyService", string.format("Wrong text value type | Received '%s'; expected 'string'/'num'.", type(text_s))))
+        end
+        local notifyHash = "Notify_Render_" .. os.clock() .. math.random(1337)
+        local titleTextSize = draw.get_text_size(title_s)
+        local textSize = draw.get_text_size(text_s)
+        local notifyHeight = 10 + titleTextSize.y + 10 + textSize.y + 10
+        local notifyWidth = 10 + math.max(titleTextSize.x, textSize.x) + 10
+        config.notifies[notifyHash] = notifyHeight
+        config.renderedNotifies = config.renderedNotifies + 1
+        local yOffset = 20.0
+        for _, height in pairs(config.notifies) do
+            yOffset = yOffset + height + 10
+        end
+        local notifyTime = os.clock() + config.notifyTime
+        local notifyStep = 5
+        local state = 0
+        local function cropString(text_s, len_n)
+            if len_n <= 0 then return "" end
+            if string.len(text_s) == 0 then return "" end
+            if draw.get_text_size(text_s).x <= len_n then return text_s end
+            return cropString(text_s:sub(1, -2), len_n)
+        end
+        local value = 0
+        local alpha = 0
+        listener.register(notifyHash, GET_EVENTS_LIST().OnFrame, function ()
+            if os.clock() >= notifyTime then
+                state = 2
+            end
+            if state == 0 then
+                if value + notifyStep < notifyWidth then
+                    value = value + notifyStep
+                else
+                    value = notifyWidth
+                    state = 1
+                end
+                if alpha < 255 then
+                    alpha = alpha + 5
+                else
+                    alpha = 255
+                end
+            elseif state == 2 then
+                if value - notifyStep > 0 then
+                    value = value - notifyStep
+                else
+                    value = 0
+                    state = 3
+                end
+                if alpha > 0 then
+                    alpha = alpha - 5
+                else
+                    alpha = 0
+                end
+            end
+
+            local leftUpper = {
+                x = draw.get_window_width() - value - 20,
+                y = yOffset + 20
+            }
+            local rightDown = {
+                x = draw.get_window_width() - 20,
+                y = leftUpper.y + notifyHeight
+            }
+            draw.set_color(0, 25, 25, 25, alpha)
+            draw.set_rounding(5)
+            draw.rect_filled(
+                leftUpper.x,
+                leftUpper.y,
+                rightDown.x,
+                rightDown.y
+            )
+            draw.set_color(0, r, g, b, alpha)
+            draw.set_rounding(50)
+            draw.rect_filled(
+                leftUpper.x,
+                leftUpper.y,
+                leftUpper.x + 4,
+                rightDown.y
+            )
+            draw.set_rounding(0)
+            draw.set_color(0, r, g, b, alpha)
+            draw.text(
+                leftUpper.x + 10,
+                leftUpper.y + 10,
+                cropString(title_s, math.abs(leftUpper.x - rightDown.x) - 10)
+            )
+            draw.set_color(0, 255, 255, 255, alpha)
+            draw.text(
+                leftUpper.x + 10,
+                leftUpper.y + titleTextSize.y + 10 + 10,
+                cropString(text_s, math.abs(leftUpper.x - rightDown.x) - 10)
+            )
+            if state == 3 then
+                listener.remove(notifyHash, GET_EVENTS_LIST().OnFrame)
+                config.renderedNotifies = config.renderedNotifies - 1
+                if config.renderedNotifies == 0 then
+                    config.notifies = {}
+                end
+            end
+        end)
+    end)
+end
+
 function Submenu.add_static_submenu(name_s, hash_s)
     local submenu = setmetatable({}, Submenu)
     submenu.ID = #Submenu.getSubmenus() + 1
@@ -201,6 +325,7 @@ end
 
 function Submenu.add_main_submenu(name_s, hash_s)
     local submenu = Submenu.add_static_submenu(name_s, hash_s)
+    if config.path[1] then log.error("DrawUI", "Main submenu already exists. You can't add multiple main submenus.") return end
     config.path[1] = submenu
     config.activeSubmenu = 1
     return submenu

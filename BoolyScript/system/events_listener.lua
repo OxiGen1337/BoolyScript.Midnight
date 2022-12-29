@@ -24,8 +24,8 @@ local events = {
     OnPlayerActive = 19,
 }
 
-for name, _ in pairs(events) do
-    onEventFunctions[name] = {}
+for _, ID in pairs(events) do
+    onEventFunctions[ID] = {}
 end
 
 GET_REGISTERED_LISTENERS = function ()
@@ -39,81 +39,37 @@ end
 listener = {}
 
 listener.register = function (hash_s, eventID, callback_t)
-    for name, index in pairs(events) do
-        if eventID == index then
-            if eventID == events.OnInit then
-                table.insert(onEventFunctions.OnInit, {hash = hash_s, callback = callback_t})
-            else
-                onEventFunctions[name][hash_s] = callback_t
-            end
-            log.dbg(string.format("[EVENTS_LISTENER] Successfully registered listener with hash: %s", hash_s))
-            return true
-        end
-    end
-    log.error("EVENTS_LISTENER", string.format("Failed to register listener with hash: %s | Invalid event %i.", hash_s, eventID))
-    return false
+    table.insert(onEventFunctions[eventID], {hash = hash_s, callback = callback_t})
+    log.dbg(string.format("[EVENTS_LISTENER] Successfully registered listener with hash: %s", hash_s))
+    return true
 end
 
 listener.remove = function (hash_s, eventID)
-    for name, index in pairs(events) do
-        if index == eventID then
-            if eventID == events.OnInit then
-                for _, t in ipairs(onEventFunctions.OnInit) do
-                    if t["hash"] == hash_s then
-                        t = nil
-                        break
-                    end
-                    log.error("EVENTS_LISTENER", string.format("Failed to remove listener with hash: %s | Listener doesnt exist.", hash_s))
-                    return false
-                end
-            else
-                if not onEventFunctions[name][hash_s] then 
-                    log.error("EVENTS_LISTENER", string.format("Failed to remove listener with hash: %s | Listener doesnt exist.", hash_s))
-                    return false
-                end
-                onEventFunctions[name][hash_s] = nil
-            end
-            log.dbg(string.format("[EVENTS_LISTENER] Successfully removed listener with hash: %s", hash_s))
+    for ID, t in ipairs(onEventFunctions[eventID]) do
+        if t["hash"] == hash_s then
+            table.remove(onEventFunctions[eventID], ID)
+            log.dbg("[EVENTS_LISTENER] " .. string.format("Successfully removed listener with hash: %s.", hash_s))
             return true
         end
     end
-    log.error("EVENTS_LISTENER", string.format("Failed to remove listener with hash: %s | Invalid event %i.", hash_s, eventID))
+    log.error("EVENTS_LISTENER", string.format("Failed to remove listener with hash: %s | Listener doesnt exist.", hash_s))
     return false
 end
 
 listener.exists = function (hash_s, eventID)
-    for name, index in pairs(events) do
-        if index == eventID then
-            if eventID == events.OnInit then
-                for _, t in ipairs(onEventFunctions.OnInit) do
-                    if t["hash"] == hash_s then
-                        return true
-                    end
-                end
-            else
-                return not (onEventFunctions[name][hash_s] == nil)
-            end
+    for ID, t in ipairs(onEventFunctions[eventID]) do
+        if t["hash"] == hash_s then
+            return true
         end
     end
     return false
 end
 
 listener.setCallback = function (hash_s, eventID, callback_f)
-    for name, index in pairs(events) do
-        if index == eventID then
-            if eventID == events.OnInit then
-                for _, t in ipairs(onEventFunctions.OnInit) do
-                    if t["hash"] == hash_s then
-                        t['callback'] = callback_f
-                        return true
-                    end
-                end
-            else
-               if onEventFunctions[name][hash_s] then
-                    onEventFunctions[name][hash_s]['callback'] = callback_f
-                    return true
-               end
-            end
+    for ID, t in ipairs(onEventFunctions[eventID]) do
+        if t["hash"] == hash_s then
+            t['callback'] = callback_f
+            return true
         end
     end
     log.error("EVENTS_LISTENER", string.format("Failed to set listener callback with hash: %s | Listener doesnt exist.", hash_s))
@@ -131,14 +87,15 @@ function OnInit()
     log.init("        **    **      **    **      **    **     ********     **             ")
     log.init("       ******           **            **        ********     **              ")
 
-    for _, t in ipairs(onEventFunctions.OnInit) do
+    for ID, t in ipairs(onEventFunctions[events.OnInit]) do
         local hash_s, callback_f = t["hash"], t["callback"]
         --log.dbg("Exec: " .. hash_s)
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnInit)
         else 
-            callback_f() 
+            local out = callback_f() 
+            if out == false then listener.remove(hash_s, events.OnInit) end
         end
     end
     log.init(string.format("All modules were initialized in %f sec.", os.clock() - startTime))
@@ -146,201 +103,235 @@ function OnInit()
 end
 
 function OnKeyPressed(key, isDown)
-    for hash_s, callback_f in pairs(onEventFunctions.OnKeyPressed) do
+    for ID, t in ipairs(onEventFunctions[events.OnKeyPressed]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnKeyPressed)
         else 
-            callback_f(key, isDown) 
+            local out = callback_f(key,isDown) 
+            if out == false then listener.remove(hash_s, events.OnKeyPressed) end
         end
     end
 end
 
 function OnFrame()
-    for hash_s, callback_f in pairs(onEventFunctions.OnFrame) do
+    for ID, t in ipairs(onEventFunctions[events.OnFrame]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnFrame)
         else 
-            callback_f() 
+            local out = callback_f() 
+            if out == false then listener.remove(hash_s, events.OnFrame) end
         end
     end
 end
 
 function OnFeatureTick()
-    for hash_s, callback_f in pairs(onEventFunctions.OnFeatureTick) do
+    for ID, t in ipairs(onEventFunctions[events.OnFeatureTick]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnFeatureTick)
         else 
-            callback_f() 
+            local out = callback_f() 
+            if out == false then listener.remove(hash_s, events.OnFeatureTick) end
         end
     end
 end
 
 function OnDone()
-    for hash_s, callback_f in pairs(onEventFunctions.OnDone) do
+    for ID, t in ipairs(onEventFunctions[events.OnDone]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnDone)
         else 
-            callback_f() 
+            local out = callback_f() 
+            if out == false then listener.remove(hash_s, events.OnDone) end
         end
     end
 end
 
 function OnPlayerJoin(pid)
-    for hash_s, callback_f in pairs(onEventFunctions.OnPlayerJoin) do
+    for ID, t in ipairs(onEventFunctions[events.OnPlayerJoin]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnPlayerJoin)
         else 
-            callback_f(pid) 
+            local out = callback_f(pid) 
+            if out == false then listener.remove(hash_s, events.OnPlayerJoin) end
         end
     end
 end
 
 function OnPlayerLeft(pid)
-    for hash_s, callback_f in pairs(onEventFunctions.OnPlayerLeft) do
+    for ID, t in ipairs(onEventFunctions[events.OnPlayerLeft]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnPlayerLeft)
         else 
-            callback_f(pid) 
+            local out = callback_f(pid) 
+            if out == false then listener.remove(hash_s, events.OnPlayerLeft) end
         end
     end
 end
 
 function OnPlayerJoinByRid(rid)
-    for hash_s, callback_f in pairs(onEventFunctions.OnPlayerJoinByRid) do
+    for ID, t in ipairs(onEventFunctions[events.OnPlayerJoinByRid]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnPlayerJoinByRid)
         else 
-            callback_f(rid) 
+            local out = callback_f(rid) 
+            if out == false then listener.remove(hash_s, events.OnPlayerJoinByRid) end
         end
     end
 end
 
 function OnScriptEvent(pid, event, args)
-    for hash_s, callback_f in pairs(onEventFunctions.OnScriptEvent) do
+    for ID, t in ipairs(onEventFunctions[events.OnScriptEvent]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnScriptEvent)
         else 
             local out = callback_f(pid, event, args) 
-            if out == false then return false end
+            if out == false then listener.remove(hash_s, events.OnScriptEvent) end
         end
     end
 end
 
 function OnChatMsg(pid, text)
-    for hash_s, callback_f in pairs(onEventFunctions.OnChatMsg) do
+    for ID, t in ipairs(onEventFunctions[events.OnChatMsg]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnChatMsg)
         else 
-            callback_f(pid, text) 
+            local out = callback_f(pid, text) 
+            if out == false then listener.remove(hash_s, events.OnChatMsg) end
         end
     end
 end
 
 function OnNetworkEvent(pid, event, buf)
-    for hash_s, callback_f in pairs(onEventFunctions.OnNetworkEvent) do
+    for ID, t in ipairs(onEventFunctions[events.OnNetworkEvent]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnNetworkEvent)
         else 
             local out = callback_f(pid, event, buf) 
-            if out == false then return false end
+            if out == false then listener.remove(hash_s, events.OnNetworkEvent) end
         end
     end
 end
 
 function OnTransitionEnd(isMp)
-    for hash_s, callback_f in pairs(onEventFunctions.OnTransitionEnd) do
+    for ID, t in ipairs(onEventFunctions[events.OnTransitionEnd]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnTransitionEnd)
         else 
-            callback_f(isMp) 
+            local out = callback_f(isMp) 
+            if out == false then listener.remove(hash_s, events.OnTransitionEnd) end
         end
     end
 end
 
 function OnFirstSingleplayerJoin()
-    for hash_s, callback_f in pairs(onEventFunctions.OnFirstSingleplayerJoin) do
+    for ID, t in ipairs(onEventFunctions[events.OnFirstSingleplayerJoin]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnFirstSingleplayerJoin)
         else 
-            callback_f() 
+            local out = callback_f() 
+            if out == false then listener.remove(hash_s, events.OnFirstSingleplayerJoin) end
         end
     end
 end
 
 function OnSessionJoin()
-    for hash_s, callback_f in pairs(onEventFunctions.OnSessionJoin) do
+    for ID, t in ipairs(onEventFunctions[events.OnSessionJoin]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnVehicleLeave)
         else 
-            callback_f() 
+            local out = callback_f() 
+            if out == false then listener.remove(hash_s, events.OnVehicleLeave) end 
         end
     end
 end
 
 function OnVehicleEnter(handle)
-    for hash_s, callback_f in pairs(onEventFunctions.OnVehicleEnter) do
+    for ID, t in ipairs(onEventFunctions[events.OnVehicleEnter]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnVehicleLeave)
         else 
-            callback_f(handle) 
+            local out = callback_f(handle) 
+            if out == false then listener.remove(hash_s, events.OnVehicleLeave) end
         end
     end
 end
 
 function OnVehicleLeave(handle)
-    for hash_s, callback_f in pairs(onEventFunctions.OnVehicleLeave) do
+    for ID, t in ipairs(onEventFunctions[events.OnVehicleLeave]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnVehicleLeave)
         else 
-            callback_f(handle) 
+            local out = callback_f(handle) 
+            if out == false then listener.remove(hash_s, events.OnVehicleLeave) end
         end
     end
 end
 
 function OnModderDetected(pid, reason)
-    for hash_s, callback_f in pairs(onEventFunctions.OnModderDetected) do
+    for ID, t in ipairs(onEventFunctions[events.OnModderDetected]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnModderDetected)
         else 
-            callback_f(pid, reason) 
+            local out = callback_f(pid, reason) 
+            if out == false then listener.remove(hash_s, events.OnModderDetected) end
         end
     end
 end
 
 function OnGameState(old, new)
-    for hash_s, callback_f in pairs(onEventFunctions.OnGameState) do
+    for ID, t in ipairs(onEventFunctions[events.OnGameState]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnGameState)
         else 
-            callback_f(old, new) 
+            local out = callback_f(old, new) 
+            if out == false then listener.remove(hash_s, events.OnGameState) end 
         end
     end
 end
 
 function OnPlayerActive(pid)
-    for hash_s, callback_f in pairs(onEventFunctions.OnPlayerActive) do
+    for ID, t in ipairs(onEventFunctions[events.OnPlayerActive]) do
+        local hash_s, callback_f = t["hash"], t["callback"]
         if not callback_f then 
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
-            callback_f = nil
+            listener.remove(hash_s, events.OnPlayerActive)
         else 
-            callback_f(pid) 
+            local out = callback_f(pid) 
+            if out == false then listener.remove(hash_s, events.OnPlayerActive) end
         end
     end
 end

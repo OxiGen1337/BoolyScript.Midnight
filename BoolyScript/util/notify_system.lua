@@ -96,18 +96,23 @@ log = {
 
 notify = {
     default = function (page_s, text_s, icon_i)
-        utils.notify(page_s, text_s, icon_i, notifyType.default)
+        NotifyService:notify(page_s, text_s, 0, 180, 255)
+        --utils.notify(page_s, text_s, icon_i, notifyType.default)
     end,
     success = function (page_s, text_s, icon_i)
-        utils.notify(page_s, text_s, icon_i, notifyType.success)
+        NotifyService:notify(page_s, text_s, 0, 204, 153)
+        --utils.notify(page_s, text_s, icon_i, notifyType.success)
     end,
     warning = function (page_s, text_s, icon_i)
-        utils.notify(page_s, text_s, icon_i, notifyType.warning)
+        NotifyService:notify(page_s, text_s, 255, 204, 51)
+        --utils.notify(page_s, text_s, icon_i, notifyType.warning)
     end,
     important = function (page_s, text_s, icon_i)
-        utils.notify(page_s, text_s, icon_i, notifyType.important)
+        NotifyService:notify(page_s, text_s, 153, 51, 204)
+        --utils.notify(page_s, text_s, icon_i, notifyType.important)
     end,
     fatal = function (page_s, text_s, icon_i)
-        utils.notify(page_s, text_s, icon_i, notifyType.fatal)
+        NotifyService:notify(page_s, text_s, 255, 0, 51)
+        --utils.notify(page_s, text_s, icon_i, notifyType.fatal)
     end,
 }
