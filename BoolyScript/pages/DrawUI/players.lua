@@ -88,7 +88,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
-        player.vehicle_disown(pid)
+        player.vehicle_emp(pid)
     end):setConfigIgnore()
     PlayerVehicle:add_click_option("Rotate 180", "BS_PlayerList_Player_Vehicle_Rotate180", function ()
         local pid = selectedPlayer
@@ -541,7 +541,7 @@ PlayerInteractions:add_click_option("Copy info", "BS_Players_Info_CopyInfo", fun
     if not player.is_connected(pid) then return end
     local out = string.format("Player info\nName: %s\nRID: %i\nIP: %s", player.get_name(pid), player.get_rid(pid), player.get_ip_string(pid))
     utils.set_clipboard(out)
-    notify.success("Players", "Copied player info into your clipboard.")
+    notify.success("Players", "Copied player info to clipboard.")
 end)
 
 -- END
