@@ -38,11 +38,13 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
                     createdWepSubs[wepName] = sub
                 end
                 local weaponSub = createdWepSubs[wepName]
-                weaponSub:add_choose_option("Manage", "BS_Weapon_Ammunation_" .. category .. "_" .. wepName .. "_Manage", false, {"Give", "Remove"}, function(pos)
+                weaponSub:add_choose_option("Manage", "BS_Weapon_Ammunation_" .. category .. "_" .. wepName .. "_Manage", false, {"Give", "Remove"}, function(pos, option)
                     if pos == 1 then
                         WEAPON.GIVE_WEAPON_TO_PED(ped, wepHash, 1000, false, true)
+                        option:setValue(2, true)
                     else
                         WEAPON.REMOVE_WEAPON_FROM_PED(ped, wepHash)
+                        option:setValue(1, true)
                     end
                 end):setConfigIgnore()
                 if #wepComponents > 0 then
@@ -55,11 +57,13 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
                             name = HUD._GET_LABEL_TEXT(componentInfo['TranslatedLabel']['Name'])
                         end
                     end
-                    weaponSub:add_choose_option(name, "BS_Weapon_Ammunation_" .. category .. "_" .. wepName .. "_ComponentManage", false, {"Add", "Remove"}, function(pos)
+                    weaponSub:add_choose_option(name, "BS_Weapon_Ammunation_" .. category .. "_" .. wepName .. "_ComponentManage", false, {"Add", "Remove"}, function(pos, option)
                         if pos == 1 then
                             WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(PLAYER.PLAYER_PED_ID(), wepHash, componentInfo['Hash'])
+                            option:setValue(2, true)
                         else
                             WEAPON.REMOVE_WEAPON_COMPONENT_FROM_PED(ped, wepHash, componentInfo['Hash'])
+                            option:setValue(1, true)
                         end
                     end):setConfigIgnore()
                 end

@@ -47,6 +47,6 @@ Visual:add_bool_option("Thermal vision", "BS_Visual_ThermalVision", function(sta
     GRAPHICS.SET_SEETHROUGH(state)
 end)
 
-Visual:add_bool_option("Skip cutscene", "BS_Visual_SkipCutscene", function ()
+Visual:add_click_option("Skip cutscene", "BS_Visual_SkipCutscene", function ()
     scripts.globals.skipCutscene()
 end)

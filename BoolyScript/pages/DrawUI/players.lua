@@ -21,9 +21,9 @@ PlayerInteractions = Submenu.add_static_submenu("Player", "BS_PlayerList_Player_
     table.insert(submenus, PlayerInteractions)
 end
 
-PlayerInteractions:add_click_option("Test", "", function ()
-    script.send(selectedPlayer, 243072129, selectedPlayer, 263, -1)
-end)
+-- PlayerInteractions:add_click_option("Test", "", function ()
+--     script.send(selectedPlayer, 243072129, selectedPlayer, 263, -1)
+-- end)
 
 PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Teleport_Submenu") do
     PlayerTeleport:add_click_option("Teleport to player", "BS_PlayerList_Player_Teleport_ToPlayer", function ()
@@ -354,6 +354,7 @@ PlayerBlocks = Submenu.add_static_submenu("Block", "BS_PlayerList_Player_Block_S
         elseif not state and player.is_banned(pid) then 
             player.unban(pid) 
         end
+        addActiveAction(pid, option, state)
     end):setConfigIgnore()
     PlayerBlocks:add_bool_option("Block all script events", "BS_PlayerList_Player_Block_SE", function (state, option)
         local pid = selectedPlayer
@@ -373,6 +374,7 @@ PlayerBlocks = Submenu.add_static_submenu("Block", "BS_PlayerList_Player_Block_S
             listener.remove(name, GET_EVENTS_LIST().OnScriptEvent)
             listener.remove(name, GET_EVENTS_LIST().OnFeatureTick)
         end
+        addActiveAction(pid, option, state)
     end):setConfigIgnore()
     PlayerBlocks:add_bool_option("Block all network events", "BS_PlayerList_Player_Block_NE", function (state, option)
         local pid = selectedPlayer
@@ -392,6 +394,7 @@ PlayerBlocks = Submenu.add_static_submenu("Block", "BS_PlayerList_Player_Block_S
             listener.remove(name, GET_EVENTS_LIST().OnNetworkEvent)
             listener.remove(name, GET_EVENTS_LIST().OnFeatureTick)
         end
+        addActiveAction(pid, option, state)
     end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Block", "BS_PlayerList_Player_Block_SubOption", PlayerBlocks)
     table.insert(submenus, PlayerBlocks)

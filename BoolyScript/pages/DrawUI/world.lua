@@ -20,7 +20,7 @@ World:add_click_option("Artillery strike at waypoint", "BS_World_ArtStrikeAtWP",
     end)
 end)
 
-World:add_bool_option("Riot mode", "BS_World_RiotMode", function(_, state)
+World:add_bool_option("Riot mode", "BS_World_RiotMode", function(state)
 	MISC.SET_RIOT_MODE_ENABLED(state)
 end):setHint("Makes peds around crazy so they shoot everyone.")
 

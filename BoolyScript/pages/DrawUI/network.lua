@@ -149,6 +149,9 @@ Network:add_bool_option("Show off the radar players", "BS_Network_Misc_ShowOTRPl
                             HUD.SET_BLIP_DISPLAY(Stuff.activePlayerBlips[pid], 0)
                             Stuff.activePlayerBlips[pid] = nil
                         end
+                    else
+                        HUD.SET_BLIP_DISPLAY(Stuff.activePlayerBlips[pid], 0)
+                        Stuff.activePlayerBlips[pid] = nil
                     end
                 end
             end)

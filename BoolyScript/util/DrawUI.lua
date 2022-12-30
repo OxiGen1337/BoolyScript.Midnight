@@ -803,7 +803,15 @@ local function onControl(key, isDown, ignoreControlsState)
             local submenu = config.path[#config.path]
             local selected = submenu.options[submenu.selectedOption]
             if selected then
-                if selected.type == OPTIONS.NUM or selected.type == OPTIONS.FLOAT then
+                if selected.type == OPTIONS.NUM then
+                    if selected.value - selected.step < selected.minValue then
+                        selected.value = selected.maxValue
+                    else
+                        selected.value = selected.value - selected.step
+                    end
+                    playClickSound()
+                    if selected.callback then selected.callback(selected.value, selected) end
+                elseif selected.type == OPTIONS.FLOAT then
                     if selected.value - selected.step < selected.minValue then
                         selected.value = selected.maxValue + .0
                     else
@@ -828,7 +836,15 @@ local function onControl(key, isDown, ignoreControlsState)
             local submenu = config.path[#config.path]
             local selected = submenu.options[submenu.selectedOption]
             if selected then
-                if selected.type == OPTIONS.NUM or selected.type == OPTIONS.FLOAT then
+                if selected.type == OPTIONS.NUM then
+                    if selected.value + selected.step > selected.maxValue then
+                        selected.value = selected.minValue
+                    else
+                        selected.value = selected.value + selected.step
+                    end
+                    playClickSound()
+                    if selected.callback then selected.callback(selected.value, selected) end
+                elseif selected.type == OPTIONS.FLOAT then
                     if selected.value + selected.step > selected.maxValue then
                         selected.value = selected.minValue + .0
                     else

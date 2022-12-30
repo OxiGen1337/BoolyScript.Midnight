@@ -46,7 +46,13 @@ end
 
 scripts.globals['removeTransactionError'] = function()
     --log.error("SCRIPTS", "\'removeTransactionError\' global hasn't been updated yet.")
+    script_global:new(4536674):set_long(0)
+    script_global:new(4536675):set_long(0)
     script_global:new(4536673):set_long(0)
+end
+
+scripts.globals["setInPersonalVehicle"] = function ()
+    script_global:new(2639783):at(8):set_long(1)
 end
 
 scripts.events = {}
