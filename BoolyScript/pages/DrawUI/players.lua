@@ -78,6 +78,18 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         player.vehicle_kick(pid)
     end):setConfigIgnore()
+    PlayerVehicle:add_click_option("Disown vehicle", "BS_PlayerList_Player_Vehicle_Disown", function ()
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
+        player.vehicle_disown(pid)
+    end):setConfigIgnore()
+    PlayerVehicle:add_click_option("Send EMP", "BS_PlayerList_Player_Vehicle_EMP", function ()
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
+        player.vehicle_disown(pid)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Rotate 180", "BS_PlayerList_Player_Vehicle_Rotate180", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -399,6 +411,21 @@ PlayerNeutral = Submenu.add_static_submenu("Neutral", "BS_Players_Neutral_Submen
             end
         end
     end)
+    PlayerNeutral:add_click_option("Clear wanted level", "BS_Players_Neutral_ClearWanted", function ()
+        local pid = selectedPlayer
+        if not player.is_connected(pid) then return end
+        player.clear_wanted_level(pid)
+    end)
+    PlayerNeutral:add_click_option("Send cops blind eye", "BS_Players_Neutral_CBE", function ()
+        local pid = selectedPlayer
+        if not player.is_connected(pid) then return end
+        player.cops_blind_eye(pid)
+    end)
+    PlayerNeutral:add_click_option("Send off the radar", "BS_Players_Neutral_OTR", function ()
+        local pid = selectedPlayer
+        if not player.is_connected(pid) then return end
+        player.off_the_radar(pid)
+    end)
     PlayerInteractions:add_sub_option("Neutral", "BS_Players_Neutral_SubOption", PlayerNeutral)
 end
 
@@ -413,6 +440,36 @@ end
 --     PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Player_Griefing_SubOption", PlayerGriefing)
 --     table.insert(submenus, PlayerGriefing)
 -- end
+
+PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Griefing_Submenu") do
+    PlayerGriefing:add_click_option("Teleport to island", "BS_PlayerList_Player_Griefing_TeleportToIsland", function ()
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        player.teleport_to_island(pid, false)
+    end):setConfigIgnore()
+    PlayerGriefing:add_click_option("Teleport to interior", "BS_PlayerList_Player_Griefing_TeleportToInt", function ()
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        player.teleport_to_interior(pid, 1)
+    end):setConfigIgnore()
+    PlayerGriefing:add_click_option("Force to mission", "BS_PlayerList_Player_Griefing_ForceMission", function ()
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        player.teleport_to_mission(pid)
+    end):setConfigIgnore()
+    PlayerGriefing:add_click_option("Force in cutscene", "BS_PlayerList_Player_Griefing_ForceCutscene", function ()
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        player.teleport_to_cutscene(pid)
+    end):setConfigIgnore()
+    PlayerGriefing:add_click_option("Set 10K bounty", "BS_PlayerList_Player_Griefing_SetBounty", function ()
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        player.set_bounty(pid, 10000, true)
+    end):setConfigIgnore()
+    PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Griefing_SubOption", PlayerGriefing)
+    table.insert(submenus, PlayerGriefing)
+end
 
 
 for pid = 0, 32 do
@@ -452,6 +509,9 @@ local function getPlayerFlags(pid)
     if player.is_in_cutscene(pid) then table.insert(out, {"[CS]", 204, 204, 204}) end
     if player.is_modder(pid) then table.insert(out, {"[M]", 255, 0, 102}) end
     if player.is_friend(pid) then table.insert(out, {"[F]", 0, 255, 153}) end
+    if player.is_rockstar_dev(pid) then table.insert(out, {"[R]", 252, 43, 85}) end
+    if player.is_banned(pid) then table.insert(out, {"[B]", 193, 240, 74}) end
+    if player.is_next_host(pid) then table.insert(out, {"[NS]", 107, 223, 227}) end
     return out
 end
 
