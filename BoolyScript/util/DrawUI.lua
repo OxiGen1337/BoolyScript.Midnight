@@ -36,6 +36,14 @@ local config = {
     isClickSoundEnabled = true,
 }
 
+DrawUI = {}
+DrawUI.getSelectedOption = function ()
+    return config.selectedOption
+end
+
+DrawUI.isOpened = function ()
+    return config.isOpened
+end
 
 local arrowsControls = {
     open = 119,
@@ -685,7 +693,7 @@ local function onControl(key, isDown, ignoreControlsState)
     end
     if not config.isOpened or config.isInputBoxDisplayed then return end
     if isDown then
-        if key == controls.back then 
+        if key == controls.back then
             if #config.path == 1 then
                 config.isOpened = false
             else
@@ -775,17 +783,17 @@ local function onControl(key, isDown, ignoreControlsState)
                     config.inputBoxCallback = function (text)
                         if not tonumber(text) then return end
                         selected:setValue(tonumber(text))
-                        if selected.callback then selected.callback(selected.value) end
+                        if selected.callback then selected.callback(selected.value, selected) end
                     end
                 elseif selected.type == OPTIONS.CHOOSE then
-                    if selected.callback then selected.callback(selected.table[selected.value], selected) end
+                    if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.SUB then
                     if selected.callback then selected.callback(selected) end
                 elseif selected.type == OPTIONS.TEXT_INPUT then
                     config.isInputBoxDisplayed = true
                     config.inputBoxCallback = function (text)
                         selected:setValue(text)
-                        if selected.callback then selected.callback(selected.value) end
+                        if selected.callback then selected.callback(selected.value, selected) end
                     end
                 end
                 playClickSound()

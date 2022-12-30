@@ -1,3 +1,6 @@
 Stuff = {}
 
-ParsedFiles = {}
+ParsedFiles = {
+    weapons = {},
+    weaponHashes = {},
+}

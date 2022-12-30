@@ -80,4 +80,21 @@ function features.setVehiclePreset(vehicle, preset)
 	end)
 end
 
+function features.isEmpty(value)
+	return ((value == nil) or (value == "") or (value == "NULL"))
+end
+
+function features.makeFirstLetUpper(text)
+	local output = ''
+	local iter = 0
+	for let in text:gmatch('%D') do
+		if iter == 0 then
+			let = let:upper()
+		end
+		output = output .. let
+		iter = iter + 1
+	end
+	return output
+end
+
 return features

@@ -10,6 +10,7 @@ parse = require("Git/BoolyScript/util/parse")
 scripts = require("Git/BoolyScript/rage/scripts")
 features = require("Git/BoolyScript/rage/features")
 json = require("Git/BoolyScript/modules/JSON")
+gui = require("Git/BoolyScript/globals/gui")
 
 
 -- listener.register("BS_Init", GET_EVENTS_LIST().OnDone, function ()

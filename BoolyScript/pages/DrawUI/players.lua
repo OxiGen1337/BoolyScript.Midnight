@@ -21,13 +21,17 @@ PlayerInteractions = Submenu.add_static_submenu("Player", "BS_PlayerList_Player_
     table.insert(submenus, PlayerInteractions)
 end
 
+PlayerInteractions:add_click_option("Test", "", function ()
+    script.send(selectedPlayer, 243072129, selectedPlayer, 263, -1)
+end)
+
 PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Teleport_Submenu") do
     PlayerTeleport:add_click_option("Teleport to player", "BS_PlayerList_Player_Teleport_ToPlayer", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false)
         utils.teleport(coords)
-    end)
+    end):setConfigIgnore()
     PlayerTeleport:add_click_option("Teleport in vehicle", "BS_PlayerList_Player_Teleport_InVehicle", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -41,7 +45,7 @@ PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Te
                 return
             end
         end
-    end)
+    end):setConfigIgnore()
     PlayerTeleport:add_click_option("Teleport vehicle to me", "BS_PlayerList_Player_Teleport_VehToMe", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -49,20 +53,20 @@ PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Te
         local vehicle = player.get_vehicle_handle(pid)
         local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 5.0, 0.0)
         utils.teleport(vehicle, coords)
-    end)
+    end):setConfigIgnore()
     PlayerTeleport:add_click_option("Parachute to", "BS_PlayerList_Player_Teleport_Parachute", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0.0, 0.0, 150.0)
         utils.teleport(coords)
-    end)
+    end):setConfigIgnore()
     PlayerTeleport:add_click_option("Enter player's interior", "BS_PlayerList_Player_Teleport_Interior", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if not player.is_in_interior(pid) then return end
         local interior = player.get_interior_handle(pid)
         player.teleport_to_interior(player.index(), interior)
-    end)
+    end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Teleport", "BS_PlayerList_Teleport_SubOption", PlayerTeleport)
     table.insert(submenus, PlayerTeleport)
 end
@@ -73,7 +77,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         if not pid or not player.is_connected(pid) then return end
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         player.vehicle_kick(pid)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Rotate 180", "BS_PlayerList_Player_Vehicle_Rotate180", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -83,7 +87,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         entity.request_control(vehicle, function (hdl)
             ENTITY.SET_ENTITY_ROTATION(hdl, rotation.x + 180, rotation.y, rotation.z, 5, true)
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_bool_option("Freeze", "BS_PlayerList_Player_Vehicle_Freeze", function (state, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -140,7 +144,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
                 VEHICLE.SET_VEHICLE_TYRE_BURST(hdl, i, true, 1000.0)
             end
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_bool_option("Invincible", "BS_PlayerList_Player_Vehicle_Godmode", function (state, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -150,7 +154,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         entity.request_control(vehicle, function (hdl)
             ENTITY.SET_ENTITY_INVINCIBLE(hdl, state)
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Revive engine", "BS_PlayerList_Player_Vehicle_ReviveEngine", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -161,7 +165,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
 			VEHICLE.SET_VEHICLE_BODY_HEALTH(hdl, 1000)
 			VEHICLE.SET_VEHICLE_PETROL_TANK_HEALTH(hdl, 1000)
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Destroy engine", "BS_PlayerList_Player_Vehicle_DestroyEngine", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -183,7 +187,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
                 VEHICLE.SMASH_VEHICLE_WINDOW(hdl, i)
             end
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Repair & wash", "BS_PlayerList_Player_Vehicle_Repair", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -193,7 +197,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
             VEHICLE.SET_VEHICLE_FIXED(hdl)
             VEHICLE.SET_VEHICLE_DIRT_LEVEL(hdl, 0.0)
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Repair shell", "BS_PlayerList_Player_Vehicle_RepairShell", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -202,7 +206,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         entity.request_control(vehicle, function (hdl)
             VEHICLE.SET_VEHICLE_DEFORMATION_FIXED(hdl)
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_bool_option("Enable alarm", "BS_PlayerList_Player_Vehicle_Alarm", function (state, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -248,63 +252,63 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, 1, task_time)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Brake + Reverse", "BS_PlayerList_Player_Vehicle_RVC_BrakeReverse", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, 3, task_time)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Brake + Strong Reverse", "BS_PlayerList_Player_Vehicle_RVC_BrakeStrongReverse", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, 28, task_time)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Turn Left + Accelerate", "BS_PlayerList_Player_Vehicle_RVC_TurnLeft", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, 7, task_time)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Turn Right + Accelerate", "BS_PlayerList_Player_Vehicle_RVC_TurnRight", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, 8, task_time)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Accelerate", "BS_PlayerList_Player_Vehicle_RVC_Accelerate", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, 23, task_time)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Strong Accelerate", "BS_PlayerList_Player_Vehicle_RVC_StrongAccelerate", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, 32, task_time)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Spin Forever", "BS_PlayerList_Player_Vehicle_RVC_SpinForever", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, 7, 2147483647)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Stop Forever", "BS_PlayerList_Player_Vehicle_RVC_StopForever", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, 1, 2147483647)
-    end)
+    end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Vehicle", "BS_PlayerList_Player_Vehicle_SubOption", PlayerVehicle)
     table.insert(submenus, PlayerVehicle)
 end

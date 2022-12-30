@@ -1,7 +1,9 @@
-local PresetsMgr = Submenu.add_static_submenu("Presets", "BS_PresetsMgr_Submenu")
+PresetsMgr = Submenu.add_static_submenu("Presets", "BS_PresetsMgr_Submenu")
 Main:add_sub_option("Presets", "BS_PresetsMgr_SubOption", PresetsMgr)
 
 PresetsMgr:add_separator("Weapons manager", "BS_PresetsMgr_WepManager")
+
+local blWepCategories = {["GROUP_DIGISCANNER"] = false, ["GROUP_NIGHTVISION"] = false, ["GROUP_TRANQILIZER"] = false}
 
 local savedLoadouts = PresetsMgr:add_choose_option("Saved loadouts", "BS_PresetsMgr_WepManager_SavedLoadouts", true, {"None"})
 
@@ -18,7 +20,6 @@ local function reloadWepLoadouts()
     return wepLoadouts
 end
 
-local blWepCategories = {["GROUP_DIGISCANNER"] = false, ["GROUP_NIGHTVISION"] = false, ["GROUP_TRANQILIZER"] = false}
 
 local isEmpty = function (value)
     return ((value == nil) or (value == "") or (value == "NULL"))
