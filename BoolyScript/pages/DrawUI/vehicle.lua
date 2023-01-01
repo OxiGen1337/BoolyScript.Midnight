@@ -45,7 +45,6 @@ Vehicle:add_bool_option("The Crew 2 nitro", "BS_Vehicle_Movement_Crew2Nitro", fu
                     task.createTask(taskName, 2.0, 2, function ()
                         local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
                         local speed = nitroPower:getValue() + .0
-                        log.dbg(speed)
                         if state then
                             VEHICLE._SET_VEHICLE_NITRO_ENABLED(vehicle, false, 2500.0, speed, 999999999999999999.0, false)
                             state = not state

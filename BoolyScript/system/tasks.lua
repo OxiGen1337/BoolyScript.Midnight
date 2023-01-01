@@ -22,7 +22,7 @@ task.executeAsScript = function (hash_s, callback_f)
         return false
     end
     activeTasks[hash_s] = {delay = 0.0, callback = callback_f, count = 1}
-    -- log.dbg(string.format("[TASKS] Created as script execution task\'%s\'.", hash_s))
+    log.dbg(string.format("[TASKS] Created as script execution task \'%s\'.", hash_s))
     return true
 end
 

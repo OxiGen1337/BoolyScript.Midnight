@@ -20,6 +20,7 @@ local function reloadWepLoadouts()
     return wepLoadouts
 end
 
+reloadWepLoadouts()
 
 local isEmpty = function (value)
     return ((value == nil) or (value == "") or (value == "NULL"))
@@ -144,6 +145,9 @@ local function reloadOutfits()
     return outfits
 end
 
+reloadOutfits()
+
+
 local function saveOutfit(name)
     local config = {
         components = {},
@@ -241,10 +245,5 @@ PresetsMgr:add_click_option("Save outfit", "BS_PresetsMgr_OutfitManager_SaveOutf
 end)
 
 PresetsMgr:add_click_option("Refresh outfits", "BS_PresetsMgr_OutfitManager_RefreshOutfits", reloadOutfits)
-
-listener.register("BS_PresetsMgr_WeaponAndOutfitsRefresh", GET_EVENTS_LIST().OnInit, function ()
-    reloadOutfits()
-    reloadWepLoadouts()
-end)
 
 -- END

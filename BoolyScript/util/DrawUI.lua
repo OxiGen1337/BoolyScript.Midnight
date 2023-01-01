@@ -159,6 +159,7 @@ OPTIONS = {
     TEXT_INPUT = 8,
     SUB = 9,
     RAW_INPUT = 10,
+    DYN_CHOOSE = 11,
 }
 
 local submenus = {}
@@ -199,7 +200,7 @@ Option = {
     hint = "",
     default = nil,
     configIgnore = false,
-    tags = nil,
+    tags = {},
 }
 Option.__index = Option
 
@@ -461,6 +462,13 @@ function Submenu:add_text_input(name_s, hash_s, callback_f)
     return option
 end
 
+-- function Submenu:add_dynamic_choose(name_s, hash_s, table_getter_f, callback_f)
+--     local option = Option.new(self, name_s, hash_s, OPTIONS.DYN_CHOOSE, nil, callback_f)
+--     option.getter = table_getter_f
+--     option:setConfigIgnore()
+--     return option
+-- end
+
 -- function Submenu:add_raw_input(name_s, hash_s, callback_f)
 --     local option = Option.new(self, name_s, hash_s, OPTIONS.RAW_INPUT, nil, callback_f)
 --     option.value = nil
@@ -622,6 +630,12 @@ function Option:remove()
     return nil
 end
 
+function Option:addTag(tag_t)
+    if not (type(tag_t) == "table") then return end
+    self.tags = {tag_t}
+    return self
+end
+
 Configs = {}
 Configs.saveConfig = function ()
     local out = {}
@@ -779,12 +793,13 @@ local function onControl(key, isDown, ignoreControlsState)
                     selected.value = not selected.value
                     if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.NUM or selected.type == OPTIONS.FLOAT then
-                    config.isInputBoxDisplayed = true
-                    config.inputBoxCallback = function (text)
-                        if not tonumber(text) then return end
-                        selected:setValue(tonumber(text))
-                        if selected.callback then selected.callback(selected.value, selected) end
-                    end
+                    -- config.isInputBoxDisplayed = true
+                    -- config.inputBoxCallback = function (text)
+                    --     if not tonumber(text) then return end
+                    --     selected:setValue(tonumber(text))
+                    --     if selected.callback then selected.callback(selected.value, selected) end
+                    -- end
+                    if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.CHOOSE then
                     if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.SUB then
@@ -1227,7 +1242,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                     (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(name)/2,
                     name
                 )
-                if data.tags then
+                if data.tags ~= {} then
                     local offset = 5.0
                     for _, t in ipairs(data.tags) do                      
                         draw.set_color(0, t[2], t[3], t[4], 255)
@@ -1249,9 +1264,9 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                     material = materials.toggleOff
                     if data.value then material = materials.toggleOn end
                 elseif data.type == OPTIONS.NUM then
-                    symbol = string.format("<%i>", data.value)
+                    symbol = string.format("<%i of %i>", data.value, data.maxValue)
                 elseif data.type == OPTIONS.FLOAT then
-                    symbol = string.format("<%s>", data.value + .0)
+                    symbol = string.format("<%s of %s>", data.value + .0, data.maxValue + .0)
                 elseif data.type == OPTIONS.CHOOSE then
                     symbol = string.format("<%s>", data.table[data.value])
                 elseif data.type == OPTIONS.SUB then

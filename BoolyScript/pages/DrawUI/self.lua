@@ -32,6 +32,121 @@ local godmode = Submenu.add_static_submenu("Invincibility", "BS_Self_Godmode_Sub
     Self:add_sub_option("Invincibility", "BS_Self_Godmode_SubOption", godmode)
 end
 
+local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe_Submenu") do
+    wardrobe:add_sub_option("Save & load outfit presets", "BS_Self_Wardrobe_SaveLoad", PresetsMgr):addTag({"[Link]", 107, 223, 227})
+    wardrobe:add_separator("Accessories", "BS_Self_Wardrobe_Accessories")
+    local props = {
+        ["Hats"] = 0,
+        ["Glasses"] = 1,
+        ["Ears"] = 2,
+        ["Watches"] = 3,
+    }
+    for name, ID in pairs(props) do
+        local ped = PLAYER.PLAYER_PED_ID()
+        local submenu = Submenu.add_static_submenu(name, "BS_Self_Wardrobe_" .. name .."_Submenu")
+        local drawableVariations = PED.GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(ped, ID)
+        local textures
+        local variations = submenu:add_num_option("Variation", "BS_Self_Wardrobe_" .. name .."_Variation", 0, drawableVariations - 1, 1, function (val)
+            log.dbg(val)
+            local ped = PLAYER.PLAYER_PED_ID()
+            PED.SET_PED_PROP_INDEX(ped, ID, val, 0, true, false)
+            local textureVariations = PED.GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(ped, ID, val)
+            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setValue(textures, 0, true)
+        end)
+        textures = submenu:add_num_option("Texture", "BS_Self_Wardrobe_" .. name .."_Texture", 0, 0, 1, function (val)
+            if PED.GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(ped, ID, variations:getValue()) == 0 then return end
+            local ped = PLAYER.PLAYER_PED_ID()
+            PED.SET_PED_PROP_INDEX(ped, ID, variations:getValue(), val, true, false)
+        end)
+        submenu:add_click_option("Remove component", "BS_Self_Wardrobe_" .. name .."_Remove", function ()
+            PED.CLEAR_PED_PROP(PLAYER.PLAYER_PED_ID(), ID, false)
+        end)
+        wardrobe:add_sub_option(name, "BS_Self_Wardrobe_" .. name, submenu, function ()
+            local ped = PLAYER.PLAYER_PED_ID()
+            local drawableVariations = PED.GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(ped, ID)
+            Option.setLimits(variations, 0, drawableVariations - 1, 1)
+            Option.setValue(variations, PED.GET_PED_DRAWABLE_VARIATION(ped, ID), true)
+            local textureVariations = PED.GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(ped, ID, 0)
+            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setValue(textures, PED.GET_PED_TEXTURE_VARIATION(ped, ID), true)
+        end)
+    end
+    wardrobe:add_separator("Components", "BS_Self_Wardrobe_Components")
+    local components = {
+        ["Head"] = 0,
+        ["Beard"] = 1,
+        ["Hair"] = 2,
+        ["Torso"] = 3,
+        ["Legs"] = 4,
+        ["Hands"] = 5,
+        ["Foot"] = 6,
+        ["Accessories"] = 8,
+        ["Bags"] = 9,
+        ["Decals & masks"] = 10,
+        ["Auxiliary torso parts"] = 11,
+    }
+    for name, ID in pairs(components) do
+        local ped = PLAYER.PLAYER_PED_ID()
+        local submenu = Submenu.add_static_submenu(name, "BS_Self_Wardrobe_" .. name .."_Submenu")
+        local drawableVariations = PED.GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS(ped, ID)
+        local textures
+        local variations = submenu:add_num_option("Variation", "BS_Self_Wardrobe_" .. name .."_Variation", 0, drawableVariations - 1, 1, function (val)
+            log.dbg(val)
+            local ped = PLAYER.PLAYER_PED_ID()
+            PED.SET_PED_COMPONENT_VARIATION(ped, ID, val, 0, 0)
+            local textureVariations = PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, val)
+            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setValue(textures, 0, true)
+        end)
+        textures = submenu:add_num_option("Texture", "BS_Self_Wardrobe_" .. name .."_Texture", 0, 0, 1, function (val)
+            if PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, variations:getValue()) == 0 then return end
+            local ped = PLAYER.PLAYER_PED_ID()
+            PED.SET_PED_COMPONENT_VARIATION(ped, ID, variations:getValue(), val, 0)
+        end)
+        wardrobe:add_sub_option(name, "BS_Self_Wardrobe_" .. name, submenu, function ()
+            local ped = PLAYER.PLAYER_PED_ID()
+            local drawableVariations = PED.GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS(ped, ID)
+            Option.setLimits(variations, 0, drawableVariations - 1, 1)
+            Option.setValue(variations, PED.GET_PED_DRAWABLE_VARIATION(ped, ID), true)
+            local textureVariations = PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, 0)
+            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setValue(textures, PED.GET_PED_TEXTURE_VARIATION(ped, ID), true)
+        end)
+    end
+    Self:add_sub_option("Wardrobe", "BS_Self_Wardrobe_SubOption", wardrobe, function ()
+        notify.default("Wardrobe", "You can edit your outfits here.\nAlso you can save your outfit in 'Presets' submenu.")
+    end)
+end
+
+local wanted = Submenu.add_static_submenu("Wanted options", "BS_Self_Wanted_Submenu") do
+    local lvl = wanted:add_num_option("Wanted level", "BS_Self_Wanted_Level", 0, 5, 1, function (val)
+        PLAYER.SET_PLAYER_WANTED_LEVEL(PLAYER.PLAYER_ID(), val, false)
+        PLAYER.SET_PLAYER_WANTED_LEVEL_NOW(PLAYER.PLAYER_ID(), false)
+    end)
+    wanted:add_looped_option("Lock wanted level", "BS_Self_Wanted_LockLevel", 0.0, function ()
+        PLAYER.SET_PLAYER_WANTED_LEVEL(PLAYER.PLAYER_ID(), lvl:getValue(), false)
+        PLAYER.SET_PLAYER_WANTED_LEVEL_NOW(PLAYER.PLAYER_ID(), false)
+    end)
+    wanted:add_looped_option("Disable wanted music", "BS_Self_Wanted_NoMusic", 0.0, function ()
+        AUDIO.SET_AUDIO_FLAG("WantedMusicDisabled", true)
+    end)
+    wanted:add_looped_option("Disable police blips", "BS_Self_Wanted_NoPoliceBlips", 0.0, function ()
+        PLAYER.SET_POLICE_RADAR_BLIPS(false)
+    end, function ()
+        PLAYER.SET_POLICE_RADAR_BLIPS(true)
+    end)
+    wanted:add_looped_option("Police ignore", "BS_Self_Wanted_PoliceIgnore", 0.0, function ()
+        PLAYER.SET_POLICE_IGNORE_PLAYER(PLAYER.PLAYER_ID(), true)
+    end, function ()
+        PLAYER.SET_POLICE_IGNORE_PLAYER(PLAYER.PLAYER_ID(), false)
+    end):setHint("You will be ignored by the police.")
+    wanted:add_looped_option("Suppress witnesses", "BS_Self_Wanted_SupressWitnesses", 0.0, function ()
+        PLAYER._0x36F1B38855F2A8DF(PLAYER.PLAYER_ID())
+    end):setHint("No one will call police to report you.")
+    Self:add_sub_option("Wanted options", "BS_Self_Wanted_SubOption", wanted)
+end
+
 Self:add_separator("Movement", "BS_Self_Movement")
 
 Self:add_looped_option("Clumsiness", "BS_Self_Movement_Clumsiness", 0.0, function ()
@@ -51,6 +166,7 @@ end, function ()
 end)
 
 Self:add_choose_option("Running speed", "BS_Self_Movement_RunSpeed", true, {"Default", "Medium", "Fast"}, function (_, option)
+    if task.exists("BS_Self_Movement_RunSpeed") then return end
     task.createTask("BS_Self_Movement_RunSpeed", 0.0, nil, function ()
         local value = 1.0
         if option:getValue() == 2 then
@@ -63,6 +179,7 @@ Self:add_choose_option("Running speed", "BS_Self_Movement_RunSpeed", true, {"Def
 end):setValue(1.0, true)
 
 Self:add_choose_option("Swimming speed", "BS_Self_Movement_SwimSpeed",true, {"Default", "Medium", "Fast"}, function (_, option)
+    if task.exists("BS_Self_Movement_SwimSpeed") then return end
     task.createTask("BS_Self_Movement_SwimSpeed", 0.0, nil, function ()
         local value = 1.0
         if option:getValue() == 2 then

@@ -42,14 +42,14 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         end
     end
     log.init("Parsing \'.json\' data...")
-    thread.create(function ()        
+    do
         parse.json(paths.files.weapons, function (content)
             ParsedFiles["weapons"] = content
         end)
         parse.json(paths.files.weaponHashes, function (content)
             ParsedFiles['weaponHashes'] = content
         end)
-    end)
+    end
     do -- Loading all pages added in 'pages' folder; it only loads init.lua so that file has to require everything that's in the page
         local path = filesys.getInitScriptPath() .. '\\BoolyScript\\pages'
         path = path:gsub("\\\\lua", "\\lua")
