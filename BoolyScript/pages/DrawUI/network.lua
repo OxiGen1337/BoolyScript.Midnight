@@ -1,19 +1,6 @@
 Network = Submenu.add_static_submenu("Network", "BS_Network_Submenu")
 Main:add_sub_option("Network", "BS_Network_SubOption", Network)
 
--- local SessionManager = Submenu.add_static_submenu("Session manager", "BS_Network_SessionManager_Submenu") do
---     local AddPlayer = Submenu.add_static_submenu("Add player", "BS_Network_SessionManager_AddPlayer_Submenu") do
---         local name = AddPlayer:add_text_input("Name (optional)", "BS_Network_SessionManager_AddPlayer_Name")
---         local rid = AddPlayer:add_text_input("Rockstar ID (required)", "BS_Network_SessionManager_AddPlayer_RID")
---         local note = AddPlayer:add_text_input("Note (optional)")
---         AddPlayer:add_click_option("Save player", "BS_Network_SessionManager_AddPlayer_Save", function ()
-
---         end)
---         SessionManager:add_sub_option("Add player", "BS_Network_SessionManager_AddPlayer_SubOption", AddPlayer)
---     end
---     Network:add_sub_option("Session manager", "BS_Network_SessionManager_SubOption", SessionManager)
--- end
-
 Network:add_separator("Session logs", "BS_Network_SessionLogs")
 
 Network:add_choose_option("Script events", "BS_Network_SessionLogs_ScriptEvents", true, {"None", "File", "Console", "File & Console"}, function (pos, option)

@@ -1,6 +1,6 @@
-require("Git/BoolyScript/system/tasks")
-require("Git/BoolyScript/util/notify_system")
-require("Git/BoolyScript/system/events_listener")
+require("BoolyScript/system/tasks")
+require("BoolyScript/util/notify_system")
+require("BoolyScript/system/events_listener")
 
 local timers = {}
 local count = {}

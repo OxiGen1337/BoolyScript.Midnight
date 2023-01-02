@@ -1,9 +1,9 @@
-local paths = require("Git/BoolyScript/globals/paths")
-require("Git/BoolyScript/globals/stuff")
-local parse = require("Git/BoolyScript/util/parse")
-local fs = require("Git/BoolyScript/util/file_system")
-local json = require("Git/BoolyScript/modules/JSON")
-require("Git/BoolyScript/system/events_listener")
+local paths = require("BoolyScript/globals/paths")
+require("BoolyScript/globals/stuff")
+local parse = require("BoolyScript/util/parse")
+local fs = require("BoolyScript/util/file_system")
+local json = require("BoolyScript/modules/JSON")
+require("BoolyScript/system/events_listener")
 
 local config = {
     width = 325,
@@ -77,72 +77,86 @@ Stuff.controlsState = {
 }
 
 local id_to_key = {
-	[32] = " ",
-
-	[65] = "a",
-	[66] = "b",
-	[67] = "c",
-	[68] = "d",
-	[69] = "e",
-	[70] = "f",
-	[71] = "g",
-	[72] = "h",
-	[73] = "i",
-	[74] = "j",
-	[75] = "k",
-	[76] = "l",
-	[77] = "m",
-	[78] = "n",
-	[79] = "o",
-	[80] = "p",
-	[81] = "q",
-	[82] = "r",
-	[83] = "s",
-	[84] = "t",
-	[85] = "u",
-	[86] = "v",
-	[87] = "w",
-	[88] = "x",
-	[89] = "y",
-	[90] = "z",
-
-	[48] = "0",
-	[49] = "1",
-	[50] = "2",
-	[51] = "3",
-	[52] = "4",
-	[53] = "5",
-	[54] = "6",
-	[55] = "7",
-	[56] = "8",
-	[57] = "9",
-
-	[189] = "-",
-	[187] = "=",
+-- key = {lower, upper}
+    [48] = {"0", ")"},
+    [49] = {"1", "!"},
+    [50] = {"2", "@"},
+    [51] = {"3", "#"},
+    [52] = {"4", "$"},
+    [53] = {"5", "%"},
+    [54] = {"6", "^"},
+    [55] = {"7", "&"},
+    [56] = {"8", "*"},
+    [57] = {"9", "("},
+    [65] = {"a", "A"},
+    [66] = {"b", "B"},
+    [67] = {"c", "C"},
+    [68] = {"d", "D"},
+    [69] = {"e", "E"},
+    [70] = {"f", "F"},
+    [71] = {"g", "G"},
+    [72] = {"h", "H"},
+    [73] = {"i", "I"},
+    [74] = {"j", "J"},
+    [75] = {"k", "K"},
+    [76] = {"l", "L"},
+    [77] = {"m", "M"},
+    [78] = {"n", "N"},
+    [79] = {"o", "O"},
+    [80] = {"p", "P"},
+    [81] = {"q", "Q"},
+    [82] = {"r", "R"},
+    [83] = {"s", "S"},
+    [83] = {"t", "T"},
+    [85] = {"u", "U"},
+    [86] = {"v", "V"},
+    [87] = {"w", "W"},
+    [88] = {"x", "X"},
+    [89] = {"y", "Y"},
+    [90] = {"z", "Z"},
+    [96] =  {"0", "0"},
+    [97] =  {"1", "1"},
+    [98] =  {"2", "2"},
+    [99] =  {"3", "3"},
+    [100] = {"4", "4"},
+    [101] = {"5", "5"},
+    [102] = {"6", "6"},
+    [103] = {"7", "7"},
+    [104] = {"8", "8"},
+    [105] = {"9", "9"},
+    [106] = {"*", "*"},
+    [107] = {"+", "+"},
+    [109] = {"-", "-"},
+    [110] = {".", "."},
+    [111] = {"/", "/"},
+    [186] = {";", ":"},
+    [187] = {"=", "+"},
+    [188] = {",", "<"},
+    [189] = {"-", "_"},
+    [190] = {".", ">"},
+    [191] = {"/", "?"},
+    [192] = {"`", "~"},
+    [219] = {"[", "{"},
+    [229] = {"\\", "|"},
+    [221] = {"]", "}"},
+    [222] = {"\\", "\""},
 }
 
-local to_upper = {
-	["-"] = "_",
-	["="] = "+",
-	["1"] = "!",
-	["2"] = "@",
-	["3"] = "#",
-	["4"] = "$",
-	["5"] = "%",
-	["6"] = "^",
-	["7"] = "&",
-	["8"] = "*",
-	["9"] = "(",
-	["0"] = ")",
-}
+function getKeyFromID(key, isShiftDown)
+    if id_to_key[key] then
+        if isShiftDown then return id_to_key[key][2] end
+        return id_to_key[key][1]
+    end
+    return ""
+end
 
 local materials = {}
 
 materials.header = draw.create_texture_from_file(paths.files.imgs.header)
-materials.bg = draw.create_texture_from_file(paths.files.imgs.bg)
-materials.selected = draw.create_texture_from_file(paths.files.imgs.selected)
-materials.footer = draw.create_texture_from_file(paths.files.imgs.footer)
-materials.hintBox = draw.create_texture_from_file(paths.files.imgs.hintBox)
+-- materials.bg = draw.create_texture_from_file(paths.files.imgs.bg)
+-- materials.selected = draw.create_texture_from_file(paths.files.imgs.selected)
+-- materials.footer = draw.create_texture_from_file(paths.files.imgs.footer)
+-- materials.hintBox = draw.create_texture_from_file(paths.files.imgs.hintBox)
 materials.footerArrows = draw.create_texture_from_file(paths.files.imgs.footerArrows)
 materials.toggleOn = draw.create_texture_from_file(paths.files.imgs.toggleOn)
 materials.toggleOff = draw.create_texture_from_file(paths.files.imgs.toggleOff)
@@ -371,18 +385,22 @@ function Option.new(submenu_mt, name_s, hash_s, type_n, value_n, callback_f)
     return option
 end
 
-function Submenu:add_sub_option(name_s, hash_s, submenu_mt, on_opened_f)
-    local option = Option.new(self, name_s, hash_s, OPTIONS.SUB, nil, function ()
-        config.activeSubmenu = submenu_mt.ID
-        table.insert(config.path, submenu_mt)
-        if on_opened_f then on_opened_f() end
-    end)
-    return option
-end
-
 function Submenu:setActive(state)
+    local function getClickableOption(selectedOption)
+        if #self.options < 2 then return 1 end
+        if self.isDynamic then return selectedOption end
+        if selectedOption > #self.options then 
+            return getClickableOption(1)
+        end
+        if (self.options[selectedOption].type ~= OPTIONS.SEPARATOR) and (self.options[selectedOption].type ~= OPTIONS.STATE_BAR) then
+            return selectedOption
+        else
+            return getClickableOption(selectedOption + 1)
+        end
+    end
     if state then
         config.activeSubmenu = self.ID
+        self.selectedOption = getClickableOption(self.selectedOption)
         table.insert(config.path, self)
     else
         if config.activeSubmenu == self.ID then
@@ -392,6 +410,15 @@ function Submenu:setActive(state)
     end
     return self
 end
+
+function Submenu:add_sub_option(name_s, hash_s, submenu_mt, on_opened_f)
+    local option = Option.new(self, name_s, hash_s, OPTIONS.SUB, nil, function ()
+        submenu_mt:setActive(true)
+        if on_opened_f then on_opened_f() end
+    end)
+    return option
+end
+
 
 function Submenu:isOpened()
     return config.activeSubmenu == self.ID
@@ -676,12 +703,20 @@ local function playClickSound()
     end)
 end
 
+task.createTask("DrawUI_ControlsCheck", 0.0, nil, function ()
+    if not config.isInputBoxDisplayed then return end
+    PAD.DISABLE_ALL_CONTROL_ACTIONS(2)
+end)
+
+local shiftState = false
+
 local function onControl(key, isDown, ignoreControlsState)
     if Stuff.controlsState[key] and not ignoreControlsState then
         Stuff.controlsState[key][1] = isDown
         Stuff.controlsState[key][2] = os.clock()
         Stuff.controlsState[key][3] = os.clock() + config.inputDelay
     end
+    if key == 160 or key == 161 then shiftState = isDown end
     if isDown then
         if key == controls.open then
             config.isOpened = not config.isOpened
@@ -700,8 +735,8 @@ local function onControl(key, isDown, ignoreControlsState)
                 config.inputBoxText = ""
                 config.isInputBoxDisplayed = false
                 playClickSound()
-            elseif id_to_key[key] then
-                config.inputBoxText = config.inputBoxText .. id_to_key[key]
+            else
+                config.inputBoxText = config.inputBoxText .. getKeyFromID(key, shiftState)
             end
         end
     end
@@ -719,6 +754,7 @@ local function onControl(key, isDown, ignoreControlsState)
             local submenu = config.path[#config.path]
             
             local function getClickableOption(selectedOption)
+                if #submenu.options < 2 then return 1 end
                 if submenu.isDynamic then return selectedOption end
                 if selectedOption < 1 then 
                     return getClickableOption(#submenu.options)
@@ -753,6 +789,7 @@ local function onControl(key, isDown, ignoreControlsState)
             local submenu = config.path[#config.path]
 
             local function getClickableOption(selectedOption)
+                if #submenu.options < 2 then return 1 end
                 if submenu.isDynamic then return selectedOption end
                 if selectedOption > #submenu.options then 
                     return getClickableOption(1)
@@ -793,12 +830,6 @@ local function onControl(key, isDown, ignoreControlsState)
                     selected.value = not selected.value
                     if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.NUM or selected.type == OPTIONS.FLOAT then
-                    -- config.isInputBoxDisplayed = true
-                    -- config.inputBoxCallback = function (text)
-                    --     if not tonumber(text) then return end
-                    --     selected:setValue(tonumber(text))
-                    --     if selected.callback then selected.callback(selected.value, selected) end
-                    -- end
                     if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.CHOOSE then
                     if selected.callback then selected.callback(selected.value, selected) end
@@ -1015,47 +1046,27 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         if #submenu.options > config.maxOptions then
             bg.rd.y = bg.lu.y + config.maxOptions*config.optionHeight
         end
-        draw.set_color(0, 0, 0, 10, 255) -- BACKGROUND
-        --draw.rect_filled(bg.lu.x, bg.lu.y, bg.rd.x, bg.rd.y)
-        draw.texture(
-            materials.bg,
+        draw.set_color(0, 14, 17, 19, 255) -- BACKGROUND
+        draw.rect_filled(
             bg.lu.x, 
-            bg.lu.y - config.optionHeight,
-            config.width,
-            bg.rd.y - bg.lu.y + config.optionHeight
-        )
-        draw.texture(
-            materials.footer,
-            bg.lu.x, 
-            bg.rd.y,
-            config.width,
-            30
-        )
-        config.footerArrowsSize = 28.0
-        draw.texture(
-            materials.footerArrows,
-            bg.lu.x + config.width/2 - config.footerArrowsSize/2 - 2, 
-            bg.rd.y + 30/2 - config.footerArrowsSize/2, 
-            config.footerArrowsSize + 2,
-            config.footerArrowsSize
-        )
-        local pos = string.format("%i/%i", submenu.selectedOption, #submenu.options)
-        draw.set_color(0, 255, 255, 255, 255) -- BACKGROUND
+            bg.lu.y, 
+            bg.rd.x, 
+            bg.rd.y)
+            -- draw.texture(
+            --     materials.bg,
+            --     bg.lu.x, 
+            --     bg.lu.y - config.optionHeight,
+            --     config.width,
+            --     bg.rd.y - bg.lu.y + config.optionHeight
+            -- )
         
-        draw.text(
-            bg.rd.x - draw.get_text_size_x(pos) - 10,
-            -- (bg.rd.y + 30 - config.optionHeight - (bg.rd.y - config.optionHeight - bg.rd.y)/2) - draw.get_text_size_y(pos)/2,
-            (bg.lu.y - config.optionHeight) + config.optionHeight/2 - draw.get_text_size_y(pos)/2,
-            pos
+        draw.set_color(0, 19, 22, 25, 255) -- SUBMENU NAME BG
+        draw.rect_filled(
+            bg.lu.x,
+            bg.lu.y - config.optionHeight,
+            bg.rd.x,
+            bg.lu.y
         )
-
-        -- draw.set_color(0, 10, 10, 10, 255) -- SUBMENU NAME BG
-        -- draw.rect_filled(
-        --     bg.lu.x, 
-        --     bg.lu.y - config.optionHeight, 
-        --     bg.rd.x, 
-        --     bg.lu.y
-        -- )
         local path = ""
         -- for _, submenu in ipairs(config.path) do
         --     path = path .. submenu.name .. "/"
@@ -1068,6 +1079,16 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             path
         )
 
+        
+        local pos = string.format("%i/%i", submenu.selectedOption, #submenu.options)
+        draw.set_color(0, 255, 255, 255, 255) -- OPTIONS x/y
+        draw.text(
+            bg.rd.x - draw.get_text_size_x(pos) - 10,
+            -- (bg.rd.y + 30 - config.optionHeight - (bg.rd.y - config.optionHeight - bg.rd.y)/2) - draw.get_text_size_y(pos)/2,
+            (bg.lu.y - config.optionHeight) + config.optionHeight/2 - draw.get_text_size_y(pos)/2,
+            pos
+        )
+        
         draw.texture(
             materials.header,
             bg.lu.x,
@@ -1077,10 +1098,108 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             90
         )
 
+        draw.set_color(0, 34, 41, 47, 255) -- FOOTER
+        draw.rect_filled(
+            bg.lu.x,
+            bg.rd.y,
+            bg.rd.x,
+            bg.rd.y + config.optionHeight
+        )
+        config.footerArrowsSize = 28.0
+        draw.texture(
+            materials.footerArrows,
+            bg.lu.x + config.width/2 - config.footerArrowsSize/2 - 2, 
+            bg.rd.y + 30/2 - config.footerArrowsSize/2, 
+            config.footerArrowsSize + 2,
+            config.footerArrowsSize
+        )
+        
         if submenu.isDynamic then
             submenu.options = {}
             for i = 1, submenu.indexGetter() do
                 submenu.options[i] = submenu.optionGetter(i)
+            end
+        end
+        
+        do -- SELECTED OPTION
+            local data = submenu.options[submenu.selectedOption]
+            local lu = {
+                x = bg.lu.x, 
+                y = bg.lu.y + config.optionHeight*(submenu.selectedOption - 1),
+            }
+            local rd = {
+                x = bg.rd.x, 
+                y = bg.lu.y + config.optionHeight*submenu.selectedOption
+            }
+            if (submenu.selectedOption > config.maxOptions) and (#submenu.options > config.maxOptions) then
+                lu = {
+                    x = bg.lu.x, 
+                    y = bg.lu.y + config.optionHeight*(config.maxOptions - 1),
+                }
+                rd = {
+                    x = bg.rd.x, 
+                    y = bg.lu.y + config.optionHeight*config.maxOptions
+                }
+            end
+            if config.enabelSmoothScroller then
+                if (submenu.selectedOption == #submenu.options and not config.isActionDown) 
+                or (submenu.selectedOption == 1 and config.isActionDown) 
+                or (submenu.selectedOption - submenu.scrollOffset == config.maxOptions)
+                then
+                    --config.test = config.optionHeight
+                else
+                    if config.test <= config.optionHeight and config.isActionDown then
+                        if math.abs(config.test - config.optionHeight) >= config.scrollerSmooth then
+                            config.test = config.test + config.scrollerSmooth
+                        else
+                            config.test = config.test + (config.optionHeight - config.test)
+                        end
+                        lu.y = lu.y - config.optionHeight + config.test
+                    elseif config.test <= config.optionHeight and not config.isActionDown then
+                        if math.abs(config.test - config.optionHeight) >= config.scrollerSmooth then
+                            config.test = config.test + config.scrollerSmooth
+                        else
+                            config.test = config.test + (config.optionHeight - config.test)
+                        end
+                        lu.y = lu.y + config.optionHeight - config.test
+                    else
+                        config.test = 0.0
+                    end
+                end
+            end
+            draw.set_color(0, 34, 41, 47, 255)
+            draw.rect_filled(
+                lu.x,
+                lu.y,
+                rd.x,
+                lu.y + config.optionHeight
+            )
+            if data.hint ~= "" then
+                draw.set_color(0, 255, 255, 255, 255)
+                local hint = tostring(submenu.options[submenu.selectedOption].hint)
+                if hint ~= "" then
+                    local y = bg.rd.y + config.optionHeight + 10
+                    draw.set_color(0, 34, 41, 47, 255)
+                    draw.rect_filled(
+                        bg.lu.x,
+                        y, 
+                        bg.rd.x,
+                        y + 5 + draw.get_text_size_y(hint) + 5
+                    )
+                    -- draw.texture(
+                    --     materials.hintBox,
+                    --     bg.lu.x,
+                    --     y,
+                    --     config.width,
+                    --     config.optionHeight
+                    -- )
+                    draw.set_color(0, 255, 255, 255, 255)
+                    draw.text(
+                        bg.lu.x + 10,
+                        (y + 5 + draw.get_text_size_y(hint) + 5 - (y + 5 + draw.get_text_size_y(hint) + 5 - y)/2) - draw.get_text_size_y(hint)/2,
+                        hint
+                    )
+                end
             end
         end
 
@@ -1098,94 +1217,9 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                 x = bg.rd.x, 
                 y = bg.lu.y + config.optionHeight*i
             }
-
-            if submenu.selectedOption == option then
-                draw.set_color(0, 255, 255, 255, 255) -- SELECTED OPTION
-                local lu = {
-                    x = bg.lu.x, 
-                    y = bg.lu.y + config.optionHeight*(submenu.selectedOption - 1),
-                }
-                local rd = {
-                    x = bg.rd.x, 
-                    y = bg.lu.y + config.optionHeight*submenu.selectedOption
-                }
-                if (submenu.selectedOption > config.maxOptions) and (#submenu.options > config.maxOptions) then
-                    lu = {
-                        x = bg.lu.x, 
-                        y = bg.lu.y + config.optionHeight*(config.maxOptions - 1),
-                    }
-                    rd = {
-                        x = bg.rd.x, 
-                        y = bg.lu.y + config.optionHeight*config.maxOptions
-                    }
-                end
-                if config.enabelSmoothScroller then
-                    if (submenu.selectedOption == #submenu.options and not config.isActionDown) 
-                    or (submenu.selectedOption == 1 and config.isActionDown) 
-                    or (i == config.maxOptions and not config.isActionDown)
-                    then
-                        --config.test = config.optionHeight
-                    else
-                        if config.test <= config.optionHeight and config.isActionDown then
-                            if math.abs(config.test - config.optionHeight) >= config.scrollerSmooth then
-                                config.test = config.test + config.scrollerSmooth
-                            else
-                                config.test = config.test + (config.optionHeight - config.test)
-                            end
-                            lu.y = lu.y - config.optionHeight + config.test
-                        elseif config.test <= config.optionHeight and not config.isActionDown then
-                            if math.abs(config.test - config.optionHeight) >= config.scrollerSmooth then
-                                config.test = config.test + config.scrollerSmooth
-                            else
-                                config.test = config.test + (config.optionHeight - config.test)
-                            end
-                            lu.y = lu.y + config.optionHeight - config.test
-                        else
-                            config.test = 0.0
-                        end
-                    end
-                end
-                -- draw.rect_filled(
-                --     lu.x,
-                --     lu.y,
-                --     rd.x,
-                --     rd.y
-                -- )
-                draw.texture(
-                    materials.selected,
-                    lu.x, 
-                    lu.y,
-                    config.width,
-                    config.optionHeight
-                )
-
-                local hint = tostring(submenu.options[submenu.selectedOption].hint)
-                if hint ~= "" then
-                    local y = bg.rd.y + config.optionHeight + 10
-                    draw.texture(
-                        materials.hintBox,
-                        bg.lu.x,
-                        y,
-                        config.width,
-                        config.optionHeight
-                    )
-                    draw.text(
-                        bg.lu.x + 10,
-                        (y + config.optionHeight - config.optionHeight/2) - draw.get_text_size_y(hint)/2,
-                        hint
-                    )
-                end
-
-            end
             if not data then return end
             if data.type == OPTIONS.SEPARATOR then
                 local name = data.name
-
-                -- draw.set_color(0, 51, 51, 51, 255)
-                -- draw.rect_filled(
-                --     lu.x, lu.y, rd.x, rd.y
-                -- )
-                
                 draw.set_color(0, 255, 255, 255, 255)
                 draw.text(
                     (rd.x - (rd.x - lu.x)/2) - draw.get_text_size_x(name)/2,
@@ -1205,10 +1239,6 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                     lu.y + (rd.y - lu.y)/2
                 )
             elseif data.type == OPTIONS.STATE_BAR then
-                -- draw.set_color(0, 51, 51, 51, 255)
-                -- draw.rect_filled(
-                --     lu.x, lu.y, rd.x, rd.y
-                -- )
                 local name = tostring(data.name)
                 local value = tostring(data.getter())
                 draw.set_color(0, 255, 255, 255, 255)
@@ -1223,18 +1253,6 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                     value
                 )
             else            
-                -- if option == submenu.selectedOption then
-                --     local name = tostring(data.name) -- TEXT RENDERING
- 
-                --     draw.set_color(0, 0, 0, 0, 255)
-
-                --     draw.text(
-                --         lu.x + 10,
-                --         (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(name)/2,
-                --         name
-                --     )
-                -- else
-                -- end
                 local name = tostring(data.name)
                 draw.set_color(0, 255, 255, 255, 255)
                 draw.text(

@@ -1,4 +1,4 @@
-local filesys = require("Git/BoolyScript/util/file_system")
+local filesys = require("BoolyScript/util/file_system")
 
 local paths = {}
 paths.files = {}
@@ -37,8 +37,5 @@ paths.files.imgs.footerArrows = paths.folders.imgs .. "\\footer_arrows.png"
 paths.files.imgs.toggleOn = paths.folders.imgs .. "\\toggle_on.png"
 paths.files.imgs.toggleOff = paths.folders.imgs .. "\\toggle_off.png"
 paths.files.imgs.sub = paths.folders.imgs .. "\\sub.png"
-
-
-
 
 return paths

@@ -1,9 +1,15 @@
+require("BoolyScript/system/events_listener")
+local paths = require("BoolyScript/globals/paths")
+require("BoolyScript/util/notify_system")
+local json = require("BoolyScript/modules/JSON")
+local parse = require("BoolyScript/util/parse")
+local filesys = require("BoolyScript/util/file_system")
+require("BoolyScript/globals/stuff")
+
 PresetsMgr = Submenu.add_static_submenu("Presets", "BS_PresetsMgr_Submenu")
 Main:add_sub_option("Presets", "BS_PresetsMgr_SubOption", PresetsMgr)
 
 PresetsMgr:add_separator("Weapons manager", "BS_PresetsMgr_WepManager")
-
-local blWepCategories = {["GROUP_DIGISCANNER"] = false, ["GROUP_NIGHTVISION"] = false, ["GROUP_TRANQILIZER"] = false}
 
 local savedLoadouts = PresetsMgr:add_choose_option("Saved loadouts", "BS_PresetsMgr_WepManager_SavedLoadouts", true, {"None"})
 
@@ -20,7 +26,7 @@ local function reloadWepLoadouts()
     return wepLoadouts
 end
 
-reloadWepLoadouts()
+local blWepCategories = {["GROUP_DIGISCANNER"] = false, ["GROUP_NIGHTVISION"] = false, ["GROUP_TRANQILIZER"] = false}
 
 local isEmpty = function (value)
     return ((value == nil) or (value == "") or (value == "NULL"))
@@ -145,9 +151,6 @@ local function reloadOutfits()
     return outfits
 end
 
-reloadOutfits()
-
-
 local function saveOutfit(name)
     local config = {
         components = {},
@@ -245,5 +248,10 @@ PresetsMgr:add_click_option("Save outfit", "BS_PresetsMgr_OutfitManager_SaveOutf
 end)
 
 PresetsMgr:add_click_option("Refresh outfits", "BS_PresetsMgr_OutfitManager_RefreshOutfits", reloadOutfits)
+
+listener.register("BS_PresetsMgr_WeaponAndOutfitsRefresh", GET_EVENTS_LIST().OnInit, function ()
+    reloadOutfits()
+    reloadWepLoadouts()
+end)
 
 -- END

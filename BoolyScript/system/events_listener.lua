@@ -1,4 +1,4 @@
-require("Git/BoolyScript/util/notify_system")
+require("BoolyScript/util/notify_system")
 
 local onEventFunctions = {}
 

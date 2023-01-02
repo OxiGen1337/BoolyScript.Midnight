@@ -1,12 +1,12 @@
 World = Submenu.add_static_submenu("World", "BS_World_Submenu")
 Main:add_sub_option("World", "BS_World_SubOption", World)
 
-World:add_bool_option("Blackout", "BS_World_Blackout", function(_, state)
+World:add_bool_option("Blackout", "BS_World_Blackout", function(state)
     GRAPHICS._SET_ARTIFICIAL_LIGHTS_STATE_AFFECTS_VEHICLES(false)
     GRAPHICS.SET_ARTIFICIAL_LIGHTS_STATE(state)
 end)
 
-World:add_bool_option("Total blackout", "BS_World_TotalBlackout", function(_, state)
+World:add_bool_option("Total blackout", "BS_World_TotalBlackout", function(state)
     GRAPHICS.SET_ARTIFICIAL_LIGHTS_STATE(state)
     GRAPHICS._SET_ARTIFICIAL_LIGHTS_STATE_AFFECTS_VEHICLES(state)
 end)

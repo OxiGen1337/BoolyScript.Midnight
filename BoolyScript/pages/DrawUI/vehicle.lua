@@ -1,7 +1,7 @@
-local callbacks = require("Git/BoolyScript/rage/callbacks")
-require("Git/BoolyScript/util/notify_system")
-local gui = require("Git/BoolyScript/globals/gui")
-require("Git/BoolyScript/system/events_listener")
+local callbacks = require("BoolyScript/rage/callbacks")
+require("BoolyScript/util/notify_system")
+local gui = require("BoolyScript/globals/gui")
+require("BoolyScript/system/events_listener")
 
 Vehicle = Submenu.add_static_submenu("Vehicle", "BS_Vehicle_Submenu")
 Main:add_sub_option("Vehicle", "BS_Vehicle_SubOption", Vehicle)
@@ -130,33 +130,27 @@ end, function ()
     ENTITY.SET_ENTITY_COLLISION(vehicle, true, true)
 end)
 
-local superDrivePower
+Stuff.superDrivePower = 5.0
 
 Vehicle:add_bool_option("Super drive [W]", "BS_Vehicle_Movement_SuperDrive", function (state)
     local taskName = "BS_Vehicle_Movement_SuperDrive"
     if state then
-        listener.register(taskName, GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
-            if not (key == gui.keys.W) then return end
-            if isDown then
-                task.createTask(taskName, 0.0, nil, function ()
-                    if not vehicleCheck() then return end
-                    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
-                    local multiplier = superDrivePower:getValue()
-                    ENTITY.SET_ENTITY_MAX_SPEED(vehicle, 9999.0)
-                    entity.request_control(vehicle, function(handle)
-                        ENTITY.APPLY_FORCE_TO_ENTITY(handle, 1, 0.0, multiplier / 10.0, 0.0, 0.0, 0.0, 0.0, 0, true, true, true, false, true)
-                    end)
-                end)
-            elseif task.exists(taskName) then
-                task.removeTask(taskName)
-            end
+        task.createTask(taskName, 0.0, nil, function ()            
+            if not (PAD.IS_CONTROL_PRESSED(2, 129)) then return end
+            if not vehicleCheck() then return end
+            local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
+            local multiplier = Stuff.superDrivePower
+            ENTITY.SET_ENTITY_MAX_SPEED(vehicle, 9999.0)
+            ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 1, 0.0, multiplier / 10.0, 0.0, 0.0, 0.0, 0.0, 0, true, true, true, false, true)
         end)
-    elseif listener.exists(taskName, GET_EVENTS_LIST().OnKeyPressed) then
-        listener.remove(taskName, GET_EVENTS_LIST().OnKeyPressed)
-    end
+    elseif task.exists(taskName) then
+        task.removeTask(taskName)
+    end      
 end)
 
-superDrivePower = Vehicle:add_float_option("Super drive power", "BS_Vehicle_Movement_SuperDrivePower", 1.0, 30.0, 1.0):setValue(5.0)
+Vehicle:add_float_option("Super drive power", "BS_Vehicle_Movement_SuperDrivePower", 1.0, 30.0, 1.0, function (val)
+    Stuff.superDrivePower = val
+end):setValue(5.0)
 
 Vehicle:add_separator("Appearance", "BS_Vehicle_Appeearance")
 

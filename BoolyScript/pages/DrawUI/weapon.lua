@@ -155,27 +155,25 @@ end):setHint("Prints entity info in console. Aim at it and press E.")
 Weapon:add_choose_option("When aiming", "BS_Weapon_OnAiming", true, {"None", "Set night vision", "Set thermal vision"}, function (pos, option)
     local taskName = "BS_Weapon_OnAiming"
     local state = false
-    if pos > 1 then
-        task.createTask(taskName, 0.0, nil, function ()
-            local function action(value)
-                GRAPHICS.SET_NIGHTVISION(value)
+    if pos == 1 then if task.exists(taskName) then task.removeTask(taskName) end return end
+    if task.exists(taskName) then return end
+    task.createTask(taskName, 0.0, nil, function ()
+        local function action(value)
+            GRAPHICS.SET_NIGHTVISION(value)
+        end
+        if option:getValue() == 3 then
+            action = function(value)
+                GRAPHICS.SET_SEETHROUGH(value)
             end
-            if option:getValue() == 3 then
-                action = function(value)
-                    GRAPHICS.SET_SEETHROUGH(value)
-                end
+        end
+        if player.is_aiming(PLAYER.PLAYER_ID()) then
+            if not state then
+                action(true)
+                state = true
             end
-            if player.is_aiming(PLAYER.PLAYER_ID()) then
-                if not state then
-                    action(true)
-                    state = true
-                end
-            elseif state then
-                action(false)
-                state = false
-            end
-        end)
-    elseif task.exists(taskName) then
-        task.removeTask(taskName)
-    end
+        elseif state then
+            action(false)
+            state = false
+        end
+    end)
 end)

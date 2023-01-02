@@ -39,7 +39,6 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe_Submen
         ["Hats"] = 0,
         ["Glasses"] = 1,
         ["Ears"] = 2,
-        ["Watches"] = 3,
     }
     for name, ID in pairs(props) do
         local ped = PLAYER.PLAYER_PED_ID()
