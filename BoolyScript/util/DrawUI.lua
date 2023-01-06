@@ -1015,6 +1015,7 @@ end
 
 listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
     do
+        draw.set_rounding(0)
         if config.isInputBoxDisplayed then
             local lu = {
                 x = draw.get_window_width()/2 - config.inputBoxWidth, 
