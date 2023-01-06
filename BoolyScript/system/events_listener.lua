@@ -203,7 +203,7 @@ function OnPlayerJoinByRid(rid)
     end
 end
 
-function OnScriptEvent(pid, event, args)
+function OnScriptEvent(pid, eventInfo, args)
     local event = onEventFunctions[events.OnScriptEvent]
     for _, t in ipairs(event) do
         local hash_s, callback_f = t["hash"], t["callback"]
@@ -211,7 +211,7 @@ function OnScriptEvent(pid, event, args)
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
             listener.remove(hash_s, events.OnScriptEvent)
         else 
-            local out = callback_f(pid, event, args) 
+            local out = callback_f(pid, eventInfo, args) 
             if out == false then listener.remove(hash_s, events.OnScriptEvent) end
         end
     end
@@ -231,7 +231,7 @@ function OnChatMsg(pid, text)
     end
 end
 
-function OnNetworkEvent(pid, event, buf)
+function OnNetworkEvent(pid, eventInfo, buf)
     local event = onEventFunctions[events.OnNetworkEvent]
     for _, t in ipairs(event) do
         local hash_s, callback_f = t["hash"], t["callback"]
@@ -239,7 +239,7 @@ function OnNetworkEvent(pid, event, buf)
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
             listener.remove(hash_s, events.OnNetworkEvent)
         else 
-            local out = callback_f(pid, event, buf) 
+            local out = callback_f(pid, eventInfo, buf) 
             if out == false then listener.remove(hash_s, events.OnNetworkEvent) end
         end
     end
