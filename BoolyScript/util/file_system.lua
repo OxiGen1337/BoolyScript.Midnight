@@ -17,7 +17,7 @@ end
 
 function filesys.createDir(path)
     if pcall(os.execute, "mkdir " .. path) then
-		log.error("File system", "Failed to create directory with path:\n\t" .. path .. ".\n\tPossible reason: Cyrillic symbols in the path.\n\tTo solve it, create that folder by yourself.")
+		log.error("File system", "Failed to create directory with path:\n\t" .. path .. ".\n\tPossible reason: Cyrillic symbols in the path\n\tTo solve it, create that folder by yourself.")
 	end
 end
 
@@ -27,7 +27,6 @@ function filesys.delete(path)
 	end
 end
 
--- TODO: fix path
 function filesys.getInitScriptPath()
 	local out = fs.get_dir_script():gsub("\\\\lua", "\\lua")
 	if DEBUG then return out .. "\\Git" end
