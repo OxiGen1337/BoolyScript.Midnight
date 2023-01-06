@@ -6,17 +6,22 @@ require("BoolyScript/system/events_listener")
 Vehicle = Submenu.add_static_submenu("Vehicle", "BS_Vehicle_Submenu")
 Main:add_sub_option("Vehicle", "BS_Vehicle_SubOption", Vehicle)
 
-local function vehicleCheck()
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
-    return (ENTITY.DOES_ENTITY_EXIST(vehicle) and PED.IS_PED_IN_ANY_VEHICLE(PLAYER.PLAYER_PED_ID(), false))
-end
+-- function Stuff.vehicleCheck()
+--     local ped = player.id()
+--     if not PED.IS_PED_IN_ANY_VEHICLE(ped, false) then return false end
+--     local vehicle = player.get_vehicle_handle(player.index())
+--     if not ENTITY.DOES_ENTITY_EXIST(vehicle) then return false end
+--     return true
+-- end
 
 Vehicle:add_click_option("Teleport in your PV", "BS_Vehicle_TpInPV", function ()
     scripts.globals.setInPersonalVehicle()
 end)
 
 Vehicle:add_choose_option("Switch seat", "BS_Vehicle_SwitchSeat", false, {"Driver", "Co-Driver", "Left Back Passanger", "Right Back Passanger"}, function (pos)
-    if not vehicleCheck() then return end
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
 	PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), vehicle, pos-2)
 end)
@@ -24,7 +29,9 @@ end)
 Vehicle:add_separator("Movement", "BS_Vehicle_Movement")
 
 Vehicle:add_looped_option("Engine always on", "BS_Vehicle_Movement_EngineAlwOn", 0.0, function ()
-    if not vehicleCheck() then return end
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
     VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, true, true, true)
     VEHICLE.SET_VEHICLE_LIGHTS(vehicle, 0)
@@ -37,7 +44,9 @@ Vehicle:add_bool_option("The Crew 2 nitro", "BS_Vehicle_Movement_Crew2Nitro", fu
     local taskName = "BS_Vehicle_Movement_Crew2Nitro"
     if state then
         listener.register(taskName, GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
-            if not vehicleCheck() then return end
+            local ped = player.id()
+            local vehicle = player.get_vehicle_handle(player.index())
+            if vehicle == 0 then return end
             if key ~= gui.keys.X then return end
             if isDown then
                 if not task.exists(taskName) then 
@@ -70,7 +79,9 @@ Vehicle:add_bool_option("Cruise control", "BS_Vehicle_Movement_CruiseControl", f
     if state then
         local isActive = false
         listener.register(taskName, GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
-            if not vehicleCheck() then return end
+            local ped = player.id()
+            local vehicle = player.get_vehicle_handle(player.index())
+            if vehicle == 0 then return end
             if key ~= gui.keys.L then return end
             if isDown then
                 isActive = not isActive
@@ -98,10 +109,12 @@ Vehicle:add_bool_option("Cruise control", "BS_Vehicle_Movement_CruiseControl", f
     elseif listener.exists(taskName, GET_EVENTS_LIST().OnKeyPressed) then
         listener.remove(taskName, GET_EVENTS_LIST().OnKeyPressed)
     end
-end)
+end):setHint("Press L to toggle cruise control.")
 
 Vehicle:add_looped_option("Disable turbulence", "BS_Vehicle_Movement_DisableTurbulence", 0.0, function ()
-    if not vehicleCheck() then return end
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
     local class = VEHICLE.GET_VEHICLE_CLASS(vehicle)
     if class ~= 15 then return end
@@ -109,43 +122,46 @@ Vehicle:add_looped_option("Disable turbulence", "BS_Vehicle_Movement_DisableTurb
 end)
 
 Vehicle:add_looped_option("Disable gravity", "BS_Vehicle_Movement_DisableGravity", 0.0, function ()
-    if not vehicleCheck() then return end
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
     VEHICLE.SET_VEHICLE_GRAVITY(vehicle, false)
 end, function ()
-    if not vehicleCheck() then return end
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
     VEHICLE.SET_VEHICLE_GRAVITY(vehicle, true)
 end)
 
 Vehicle:add_looped_option("Disable collision for aircraft", "BS_Vehicle_Movement_DisableAircraftCollision", 0.0, function ()
-    if not vehicleCheck() then return end
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
     local class = VEHICLE.GET_VEHICLE_CLASS(vehicle)
     if class ~= 15 and class ~= 16 then return end
     ENTITY.SET_ENTITY_COLLISION(vehicle, false, true)
 end, function ()
-    if not vehicleCheck() then return end
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
     ENTITY.SET_ENTITY_COLLISION(vehicle, true, true)
 end)
 
 Stuff.superDrivePower = 5.0
 
-Vehicle:add_bool_option("Super drive [W]", "BS_Vehicle_Movement_SuperDrive", function (state)
-    local taskName = "BS_Vehicle_Movement_SuperDrive"
-    if state then
-        task.createTask(taskName, 0.0, nil, function ()            
-            if not (PAD.IS_CONTROL_PRESSED(2, 129)) then return end
-            if not vehicleCheck() then return end
-            local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
-            local multiplier = Stuff.superDrivePower
-            ENTITY.SET_ENTITY_MAX_SPEED(vehicle, 9999.0)
-            ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 1, 0.0, multiplier / 10.0, 0.0, 0.0, 0.0, 0.0, 0, true, true, true, false, true)
-        end)
-    elseif task.exists(taskName) then
-        task.removeTask(taskName)
-    end      
+Vehicle:add_looped_option("Super drive [W]", "BS_Vehicle_Movement_SuperDrive", 0.0, function ()
+    if not PAD.IS_CONTROL_PRESSED(2, 129) then return end
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
+    local multiplier = Stuff.superDrivePower
+    callbacks.requestControl(vehicle, function ()
+        ENTITY.SET_ENTITY_MAX_SPEED(vehicle, 9999.0)
+        ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 1, 0.0, multiplier / 10.0, 0.0, 0.0, 0.0, 0.0, 0, true, true, true, false, true)
+    end)
 end)
 
 Vehicle:add_float_option("Super drive power", "BS_Vehicle_Movement_SuperDrivePower", 1.0, 30.0, 1.0, function (val)
@@ -161,7 +177,9 @@ Vehicle:add_bool_option("Use countermeasures", "BS_Vehicle_Appeearance_UseCounte
             if key ~= gui.keys.E then return end
             if isDown then
                 task.createTask(taskName, 0.3, nil, function ()
-                    if not vehicleCheck() then return end
+                    local ped = player.id()
+                    local vehicle = player.get_vehicle_handle(player.index())
+                    if vehicle == 0 then return end
                     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
                     WEAPON.GIVE_WEAPON_TO_PED(PLAYER.PLAYER_PED_ID(), string.joaat("WEAPON_FLAREGUN"), 20, true, false)
                     
@@ -189,7 +207,9 @@ Vehicle:add_bool_option("Use vehicle signals", "BS_Vehicle_Appeearance_UseVehicl
     if state then
         local right, left = false, false
         listener.register(taskName, GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
-            if not vehicleCheck() then return end
+            local ped = player.id()
+            local vehicle = player.get_vehicle_handle(player.index())
+            if vehicle == 0 then return end
             if key ~= keys.ArrowLeft and key ~= keys.ArrowRight and key ~= keys.E then return end
             local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
             
@@ -217,12 +237,16 @@ Vehicle:add_bool_option("Use vehicle signals", "BS_Vehicle_Appeearance_UseVehicl
 end)
 
 Vehicle:add_looped_option("Disable deformations", "BS_Vehicle_Appeearance_DisableDeformations", 0.0, function ()
-    if not vehicleCheck() then return end
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
     VEHICLE.SET_VEHICLE_DEFORMATION_FIXED(vehicle)
     VEHICLE.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(vehicle, false)
 end, function ()
-    if not vehicleCheck() then return end
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
     VEHICLE.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(vehicle, true)
 end)
@@ -241,30 +265,34 @@ local doors = {
 local doorsSelector = Vehicle:add_choose_option("Doors", "BS_Vehicle_Appeearance_Doors", true, doors)
 
 Vehicle:add_click_option("Open door", "BS_Vehicle_Appeearance_OpenDoor", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local door = doorsSelector:getValue() 
     VEHICLE.SET_VEHICLE_DOOR_OPEN(vehicle, door, false, true)
 end)
 
 Vehicle:add_click_option("Close door", "BS_Vehicle_Appeearance_CloseDoor", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     local door = doorsSelector:getValue() 
     VEHICLE.SET_VEHICLE_DOOR_SHUT(vehicle, door, false, true)
 end)
 
 Vehicle:add_click_option("Open all doors", "BS_Vehicle_Appeearance_OpenAllDoors", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     for index, _ in ipairs(doors) do
         VEHICLE.SET_VEHICLE_DOOR_OPEN(vehicle, index-1, false, true)
     end 
 end)
 
 Vehicle:add_click_option("Close all doors", "BS_Vehicle_Appeearance_CloseAllDoors", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
+    local ped = player.id()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
     for index, _ in ipairs(doors) do
         VEHICLE.SET_VEHICLE_DOOR_SHUT(vehicle, index - 1, false, true)
     end 
@@ -273,65 +301,57 @@ end)
 Vehicle:add_separator("Remote actions", "BS_Vehicle_RemoteActions")
 
 Vehicle:add_click_option("Teleport (Me -> Vehicle)", "BS_Vehicle_RemoteActions_TpMeToVehicle", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
     local coords = ENTITY.GET_ENTITY_COORDS(vehicle, true)
     utils.teleport(coords)
 end)
 
 Vehicle:add_click_option("Teleport (Vehicle -> Me)", "BS_Vehicle_RemoteActions_TpVehicleToMe", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), true)
     utils.teleport(vehicle, coords)
 end)
 
-Vehicle:add_click_option("Toggle engine", "BS_Vehicle_RemoteActions_ToggleEngine", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
-    entity.request_control(vehicle, function(handle)
-        VEHICLE.SET_VEHICLE_ENGINE_ON(handle, not VEHICLE.GET_IS_VEHICLE_ENGINE_RUNNING(handle), true, true)
-        VEHICLE.SET_VEHICLE_LIGHTS(handle, 0)
-        VEHICLE._SET_VEHICLE_LIGHTS_MODE(handle, 0)
+Vehicle:add_choose_option("Engine", "BS_Vehicle_RemoteActions_ToggleEngine", false, {"ON", "OFF"}, function (val)
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+    callbacks.requestControl(vehicle, function ()
+        VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, (val == 1) and true or false, true, true)
+        VEHICLE.SET_VEHICLE_LIGHTS(vehicle, 0)
+        VEHICLE._SET_VEHICLE_LIGHTS_MODE(vehicle, 0)
     end)
 end)
 
 Vehicle:add_click_option("Enable alarm (30 sec)", "BS_Vehicle_RemoteActions_EnableAlarm", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
-    entity.request_control(vehicle, function(handle)	
-        VEHICLE.SET_VEHICLE_ALARM(handle, true)
-        VEHICLE.START_VEHICLE_ALARM(handle)
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+    callbacks.requestControl(vehicle, function ()
+        VEHICLE.SET_VEHICLE_ALARM(vehicle, true)
+        VEHICLE.START_VEHICLE_ALARM(vehicle)
     end)
 end)
 
 Vehicle:add_click_option("Repair vehicle", "BS_Vehicle_RemoteActions_RepairVehicle", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
-    entity.request_control(vehicle, function(handle)
-        VEHICLE.SET_VEHICLE_FIXED(handle)
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+    callbacks.requestControl(vehicle, function ()
+        VEHICLE.SET_VEHICLE_FIXED(vehicle)
     end)
 end)
 
 Vehicle:add_click_option("Explode vehicle", "BS_Vehicle_RemoteActions_ExplodeVehicle", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
-    entity.request_control(vehicle, function(handle)
-        VEHICLE.EXPLODE_VEHICLE_IN_CUTSCENE(handle, true)
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+    callbacks.requestControl(vehicle, function ()
+        VEHICLE.EXPLODE_VEHICLE_IN_CUTSCENE(vehicle, true)
     end)
 end)
 
 Vehicle:add_click_option("Invert controls", "BS_Vehicle_RemoteActions_InvertControls", function (state)
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
-    entity.request_control(vehicle, function(handle)
-        VEHICLE._SET_VEHICLE_CONTROLS_INVERTED(handle, state)
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
+    callbacks.requestControl(vehicle, function ()
+        VEHICLE._SET_VEHICLE_CONTROLS_INVERTED(vehicle, state)
     end)
 end)
 
 Vehicle:add_click_option("Delete vehicle", "BS_Vehicle_RemoteActions_DeleteVehicle", function ()
-    if not vehicleCheck() then return end
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
     if PED.IS_PED_IN_VEHICLE(PLAYER.PLAYER_PED_ID(), vehicle, false) then
         TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.PLAYER_PED_ID())
     end

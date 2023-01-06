@@ -22,6 +22,4 @@ listener.register("Init_LoadConfig", GET_EVENTS_LIST().OnInit, function ()
     menu.loadConfig(true)
 end)
 
-
-
 -- END

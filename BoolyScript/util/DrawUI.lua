@@ -188,8 +188,9 @@ Submenu = {
     selectedOption = 1,
     scrollOffset = 0,
     --for dynamic submenus
-    indexGetter = nil,
-    optionGetter = nil,
+    getter = function ()
+        
+    end,
     getSubmenus = function ()
         return submenus
     end,
@@ -358,14 +359,13 @@ function Submenu.add_main_submenu(name_s, hash_s)
     return submenu
 end
 
-function Submenu.add_dynamic_submenu(name_s, hash_s, indexGetter_f, optionGetter_f)
+function Submenu.add_dynamic_submenu(name_s, hash_s, getter_f)
     local submenu = setmetatable({}, Submenu)
     submenu.ID = #Submenu.getSubmenus() + 1
     submenu.name = name_s
     submenu.hash = hash_s
     submenu.isDynamic = true
-    submenu.indexGetter = indexGetter_f
-    submenu.optionGetter = optionGetter_f
+    submenu.getter = getter_f
     submenu.options = {}
     table.insert(submenus, submenu)
     return submenu
@@ -663,6 +663,12 @@ function Option:addTag(tag_t)
     return self
 end
 
+function Option:setTags(tags_t)
+    if not (type(tags_t) == "table") then return end
+    self.tags = tags_t
+    return self
+end
+
 Configs = {}
 Configs.saveConfig = function ()
     local out = {}
@@ -859,9 +865,9 @@ local function onControl(key, isDown, ignoreControlsState)
                     if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.FLOAT then
                     if selected.value - selected.step < selected.minValue then
-                        selected.value = selected.maxValue + .0
+                        selected.value = selected.maxValue
                     else
-                        selected.value = selected.value - selected.step + .0
+                        selected.value = selected.value - selected.step
                     end
                     playClickSound()
                     if selected.callback then selected.callback(selected.value, selected) end
@@ -892,9 +898,9 @@ local function onControl(key, isDown, ignoreControlsState)
                     if selected.callback then selected.callback(selected.value, selected) end
                 elseif selected.type == OPTIONS.FLOAT then
                     if selected.value + selected.step > selected.maxValue then
-                        selected.value = selected.minValue + .0
+                        selected.value = selected.minValue
                     else
-                        selected.value = selected.value + selected.step + .0
+                        selected.value = selected.value + selected.step
                     end
                     playClickSound()
                     if selected.callback then selected.callback(selected.value, selected) end
@@ -923,9 +929,28 @@ listener.register("DrawUI_controlsStateCheck", GET_EVENTS_LIST().OnFrame, functi
     end
 end)
 
+listener.register("DrawUI_disableControls", GET_EVENTS_LIST().OnFeatureTick, function ()
+    if not config.isOpened then return end
+    PAD.DISABLE_CONTROL_ACTION(2, 0, true) --INPUT_NEXT_CAMERA
+    PAD.DISABLE_CONTROL_ACTION(2, 26, true) --INPUT_CREATOR_RT
+    PAD.DISABLE_CONTROL_ACTION(2, 26, true) --INPUT_CREATOR_RT
+
+    PAD.DISABLE_CONTROL_ACTION(2, 27, true) --INPUT_PHONE
+    PAD.DISABLE_CONTROL_ACTION(2, 200, true) --INPUT_FRONTEND_PAUSE_ALTERNATE
+    PAD.DISABLE_CONTROL_ACTION(2, 199, true) --INPUT_FRONTEND_PAUSE
+    PAD.DISABLE_CONTROL_ACTION(2, 202, true) --INPUT_FRONTEND_CANCEL
+
+    PAD.DISABLE_CONTROL_ACTION(2, 244, true) --INPUT_INTERACTION_MENU
+    PAD.DISABLE_CONTROL_ACTION(2, 245, true) --INPUT_MP_TEXT_CHAT_ALL
+    PAD.DISABLE_CONTROL_ACTION(2, 246, true) --INPUT_MP_TEXT_CHAT_TEAM
+    PAD.DISABLE_CONTROL_ACTION(2, 247, true) --INPUT_MP_TEXT_CHAT_FRIENDS
+    PAD.DISABLE_CONTROL_ACTION(2, 248, true) --INPUT_MP_TEXT_CHAT_CREW
+end)
+
 listener.register("DrawUI_controls", GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
     onControl(key, isDown, false)
 end)
+
 
 HOME_SUBMENU = Submenu.add_main_submenu("Home", "home_sub")
 
@@ -1116,12 +1141,20 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         
         if submenu.isDynamic then
             submenu.options = {}
-            for i = 1, submenu.indexGetter() do
-                submenu.options[i] = submenu.optionGetter(i)
+            submenu.getter()
+            local function getClickableOption(selectedOption)
+                if #submenu.options == 0 then submenu:setActive(false) return end
+                if #submenu.options == 1 then return 1 end
+                if selectedOption > #submenu.options then 
+                    return getClickableOption(1)
+                end
+                if submenu.options[selectedOption] then return selectedOption end
+                return getClickableOption(selectedOption - 1)
             end
+            submenu.selectedOption = getClickableOption(submenu.selectedOption)
         end
         
-        do -- SELECTED OPTION
+        if #submenu.options > 0 then -- SELECTED OPTION
             local data = submenu.options[submenu.selectedOption]
             local lu = {
                 x = bg.lu.x, 

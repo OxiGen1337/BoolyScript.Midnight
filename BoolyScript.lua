@@ -1,5 +1,5 @@
 
-BSVERSION = "[Midnight] [0.1 Beta]"
+BSVERSION = "[Midnight] [0.1]"
 DEBUG = true
 
 local temp = require
@@ -25,12 +25,6 @@ features = require("BoolyScript/rage/features")
 json = require("BoolyScript/modules/JSON")
 gui = require("BoolyScript/globals/gui")
 
--- listener.register("BS_Init", GET_EVENTS_LIST().OnDone, function ()
---     for _, handle in pairs(GET_PAGES()) do -- Pages cleanup after script unload
---         menu.delete_page(handle)
---     end
--- end)
-
 listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
     log.init("Loading BoolyScript...")
     log.init(string.format("Version -> %s.", BSVERSION))
@@ -46,7 +40,7 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         }
         for _, path in ipairs(t) do
             if not filesys.doesFolderExist(path) then 
-                filesys.createDir(path)
+                assert(filesys.createDir(path), "Cyrillic symbols in path.")
             end
         end
     end
@@ -69,4 +63,7 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
             end
         end
     end
+    task.executeAsScript("Load_Config", function ()
+        Configs.loadConfig()
+    end)
 end)

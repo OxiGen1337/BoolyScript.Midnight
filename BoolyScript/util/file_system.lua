@@ -1,5 +1,6 @@
 local filesys = {}
 
+
 function filesys.doesFileExist(file)
 	local ok, err, code = os.rename(file, file)
 	if not ok then
@@ -26,7 +27,9 @@ end
 
 -- TODO: fix path
 function filesys.getInitScriptPath()
-	return fs.get_dir_script():gsub("\\\\lua", "\\lua") .. "\\Git"
+	local out = fs.get_dir_script():gsub("\\\\lua", "\\lua")
+	if DEBUG then return out .. "\\Git" end
+	return out
 end
 
 function filesys.logInFile(path_s, header_s, text_s)

@@ -34,6 +34,85 @@ end
 
 local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe_Submenu") do
     wardrobe:add_sub_option("Save & load outfit presets", "BS_Self_Wardrobe_SaveLoad", PresetsMgr):addTag({"[Link]", 107, 223, 227})
+    wardrobe:add_separator("Face", "BS_Self_Wardrobe_Face")
+    local headBlendEditor = Submenu.add_static_submenu("Face editor", "BS_Self_Wardrobe_HeadBlend_Submenu") do
+        headBlendEditor:add_separator("Head blend", "BS_Self_Wardrobe_HeadBlend")
+        local motherShape, motherSkin, fatherShape, fatherSkin, shapeMix, skinMix
+        motherShape = headBlendEditor:add_choose_option("Shape [Mother]", "BS_Self_Wardrobe_HeadBlend_MotherShape", true,
+            {"Anthony", "Hannah", "Audrey", "Jasmine", "Giselle", "Amelia", "Isabella", "Zoe", "Ava", "Camila", "Violet", "Sophia", "Evelyn", "Nicole", "Ashley", "Grace", "Brianna", "Natalie", "Olivia", "Elizabeth", "Charlotte", "Emma", "Claude", "Niko", "John", "Misty"},
+            function ()
+                PED.SET_PED_HEAD_BLEND_DATA(player.id(), motherShape:getValue(), fatherShape:getValue(), 0, motherSkin:getValue(), fatherSkin:getValue(), 0, shapeMix:getValue(), skinMix:getValue(), 0.0, true)
+            end
+        ):setConfigIgnore()
+        fatherShape = headBlendEditor:add_choose_option("Shape [Father]", "BS_Self_Wardrobe_HeadBlend_FatherShape", true,
+            {"Benjamin", "Daniel", "Joshua", "Noah", "Andrew", "Juan", "Alex", "Isaac", "Evan", "Ethan", "Vincent", "Angel", "Diego", "Adrian", "Gabriel", "Michael", "Santiago", "Kevin", "Louis", "Samuel"},
+            function ()
+                PED.SET_PED_HEAD_BLEND_DATA(player.id(), motherShape:getValue(), fatherShape:getValue(), 0, motherSkin:getValue(), fatherSkin:getValue(), 0, shapeMix:getValue(), skinMix:getValue(), 0.0, true)
+            end
+        ):setConfigIgnore()
+        shapeMix = headBlendEditor:add_float_option("Shape mix (Mother->Father)", "BS_Self_Wardrobe_HeadBlend_ShapeMix", 0.0, 1.0, 0.1,
+            function ()
+                PED.SET_PED_HEAD_BLEND_DATA(player.id(), motherShape:getValue(), fatherShape:getValue(), 0, motherSkin:getValue(), fatherSkin:getValue(), 0, shapeMix:getValue(), skinMix:getValue(), 0.0, true)
+            end
+        ):setConfigIgnore()
+        motherSkin = headBlendEditor:add_choose_option("Skin [Mother]", "BS_Self_Wardrobe_HeadBlend_MotherSkin", true,
+            {"Anthony", "Hannah", "Audrey", "Jasmine", "Giselle", "Amelia", "Isabella", "Zoe", "Ava", "Camila", "Violet", "Sophia", "Evelyn", "Nicole", "Ashley", "Grace", "Brianna", "Natalie", "Olivia", "Elizabeth", "Charlotte", "Emma", "Claude", "Niko", "John", "Misty"},
+            function ()
+                PED.SET_PED_HEAD_BLEND_DATA(player.id(), motherShape:getValue(), fatherShape:getValue(), 0, motherSkin:getValue(), fatherSkin:getValue(), 0, shapeMix:getValue(), skinMix:getValue(), 0.0, true)
+            end
+        ):setConfigIgnore()
+        fatherSkin = headBlendEditor:add_choose_option("Skin [Father]", "BS_Self_Wardrobe_HeadBlend_FatherSkin", true,
+            {"Benjamin", "Daniel", "Joshua", "Noah", "Andrew", "Juan", "Alex", "Isaac", "Evan", "Ethan", "Vincent", "Angel", "Diego", "Adrian", "Gabriel", "Michael", "Santiago", "Kevin", "Louis", "Samuel"},
+            function ()
+                PED.SET_PED_HEAD_BLEND_DATA(player.id(), motherShape:getValue(), fatherShape:getValue(), 0, motherSkin:getValue(), fatherSkin:getValue(), 0, shapeMix:getValue(), skinMix:getValue(), 0.0, true)
+            end
+        ):setConfigIgnore()
+        skinMix = headBlendEditor:add_float_option("Skin mix (Mother->Father)", "BS_Self_Wardrobe_HeadBlend_SkinMix", 0.0, 1.0, 0.1,
+            function ()
+                PED.SET_PED_HEAD_BLEND_DATA(player.id(), motherShape:getValue(), fatherShape:getValue(), 0, motherSkin:getValue(), fatherSkin:getValue(), 0, shapeMix:getValue(), skinMix:getValue(), 0.0, true)
+            end
+        ):setConfigIgnore()
+        headBlendEditor:add_separator("Face", "BS_Self_Wardrobe_Face")
+        local overlayIDs = {
+            {"Blemishes", 23, 0},
+            {"Facial Hair", 28, 1},
+            {"Eyebrows", 33, 1},
+            {"Ageing", 14, 0},
+            {"Makeup", 74, 0},
+            {"Blush", 6, 2},
+            {"Complexion", 11, 0},
+            {"Sun Damage", 10, 0},
+            {"Lipstick", 9, 2},
+            {"Moles/Freckles", 17, 0},
+            {"Chest Hair", 16, 1},
+            {"Body Blemishes", 11, 0},
+            {"Add Body Blemishes", 1, 0},
+        }
+        for ID, overlay in ipairs(overlayIDs) do
+            local submenu = Submenu.add_static_submenu(overlay[1], "BS_Self_Wardrobe_Face_" .. overlay[1] .. "_Submenu") do
+                local value = submenu:add_num_option("Texture", "BS_Self_Wardrobe_Face_" .. overlay[1], 0, overlay[2], 1, function (val)
+                    PED.SET_PED_HEAD_OVERLAY(player.id(), ID - 1, val, 1.0)
+                end):setConfigIgnore()
+                local opacity = submenu:add_float_option("Opacity", "BS_Self_Wardrobe_Face_Opacity_" .. overlay[1], 0.0, 1.0, 0.1, function (val)
+                    PED.SET_PED_HEAD_OVERLAY(player.id(), ID - 1, value:getValue(), val)
+                end):setValue(1.0, true):setConfigIgnore()
+                local primColor, secColor
+                primColor = submenu:add_num_option("Primary color",  "BS_Self_Wardrobe_Face_PrimColor_" .. overlay[1], 0, 255, 1, function (val)
+                    PED.SET_PED_HEAD_OVERLAY(player.id(), ID - 1, value:getValue(), opacity:getValue())
+                    PED._SET_PED_HEAD_OVERLAY_COLOR(player.id(), ID-1, overlay[3], val, secColor:getValue())                
+                end):setConfigIgnore()
+                secColor = submenu:add_num_option("Secondary color",  "BS_Self_Wardrobe_Face_SecColor_" .. overlay[1], 0, 255, 1, function (val)
+                    PED.SET_PED_HEAD_OVERLAY(player.id(), ID - 1, value:getValue(), opacity:getValue())
+                    PED._SET_PED_HEAD_OVERLAY_COLOR(player.id(), ID-1, overlay[3], primColor:getValue(), val)                
+                end):setConfigIgnore()
+                submenu:add_click_option("Remove", "BS_Self_Wardrobe_Face_Remove_" .. overlay[1], function ()
+                    PED.SET_PED_HEAD_OVERLAY(player.id(), ID - 1, 255, 1.0)
+                end)
+                headBlendEditor:add_sub_option(overlay[1], "BS_Self_Wardrobe_Face_" .. overlay[1] .. "_SubOption", submenu)
+            end
+        end
+        wardrobe:add_sub_option("Face", "BS_Self_Wardrobe_HeadBlend_SubOption", headBlendEditor)
+    end
     wardrobe:add_separator("Accessories", "BS_Self_Wardrobe_Accessories")
     local props = {
         ["Hats"] = 0,
@@ -215,7 +294,7 @@ end)
 
 Self:add_separator("Gameplay", "BS_Self_Gameplay")
 
-Self:add_looped_option("Total ignorе", "BS_Self_TotalIgnore", function ()
+Self:add_looped_option("Total ignorе", "BS_Self_TotalIgnore", 0.0, function ()
     local player = PLAYER.PLAYER_ID()
     PLAYER.SET_POLICE_IGNORE_PLAYER(player, true)
     PLAYER.SET_EVERYONE_IGNORE_PLAYER(player, true)
@@ -234,6 +313,12 @@ Self:add_click_option("Sky dive", "BS_Self_SkyDive", function ()
     local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 0.0, 150.0)
     utils.teleport(coords)
     TASK.TASK_SKY_DIVE(ped, true)
+end)
+
+Self:add_looped_option("Always clean", "BS_Self_AlwClean", 0.0, function ()
+    local ped = player.id()
+    PED.CLEAR_PED_WETNESS(ped)
+    PED.CLEAR_PED_BLOOD_DAMAGE(ped)
 end)
 
 --END

@@ -14,7 +14,6 @@ task.executeAsScript("Load_Submenus", function ()
     require("BoolyScript/pages/DrawUI/world")
     require("BoolyScript/pages/DrawUI/misc")
     require("BoolyScript/pages/DrawUI/recovery")
-    Configs.loadConfig()
 end)
 
 

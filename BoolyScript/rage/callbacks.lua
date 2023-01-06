@@ -9,6 +9,15 @@ function callbacks.requestWepAsset(asset, onSuccess)
     if WEAPON.HAS_WEAPON_ASSET_LOADED(asset) then onSuccess() return end
 end
 
+function callbacks.requestControl(entity, onSuccess)
+	local ticks = 0
+    while ticks < 50 and not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(entity) do
+        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(entity)
+        ticks = ticks + 1
+    end
+    if NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(entity) then onSuccess() return end
+end
+
 function callbacks.requestModel(hash, onSuccess)
 	if not STREAMING.IS_MODEL_VALID(hash) then return end
 	local tries = 0

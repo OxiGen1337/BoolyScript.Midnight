@@ -1,5 +1,4 @@
 local players = {}
-local connectedPlayers = {}
 
 local activeActions = {}
 local function addActiveAction(pid, option, value)
@@ -34,9 +33,8 @@ PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Te
     end):setConfigIgnore()
     PlayerTeleport:add_click_option("Teleport in vehicle", "BS_PlayerList_Player_Teleport_InVehicle", function ()
         local pid = selectedPlayer
-        if not pid or not player.is_connected(pid) then return end
-        if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
+        if vehicle == 0 then return end
         local coords = ENTITY.GET_ENTITY_COORDS(vehicle, false)
         for seat = -1, VEHICLE.GET_VEHICLE_MODEL_NUMBER_OF_SEATS(ENTITY.GET_ENTITY_MODEL(vehicle)) - 1 do
             if VEHICLE.IS_VEHICLE_SEAT_FREE(vehicle, seat, false) then
@@ -432,18 +430,6 @@ PlayerNeutral = Submenu.add_static_submenu("Neutral", "BS_Players_Neutral_Submen
     PlayerInteractions:add_sub_option("Neutral", "BS_Players_Neutral_SubOption", PlayerNeutral)
 end
 
-
--- PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Griefing_Submenu") do
---     -- PlayerGriefing:add_click_option("tt", "", function ()
---     --     local pid = selectedPlayer
---     --     if not pid or not player.is_connected(pid) then return end
---     --     print(player.send_sms(pid, "ggggg"))
---     -- end)
---     PlayerGriefing:add_click_option()
---     PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Player_Griefing_SubOption", PlayerGriefing)
---     table.insert(submenus, PlayerGriefing)
--- end
-
 PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Griefing_Submenu") do
     PlayerGriefing:add_click_option("Teleport to island", "BS_PlayerList_Player_Griefing_TeleportToIsland", function ()
         local pid = selectedPlayer
@@ -475,30 +461,30 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
 end
 
 
-for pid = 0, 32 do
-    local option = setmetatable({}, Option)
-    option.ID = #players + 1
-    option.name = "PID: " .. pid
-    option.type = OPTIONS.SUB
-    option.hash = "PlayerList_" .. pid
-    option.value = pid
-    option.callback = function ()
-        selectedPlayer = pid
-        PlayerInteractions:setActive(true)
-        if activeActions[pid + 1] then
-            for option, value in pairs(activeActions[pid + 1]) do
-                option:setValue(value, true)
-            end
-        else
-            for _, submenu in ipairs(submenus) do
-                for _, option in ipairs(submenu.options) do
-                    option:reset(true)
-                end
-            end
-        end
-    end
-    table.insert(players, option)
-end
+-- for pid = 0, 32 do
+--     local option = setmetatable({}, Option)
+--     option.ID = #players + 1
+--     option.name = "PID: " .. pid
+--     option.type = OPTIONS.SUB
+--     option.hash = "PlayerList_" .. pid
+--     option.value = pid
+--     option.callback = function ()
+--         selectedPlayer = pid
+--         PlayerInteractions:setActive(true)
+--         if activeActions[pid + 1] then
+--             for option, value in pairs(activeActions[pid + 1]) do
+--                 option:setValue(value, true)
+--             end
+--         else
+--             for _, submenu in ipairs(submenus) do
+--                 for _, option in ipairs(submenu.options) do
+--                     option:reset(true)
+--                 end
+--             end
+--         end
+--     end
+--     table.insert(players, option)
+-- end
 
 local function getPlayerFlags(pid)
     if not player.is_connected(pid) then return "" end
@@ -518,24 +504,28 @@ local function getPlayerFlags(pid)
     return out
 end
 
-PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList_Submenu", 
-    function ()
-        connectedPlayers = {}
-        for pid = 0, 32 do
-            if player.is_connected(pid) then
-                table.insert(connectedPlayers, players[pid+1])
-                local name = player.get_name(pid)
-                connectedPlayers[#connectedPlayers].name = player.get_name(pid)
-                connectedPlayers[#connectedPlayers].tags = getPlayerFlags(pid)
-            else
-                activeActions[pid + 1] = nil
-            end
+PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList_Submenu", function ()
+    for pid = 0, 32 do
+        if player.is_connected(pid) then
+            PlayerList:add_sub_option(player.get_name(pid), "Player_" .. pid, PlayerInteractions, function ()
+                selectedPlayer = pid
+                if activeActions[pid + 1] then
+                    for option, value in pairs(activeActions[pid + 1]) do
+                        option:setValue(value, true)
+                    end
+                else
+                    for _, submenu in ipairs(submenus) do
+                        for _, option in ipairs(submenu.options) do
+                            option:reset(true)
+                        end
+                    end
+                end
+            end):setTags(getPlayerFlags(pid))
+        else
+            activeActions[pid + 1] = nil
         end
-        return #connectedPlayers
-    end,
-    function (i)
-        return connectedPlayers[i]
-    end)
+    end
+end)
 
 Main:add_sub_option("Players", "BS_PlayerList_SubOption", PlayerList)
 

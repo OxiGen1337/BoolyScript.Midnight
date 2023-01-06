@@ -177,3 +177,16 @@ Weapon:add_choose_option("When aiming", "BS_Weapon_OnAiming", true, {"None", "Se
         end
     end)
 end)
+
+-- local pArg = memory.alloc(4)
+-- Weapon:add_looped_option("Disable interior restrictions", "BS_Weapon_InteriorRestrictions", 0.0, function ()
+--     for i = 0, 2 do
+--         PAD.ENABLE_CONTROL_ACTION(i, 25, true) -- INPUT_AIM
+--         PAD.ENABLE_CONTROL_ACTION(i, 25, true) -- INPUT_AIM
+--         PAD.ENABLE_CONTROL_ACTION(i, 37, true) -- INPUT_SELECT_WEAPON
+--         PAD.ENABLE_CONTROL_ACTION(i, 24, true) -- INPUT_ATTACK
+--     end
+--     PED.SET_PED_CONFIG_FLAG(player.id(), 48, false)
+--     WEAPON.GET_CURRENT_PED_WEAPON(player.id(), pArg)
+--     print(memory.read_int64(pArg))
+-- end)

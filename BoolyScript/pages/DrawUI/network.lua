@@ -114,14 +114,29 @@ Network:add_choose_option("Kills", "BS_Network_SessionLogs_Kills", true, {"None"
 end)
 
 
-Network:add_separator("Kosatka missiles", "BS_Network_Kosatka")
+-- Network:add_separator("Kosatka missiles", "BS_Network_Kosatka")
 
-Network:add_looped_option("Disable cooldown", "BS_Network_Kosatka_DisableCooldown", 0.0, function ()
-    scripts.globals.setKosatkaMissileCooldown(0.0)
-end)
+-- Network:add_looped_option("Disable cooldown", "BS_Network_Kosatka_DisableCooldown", 0.0, function ()
+--     scripts.globals.setKosatkaMissileCooldown(0.0)
+-- end)
 
-Network:add_looped_option("Disable range restrictions", "BS_Network_Kosatka_DisableRangeLimit", 0.0, function ()
-    scripts.globals.setKosatkaMissileRange(150000.0)
+-- Network:add_looped_option("Disable range restrictions", "BS_Network_Kosatka_DisableRangeLimit", 0.0, function ()
+--     scripts.globals.setKosatkaMissileRange(150000.0)
+-- end)
+
+Network:add_separator("Network chat", "BS_Network_Chat")
+Network:add_bool_option("Chat mocker", "BS_Network_ChatMocker", function (state)
+    if state then 
+        listener.register("BS_Network_ChatMocker", GET_EVENTS_LIST().OnChatMsg, function (pid, text)
+            if pid == player.index() then return end
+            local finalText = ""
+			for let in string.gmatch(text, '%D') do
+				if math.random(0, 2) == 0 then let = string.upper(let) end
+				finalText = finalText .. let
+			end
+			utils.send_chat(finalText, false)
+        end)
+    end
 end)
 
 Network:add_separator("Misc", "BS_Network_Misc")
