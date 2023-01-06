@@ -18,7 +18,7 @@ Recovery:add_click_option("How to use", "BS_Recovery_Nightclub_HowToUse", functi
 end)
 
 Recovery:add_click_option("TP to safe", "BS_Recovery_Nightclub_TpToSafe", function()
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(PLAYER.PLAYER_PED_ID(), -1615.6827392578, -3015.6813964844, -75.205070495605, false, false, false)
+    utils.teleport(Vector3(-1615.6827392578, -3015.6813964844, -75.205070495605))
 end)
 
 local loop = Recovery:add_bool_option("Nightclub money loop", "BS_Recovery_Nightclub_Enable", function(state)
