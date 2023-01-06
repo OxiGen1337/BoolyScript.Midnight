@@ -6,12 +6,11 @@ local temp = require
 
 function require(path)
     if DEBUG then
-        path = "Git/" .. path
+        return temp("Git/" .. path)
     end
     return temp(path)
 end
 
--- require("BoolyScript/util/menu")
 require("BoolyScript/util/notify_system")
 require("BoolyScript/system/on_tick")
 require("BoolyScript/util/DrawUI")
