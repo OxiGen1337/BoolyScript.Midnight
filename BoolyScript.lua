@@ -40,8 +40,8 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
             paths.folders.logs,
         }
         for _, path in ipairs(t) do
-            if not filesys.doesFolderExist(path) then 
-                assert(filesys.createDir(path), "Cyrillic symbols in path.")
+            if not fs.directory_exists(path) then 
+                filesys.createDir(path)
             end
         end
     end
