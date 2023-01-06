@@ -66,4 +66,4 @@ World:add_looped_option("Projectiles cleanup", "BS_World_ProjCleanup", 0.0, func
     MISC.CLEAR_AREA_OF_PROJECTILES(coords.x, coords.y, coords.z, radius, 0)
 end)
 
-cleanupRadius = World:add_num_option("Cleanup raduis", "BS_World_CleanupRadius", 0, 600, 100):setValue(300)
+cleanupRadius = World:add_num_option("Cleanup radius", "BS_World_CleanupRadius", 0, 600, 100):setValue(300)

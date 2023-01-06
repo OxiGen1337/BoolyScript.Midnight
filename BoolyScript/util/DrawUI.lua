@@ -959,9 +959,25 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings_Submenu")
     settings:add_choose_option("Controls", "Main_Settings_Controls", true, {"Arrows", "Numpad"}, function (pos, option)
         if pos == 1 then
             controls = arrowsControls
+            Stuff.controlsState = {
+                [arrowsControls.up] = {false, nil, nil},
+                [arrowsControls.down] = {false, nil, nil},
+                [arrowsControls.back] = {false, nil, nil},
+                [arrowsControls.enter] = {false, nil, nil},
+                [arrowsControls.left] = {false, nil, nil},
+                [arrowsControls.right] = {false, nil, nil},
+            }
             option:setHint("F8 - open key; arrows; Backspace and Enter.")
         else
             controls = numpadControls
+            Stuff.controlsState = {
+                [numpadControls.up] = {false, nil, nil},
+                [numpadControls.down] = {false, nil, nil},
+                [numpadControls.back] = {false, nil, nil},
+                [numpadControls.enter] = {false, nil, nil},
+                [numpadControls.left] = {false, nil, nil},
+                [numpadControls.right] = {false, nil, nil},
+            }
             option:setHint("Num * - open key; Numpad for everything.")
         end
     end)
@@ -980,7 +996,7 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings_Submenu")
     settings:add_bool_option("Smooth scroller [Beta]", "Main_Settings_SmoothScroller", function (state)
         config.enabelSmoothScroller = state
     end):setValue(true)
-    settings:add_num_option("Renered options limit", "Main_Settings_Limit", 1, 25, 1, function (val)
+    settings:add_num_option("Rendered options limit", "Main_Settings_Limit", 1, 25, 1, function (val)
         config.maxOptions = val
     end):setValue(config.maxOptions)
     settings:add_float_option("UI input delay", "Main_Settings_InputDelay", 0.0, 1.0, 0.05, function (val)
