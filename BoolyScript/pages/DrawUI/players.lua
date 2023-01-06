@@ -70,6 +70,50 @@ PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Te
 end
 
 PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehicle_Submenu") do
+    PlayerVehicle:add_bool_option("Attach to my vehicle", "BS_PlayerList_Player_Vehicle_VehicleAttach", function(state, option)
+        local base = player.get_vehicle_handle(player.index())
+        if base == 0 then
+            notify.warning("Interactions", "You're not in a vehicle.")
+            return option:setValue(false, true)
+        end
+        local target = player.get_vehicle_handle(selectedPlayer)
+        if target == 0 then
+            notify.warning("Interactions", "Player is not in a vehicle.")
+            return option:setValue(false, true)
+        end
+        if target == base then return end
+        entity.request_control(target, function(hdl)
+            if state then
+                ENTITY.ATTACH_ENTITY_TO_ENTITY(hdl, base, 0, 0.0, -5.0, 0.0, 0.0, 0.0, 0.0, false, true, true, false, 0, true, false)
+            else
+                ENTITY.DETACH_ENTITY(hdl, false, false)
+            end
+        end)
+    end)
+    PlayerVehicle:add_choose_option("Attach ramp", "BS_PlayerList_Player_Vehicle_AttachRamp", false, {"Detach & delete", "Small ramp", "Big ramp"}, function(pos)
+        local vehicle = player.get_vehicle_handle(selectedPlayer)
+        if vehicle == 0 then
+            notify.warning("Interactions", "Player is not in a vehicle.")
+            return
+        end
+        local coords = ENTITY.GET_ENTITY_COORDS(vehicle, false)
+        local hash = string.joaat("prop_mp_ramp_01")
+        if pos == 3 then hash = string.joaat("prop_mp_ramp_03") end
+        callbacks.requestModel(hash, function()		
+            if pos > 1 then
+                entity.spawn_obj(hash, coords, function (ramp)                    
+                    table.insert(Stuff.ramps, ramp)
+                    entity.request_control(vehicle, function(hdl)
+                        ENTITY.ATTACH_ENTITY_TO_ENTITY(ramp, hdl, 0, 0.0, 8.0, 0.0, 0.0, 0.0, 180.0, false, true, true, false, 0, true, false)
+                    end)
+                end)
+            else
+                for _, ramp in ipairs(Stuff.ramps) do
+                    entity.delete(ramp)
+                end
+            end
+        end)
+    end)
     PlayerVehicle:add_click_option("Kick from vehicle", "BS_PlayerList_Player_Vehicle_VehicleKick", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end

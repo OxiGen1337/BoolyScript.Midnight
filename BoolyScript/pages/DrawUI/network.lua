@@ -137,7 +137,13 @@ Network:add_bool_option("Chat mocker", "BS_Network_ChatMocker", function (state)
 			utils.send_chat(finalText, false)
         end)
     end
-end)
+end):setHint(
+[[
+Example:
+- I wanna money drop at airport!!!
+- I wAnNA mOnEy drOp At AiRPort!!!
+]]
+)
 
 Network:add_separator("Misc", "BS_Network_Misc")
 

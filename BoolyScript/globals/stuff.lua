@@ -1,4 +1,6 @@
-Stuff = {}
+Stuff = {
+    ramps = {}
+}
 
 ParsedFiles = {
     weapons = {},

@@ -15,7 +15,7 @@ function callbacks.requestControl(entity, onSuccess)
         NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(entity)
         ticks = ticks + 1
     end
-    if NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(entity) then onSuccess() return end
+    if NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(entity) then onSuccess(entity) return end
 end
 
 function callbacks.requestModel(hash, onSuccess)
