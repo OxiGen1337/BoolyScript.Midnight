@@ -18,7 +18,6 @@ local godmode = Submenu.add_static_submenu("Invincibility", "BS_Self_Godmode_Sub
         if state then 
             task.createTask("BS_Self_Godmode_Detailed", 0.0, nil, function ()
                 ENTITY.SET_ENTITY_PROOFS(PLAYER.PLAYER_PED_ID(), proofs.Bullet, proofs.Fire, proofs.Explosion, proofs.Collision, proofs.Melee, proofs.Steam, false, false)
-                log.dbg(proofs.Bullet)
             end)
         elseif task.exists("BS_Self_Godmode_Detailed") then
             task.removeTask("BS_Self_Godmode_Detailed")
@@ -125,7 +124,6 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe_Submen
         local drawableVariations = PED.GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(ped, ID)
         local textures
         local variations = submenu:add_num_option("Variation", "BS_Self_Wardrobe_" .. name .."_Variation", 0, drawableVariations - 1, 1, function (val)
-            log.dbg(val)
             local ped = PLAYER.PLAYER_PED_ID()
             PED.SET_PED_PROP_INDEX(ped, ID, val, 0, true, false)
             local textureVariations = PED.GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(ped, ID, val)
@@ -170,7 +168,6 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe_Submen
         local drawableVariations = PED.GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS(ped, ID)
         local textures
         local variations = submenu:add_num_option("Variation", "BS_Self_Wardrobe_" .. name .."_Variation", 0, drawableVariations - 1, 1, function (val)
-            log.dbg(val)
             local ped = PLAYER.PLAYER_PED_ID()
             PED.SET_PED_COMPONENT_VARIATION(ped, ID, val, 0, 0)
             local textureVariations = PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, val)

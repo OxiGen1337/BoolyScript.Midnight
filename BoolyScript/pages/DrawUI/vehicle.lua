@@ -343,7 +343,7 @@ Vehicle:add_click_option("Explode vehicle", "BS_Vehicle_RemoteActions_ExplodeVeh
     end)
 end)
 
-Vehicle:add_click_option("Invert controls", "BS_Vehicle_RemoteActions_InvertControls", function (state)
+Vehicle:add_bool_option("Invert controls", "BS_Vehicle_RemoteActions_InvertControls", function (state)
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
     callbacks.requestControl(vehicle, function ()
         VEHICLE._SET_VEHICLE_CONTROLS_INVERTED(vehicle, state)

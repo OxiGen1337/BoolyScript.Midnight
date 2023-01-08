@@ -22,13 +22,13 @@ scripts.globals = {}
 scripts.globals['kosatkaMain'] = 262145
 
 scripts.globals['setKosatkaMissileCooldown'] = function(value)
-    log.error("SCRIPTS", "\'setKosatkaMissileCooldown\' global hasn't been updated yet.")
-    -- script_global:new(262145):at(29439):set_float(value)
+    -- log.error("SCRIPTS", "\'setKosatkaMissileCooldown\' global hasn't been updated yet.")
+    script_global:new(scripts.globals['kosatkaMain']):at(30187):set_float(value)
 end
 
 scripts.globals['setKosatkaMissileRange'] = function (value)
     -- log.error("SCRIPTS", "\'setKosatkaMissileRange\' global hasn't been updated yet.")
-    script_global:new(scripts.globals['kosatkaMain']):at(29440):set_float(value)
+    script_global:new(scripts.globals['kosatkaMain']):at(30188):set_float(value)
 end
 
 --PLAYERS

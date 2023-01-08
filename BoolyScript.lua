@@ -1,6 +1,6 @@
 
-BSVERSION = "[Midnight] [0.1]"
-DEBUG = false
+BSVERSION = "[Midnight] [0.2]"
+DEBUG = true
 
 local temp = require
 
@@ -40,7 +40,7 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         }
         for _, path in ipairs(t) do
             if not fs.directory_exists(path) then 
-                filesys.createDir(path)
+                filesys.createDir(path:gsub(" ","_"))
             end
         end
     end
@@ -51,6 +51,9 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         end)
         parse.json(paths.files.weaponHashes, function (content)
             ParsedFiles['weaponHashes'] = content
+        end)
+        parse.json(paths.files.peds, function (content)
+            ParsedFiles['peds'] = content
         end)
     end
     do -- Loading all pages added in 'pages' folder; it only loads init.lua so that file has to require everything that's in the page

@@ -12,7 +12,7 @@ task.createTask = function (hash_s, delay_n, count_n, callback_f)
         return false
     end
     activeTasks[hash_s] = {delay = delay_n, callback = callback_f, count = count_n}
-    log.dbg(string.format("[TASKS] Created task with name \'%s\'.", hash_s))
+    -- log.dbg(string.format("[TASKS] Created task with name \'%s\'.", hash_s))
     return true
 end
 
@@ -22,7 +22,7 @@ task.executeAsScript = function (hash_s, callback_f)
         return false
     end
     activeTasks[hash_s] = {delay = 0.0, callback = callback_f, count = 1}
-    log.dbg(string.format("[TASKS] Created as script execution task \'%s\'.", hash_s))
+    -- log.dbg(string.format("[TASKS] Created as script execution task \'%s\'.", hash_s))
     return true
 end
 
@@ -32,7 +32,7 @@ task.removeTask = function (hash_s)
         return false
     end
     activeTasks[hash_s] = nil
-    log.dbg(string.format("[TASKS] Removed task with name \'%s\'.", hash_s))
+    -- log.dbg(string.format("[TASKS] Removed task with name \'%s\'.", hash_s))
     return true
 end
 

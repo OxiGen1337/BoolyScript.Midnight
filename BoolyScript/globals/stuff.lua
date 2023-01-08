@@ -1,8 +1,10 @@
 Stuff = {
-    ramps = {}
+    ramps = {},
+    bodyguards = {},
 }
 
 ParsedFiles = {
     weapons = {},
     weaponHashes = {},
+    peds = {},
 }

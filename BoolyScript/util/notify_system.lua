@@ -1,4 +1,4 @@
-local DEBUG_ON = false
+local DEBUG_ON = true
 
 local consoleColors = 
 {

@@ -40,7 +40,7 @@ listener = {}
 
 listener.register = function (hash_s, eventID, callback_t)
     table.insert(onEventFunctions[eventID], {hash = hash_s, callback = callback_t})
-    log.dbg(string.format("[EVENTS_LISTENER] Successfully registered listener with hash: %s", hash_s))
+    -- log.dbg(string.format("[EVENTS_LISTENER] Successfully registered listener with hash: %s", hash_s))
     return true
 end
 
@@ -48,7 +48,7 @@ listener.remove = function (hash_s, eventID)
     for ID, t in ipairs(onEventFunctions[eventID]) do
         if t["hash"] == hash_s then
             table.remove(onEventFunctions[eventID], ID)
-            log.dbg("[EVENTS_LISTENER] " .. string.format("Successfully removed listener with hash: %s.", hash_s))
+            -- log.dbg("[EVENTS_LISTENER] " .. string.format("Successfully removed listener with hash: %s.", hash_s))
             return true
         end
     end

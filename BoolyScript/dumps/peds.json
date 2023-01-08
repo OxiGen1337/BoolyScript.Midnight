@@ -1,0 +1,4077 @@
+[ {
+  "hash": 3462393972,
+  "name": "A_C_Boar",
+  "type": "Animal"
+}, {
+  "hash": 1462895032,
+  "name": "A_C_Cat_01",
+  "type": "Animal"
+}, {
+  "hash": 2864127842,
+  "name": "A_C_Chickenhawk",
+  "type": "Animal"
+}, {
+  "hash": 2825402133,
+  "name": "A_C_Chimp",
+  "type": "civmale"
+}, {
+  "hash": 2114741418,
+  "name": "A_C_Chimp_02",
+  "type": "civmale"
+}, {
+  "hash": 351016938,
+  "name": "A_C_Chop",
+  "type": "Animal"
+}, {
+  "hash": 1039404993,
+  "name": "A_C_Chop_02",
+  "type": "Animal"
+}, {
+  "hash": 1457690978,
+  "name": "A_C_Cormorant",
+  "type": "Animal"
+}, {
+  "hash": 4244282910,
+  "name": "A_C_Cow",
+  "type": "Animal"
+}, {
+  "hash": 1682622302,
+  "name": "A_C_Coyote",
+  "type": "Animal"
+}, {
+  "hash": 402729631,
+  "name": "A_C_Crow",
+  "type": "Animal"
+}, {
+  "hash": 3630914197,
+  "name": "A_C_Deer",
+  "type": "Animal"
+}, {
+  "hash": 2344268885,
+  "name": "A_C_Dolphin",
+  "type": "Animal"
+}, {
+  "hash": 802685111,
+  "name": "A_C_Fish",
+  "type": "Animal"
+}, {
+  "hash": 1794449327,
+  "name": "A_C_Hen",
+  "type": "Animal"
+}, {
+  "hash": 1193010354,
+  "name": "A_C_HumpBack",
+  "type": "Animal"
+}, {
+  "hash": 1318032802,
+  "name": "A_C_Husky",
+  "type": "Animal"
+}, {
+  "hash": 2374682809,
+  "name": "A_C_KillerWhale",
+  "type": "Animal"
+}, {
+  "hash": 307287994,
+  "name": "A_C_MtLion",
+  "type": "Animal"
+}, {
+  "hash": 3877461608,
+  "name": "A_C_Panther",
+  "type": "Animal"
+}, {
+  "hash": 2971380566,
+  "name": "A_C_Pig",
+  "type": "Animal"
+}, {
+  "hash": 111281960,
+  "name": "A_C_Pigeon",
+  "type": "Animal"
+}, {
+  "hash": 1125994524,
+  "name": "A_C_Poodle",
+  "type": "Animal"
+}, {
+  "hash": 1832265812,
+  "name": "A_C_Pug",
+  "type": "Animal"
+}, {
+  "hash": 3753204865,
+  "name": "A_C_Rabbit_01",
+  "type": "Animal"
+}, {
+  "hash": 1553815115,
+  "name": "A_C_Rabbit_02",
+  "type": "Animal"
+}, {
+  "hash": 3283429734,
+  "name": "A_C_Rat",
+  "type": "Animal"
+}, {
+  "hash": 882848737,
+  "name": "A_C_Retriever",
+  "type": "Animal"
+}, {
+  "hash": 3268439891,
+  "name": "A_C_Rhesus",
+  "type": "civmale"
+}, {
+  "hash": 2506301981,
+  "name": "A_C_Rottweiler",
+  "type": "Animal"
+}, {
+  "hash": 3549666813,
+  "name": "A_C_Seagull",
+  "type": "Animal"
+}, {
+  "hash": 1015224100,
+  "name": "A_C_SharkHammer",
+  "type": "Animal"
+}, {
+  "hash": 113504370,
+  "name": "A_C_SharkTiger",
+  "type": "Animal"
+}, {
+  "hash": 1126154828,
+  "name": "A_C_shepherd",
+  "type": "Animal"
+}, {
+  "hash": 2705875277,
+  "name": "A_C_Stingray",
+  "type": "Animal"
+}, {
+  "hash": 2910340283,
+  "name": "A_C_Westy",
+  "type": "Animal"
+}, {
+  "hash": 808859815,
+  "name": "A_F_M_Beach_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3188223741,
+  "name": "A_F_M_BevHills_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2688103263,
+  "name": "A_F_M_BevHills_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1004114196,
+  "name": "A_F_M_BodyBuild_01",
+  "type": "civmale"
+}, {
+  "hash": 532905404,
+  "name": "A_F_M_Business_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1699403886,
+  "name": "A_F_M_Downtown_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2638072698,
+  "name": "A_F_M_EastSA_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1674107025,
+  "name": "A_F_M_EastSA_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4206136267,
+  "name": "A_F_M_FatBla_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3050275044,
+  "name": "A_F_M_FatCult_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 951767867,
+  "name": "A_F_M_FatWhite_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1956335717,
+  "name": "A_F_M_GenBiker_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1261149561,
+  "name": "A_F_M_GenStreet_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1388848350,
+  "name": "A_F_M_KTown_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1090617681,
+  "name": "A_F_M_KTown_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 379310561,
+  "name": "A_F_M_ProlHost_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3725461865,
+  "name": "A_F_M_Salton_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2962707003,
+  "name": "A_F_M_SkidRow_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1951946145,
+  "name": "A_F_M_SouCent_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4079145784,
+  "name": "A_F_M_SouCent_02",
+  "type": "civmale"
+}, {
+  "hash": 3454621138,
+  "name": "A_F_M_SouCentMC_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1347814329,
+  "name": "A_F_M_Tourist_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1224306523,
+  "name": "A_F_M_Tramp_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2359345766,
+  "name": "A_F_M_TrampBeac_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1640504453,
+  "name": "A_F_O_GenStreet_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3134700416,
+  "name": "A_F_O_Indian_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1204772502,
+  "name": "A_F_O_KTown_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3439295882,
+  "name": "A_F_O_Salton_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1039800368,
+  "name": "A_F_O_SouCent_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2775443222,
+  "name": "A_F_O_SouCent_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3349113128,
+  "name": "A_F_Y_Beach_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3105934379,
+  "name": "A_F_Y_Beach_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1146800212,
+  "name": "A_F_Y_BevHills_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1546450936,
+  "name": "A_F_Y_BevHills_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 549978415,
+  "name": "A_F_Y_BevHills_03",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 920595805,
+  "name": "A_F_Y_BevHills_04",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2464671085,
+  "name": "A_F_Y_Bevhills_05",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 664399832,
+  "name": "A_F_Y_Business_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 826475330,
+  "name": "A_F_Y_Business_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2928082356,
+  "name": "A_F_Y_Business_03",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3083210802,
+  "name": "A_F_Y_Business_04",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4245210443,
+  "name": "A_F_Y_CarClub_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1744231373,
+  "name": "A_F_Y_ClubCust_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 357447289,
+  "name": "A_F_Y_ClubCust_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 10751269,
+  "name": "A_F_Y_ClubCust_03",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 786557344,
+  "name": "A_F_Y_ClubCust_04",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4121954205,
+  "name": "A_F_Y_EastSA_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 70821038,
+  "name": "A_F_Y_EastSA_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1371553700,
+  "name": "A_F_Y_EastSA_03",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1755064960,
+  "name": "A_F_Y_Epsilon_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1348537411,
+  "name": "A_F_Y_FemaleAgent",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1165780219,
+  "name": "A_F_Y_Fitness_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 331645324,
+  "name": "A_F_Y_Fitness_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2434503858,
+  "name": "A_F_Y_GenCasPat_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 793439294,
+  "name": "A_F_Y_GenHot_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2111372120,
+  "name": "A_F_Y_Golfer_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 813893651,
+  "name": "A_F_Y_Hiker_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 343259175,
+  "name": "A_F_Y_Hippie_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2185745201,
+  "name": "A_F_Y_Hipster_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2549481101,
+  "name": "A_F_Y_Hipster_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2780469782,
+  "name": "A_F_Y_Hipster_03",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 429425116,
+  "name": "A_F_Y_Hipster_04",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 153984193,
+  "name": "A_F_Y_Indian_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3675473203,
+  "name": "A_F_Y_Juggalo_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3343476521,
+  "name": "A_F_Y_Runner_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1064866854,
+  "name": "A_F_Y_RurMeth_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3680420864,
+  "name": "A_F_Y_SCDressy_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1767892582,
+  "name": "A_F_Y_Skater_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 279228114,
+  "name": "A_F_Y_SmartCasPat_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 744758650,
+  "name": "A_F_Y_SouCent_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1519319503,
+  "name": "A_F_Y_SouCent_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2276611093,
+  "name": "A_F_Y_SouCent_03",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1152702280,
+  "name": "A_F_Y_StudioParty_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1984313950,
+  "name": "A_F_Y_StudioParty_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1426880966,
+  "name": "A_F_Y_Tennis_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2633130371,
+  "name": "A_F_Y_Topless_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1446741360,
+  "name": "A_F_Y_Tourist_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2435054400,
+  "name": "A_F_Y_Tourist_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 435429221,
+  "name": "A_F_Y_Vinewood_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3669401835,
+  "name": "A_F_Y_Vinewood_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 933092024,
+  "name": "A_F_Y_Vinewood_03",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4209271110,
+  "name": "A_F_Y_Vinewood_04",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3290105390,
+  "name": "A_F_Y_Yoga_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1413662315,
+  "name": "A_M_M_ACult_01",
+  "type": "civmale"
+}, {
+  "hash": 3513928062,
+  "name": "A_M_M_AfriAmer_01",
+  "type": "civmale"
+}, {
+  "hash": 3645767658,
+  "name": "A_M_M_BankRobber_01",
+  "type": "civmale"
+}, {
+  "hash": 1077785853,
+  "name": "A_M_M_Beach_01",
+  "type": "civmale"
+}, {
+  "hash": 2021631368,
+  "name": "A_M_M_Beach_02",
+  "type": "civmale"
+}, {
+  "hash": 1423699487,
+  "name": "A_M_M_BevHills_01",
+  "type": "civmale"
+}, {
+  "hash": 1068876755,
+  "name": "A_M_M_BevHills_02",
+  "type": "civmale"
+}, {
+  "hash": 2120901815,
+  "name": "A_M_M_Business_01",
+  "type": "civmale"
+}, {
+  "hash": 4188468543,
+  "name": "A_M_M_EastSA_01",
+  "type": "civmale"
+}, {
+  "hash": 131961260,
+  "name": "A_M_M_EastSA_02",
+  "type": "civmale"
+}, {
+  "hash": 2488675799,
+  "name": "A_M_M_Farmer_01",
+  "type": "civmale"
+}, {
+  "hash": 1641152947,
+  "name": "A_M_M_FatLatin_01",
+  "type": "civmale"
+}, {
+  "hash": 3739319678,
+  "name": "A_M_M_GenBiker_01",
+  "type": "civmale"
+}, {
+  "hash": 115168927,
+  "name": "A_M_M_GenFat_01",
+  "type": "civmale"
+}, {
+  "hash": 330231874,
+  "name": "A_M_M_GenFat_02",
+  "type": "civmale"
+}, {
+  "hash": 2850754114,
+  "name": "A_M_M_Golfer_01",
+  "type": "civmale"
+}, {
+  "hash": 1809430156,
+  "name": "A_M_M_HasJew_01",
+  "type": "civmale"
+}, {
+  "hash": 1822107721,
+  "name": "A_M_M_Hillbilly_01",
+  "type": "civmale"
+}, {
+  "hash": 2064532783,
+  "name": "A_M_M_Hillbilly_02",
+  "type": "civmale"
+}, {
+  "hash": 3721046572,
+  "name": "A_M_M_Indian_01",
+  "type": "civmale"
+}, {
+  "hash": 3512565361,
+  "name": "A_M_M_KTown_01",
+  "type": "civmale"
+}, {
+  "hash": 803106487,
+  "name": "A_M_M_Malibu_01",
+  "type": "civmale"
+}, {
+  "hash": 3716251309,
+  "name": "A_M_M_MexCntry_01",
+  "type": "civmale"
+}, {
+  "hash": 2992445106,
+  "name": "A_M_M_MexLabor_01",
+  "type": "civmale"
+}, {
+  "hash": 1561088805,
+  "name": "A_M_M_MLCrisis_01",
+  "type": "civmale"
+}, {
+  "hash": 1746653202,
+  "name": "A_M_M_OG_Boss_01",
+  "type": "civmale"
+}, {
+  "hash": 3972697109,
+  "name": "A_M_M_Paparazzi_01",
+  "type": "civmale"
+}, {
+  "hash": 2849617566,
+  "name": "A_M_M_Polynesian_01",
+  "type": "civmale"
+}, {
+  "hash": 2534589327,
+  "name": "A_M_M_ProlHost_01",
+  "type": "civmale"
+}, {
+  "hash": 1001210244,
+  "name": "A_M_M_RurMeth_01",
+  "type": "civmale"
+}, {
+  "hash": 1328415626,
+  "name": "A_M_M_Salton_01",
+  "type": "civmale"
+}, {
+  "hash": 1626646295,
+  "name": "A_M_M_Salton_02",
+  "type": "civmale"
+}, {
+  "hash": 2995538501,
+  "name": "A_M_M_Salton_03",
+  "type": "civmale"
+}, {
+  "hash": 2521108919,
+  "name": "A_M_M_Salton_04",
+  "type": "civmale"
+}, {
+  "hash": 3654768780,
+  "name": "A_M_M_Skater_01",
+  "type": "civmale"
+}, {
+  "hash": 32417469,
+  "name": "A_M_M_Skidrow_01",
+  "type": "civmale"
+}, {
+  "hash": 193817059,
+  "name": "A_M_M_SoCenLat_01",
+  "type": "civmale"
+}, {
+  "hash": 1750583735,
+  "name": "A_M_M_SouCent_01",
+  "type": "civmale"
+}, {
+  "hash": 2674735073,
+  "name": "A_M_M_SouCent_02",
+  "type": "civmale"
+}, {
+  "hash": 2346291386,
+  "name": "A_M_M_SouCent_03",
+  "type": "civmale"
+}, {
+  "hash": 3271294718,
+  "name": "A_M_M_SouCent_04",
+  "type": "civmale"
+}, {
+  "hash": 3265820418,
+  "name": "A_M_M_StLat_02",
+  "type": "civmale"
+}, {
+  "hash": 2342084645,
+  "name": "A_M_M_StudioParty_01",
+  "type": "civmale"
+}, {
+  "hash": 1416254276,
+  "name": "A_M_M_Tennis_01",
+  "type": "civmale"
+}, {
+  "hash": 3365863812,
+  "name": "A_M_M_Tourist_01",
+  "type": "civmale"
+}, {
+  "hash": 516505552,
+  "name": "A_M_M_Tramp_01",
+  "type": "civmale"
+}, {
+  "hash": 1404403376,
+  "name": "A_M_M_TrampBeac_01",
+  "type": "civmale"
+}, {
+  "hash": 3773208948,
+  "name": "A_M_M_TranVest_01",
+  "type": "civmale"
+}, {
+  "hash": 4144940484,
+  "name": "A_M_M_TranVest_02",
+  "type": "civmale"
+}, {
+  "hash": 1430544400,
+  "name": "A_M_O_ACult_01",
+  "type": "civmale"
+}, {
+  "hash": 1268862154,
+  "name": "A_M_O_ACult_02",
+  "type": "civmale"
+}, {
+  "hash": 2217202584,
+  "name": "A_M_O_Beach_01",
+  "type": "civmale"
+}, {
+  "hash": 3243462130,
+  "name": "A_M_O_Beach_02",
+  "type": "civmale"
+}, {
+  "hash": 2908022696,
+  "name": "A_M_O_GenStreet_01",
+  "type": "civmale"
+}, {
+  "hash": 355916122,
+  "name": "A_M_O_KTown_01",
+  "type": "civmale"
+}, {
+  "hash": 539004493,
+  "name": "A_M_O_Salton_01",
+  "type": "civmale"
+}, {
+  "hash": 718836251,
+  "name": "A_M_O_SouCent_01",
+  "type": "civmale"
+}, {
+  "hash": 1082572151,
+  "name": "A_M_O_SouCent_02",
+  "type": "civmale"
+}, {
+  "hash": 238213328,
+  "name": "A_M_O_SouCent_03",
+  "type": "civmale"
+}, {
+  "hash": 390939205,
+  "name": "A_M_O_Tramp_01",
+  "type": "civmale"
+}, {
+  "hash": 3043264555,
+  "name": "A_M_Y_ACult_01",
+  "type": "civmale"
+}, {
+  "hash": 2162532142,
+  "name": "A_M_Y_ACult_02",
+  "type": "civmale"
+}, {
+  "hash": 3523131524,
+  "name": "A_M_Y_Beach_01",
+  "type": "civmale"
+}, {
+  "hash": 600300561,
+  "name": "A_M_Y_Beach_02",
+  "type": "civmale"
+}, {
+  "hash": 3886638041,
+  "name": "A_M_Y_Beach_03",
+  "type": "civmale"
+}, {
+  "hash": 3105523388,
+  "name": "A_M_Y_Beach_04",
+  "type": "civmale"
+}, {
+  "hash": 2114544056,
+  "name": "A_M_Y_BeachVesp_01",
+  "type": "civmale"
+}, {
+  "hash": 3394697810,
+  "name": "A_M_Y_BeachVesp_02",
+  "type": "civmale"
+}, {
+  "hash": 1982350912,
+  "name": "A_M_Y_BevHills_01",
+  "type": "civmale"
+}, {
+  "hash": 1720428295,
+  "name": "A_M_Y_BevHills_02",
+  "type": "civmale"
+}, {
+  "hash": 933205398,
+  "name": "A_M_Y_BreakDance_01",
+  "type": "civmale"
+}, {
+  "hash": 2597531625,
+  "name": "A_M_Y_BusiCas_01",
+  "type": "civmale"
+}, {
+  "hash": 3382649284,
+  "name": "A_M_Y_Business_01",
+  "type": "civmale"
+}, {
+  "hash": 3014915558,
+  "name": "A_M_Y_Business_02",
+  "type": "civmale"
+}, {
+  "hash": 2705543429,
+  "name": "A_M_Y_Business_03",
+  "type": "civmale"
+}, {
+  "hash": 1751120084,
+  "name": "A_M_Y_CarClub_01",
+  "type": "civmale"
+}, {
+  "hash": 2813792322,
+  "name": "A_M_Y_ClubCust_01",
+  "type": "civmale"
+}, {
+  "hash": 3324988722,
+  "name": "A_M_Y_ClubCust_02",
+  "type": "civmale"
+}, {
+  "hash": 3572886207,
+  "name": "A_M_Y_ClubCust_03",
+  "type": "civmale"
+}, {
+  "hash": 3793814805,
+  "name": "A_M_Y_ClubCust_04",
+  "type": "civmale"
+}, {
+  "hash": 4257633223,
+  "name": "A_M_Y_Cyclist_01",
+  "type": "civmale"
+}, {
+  "hash": 4282288299,
+  "name": "A_M_Y_DHill_01",
+  "type": "civmale"
+}, {
+  "hash": 766375082,
+  "name": "A_M_Y_Downtown_01",
+  "type": "civmale"
+}, {
+  "hash": 2756120947,
+  "name": "A_M_Y_EastSA_01",
+  "type": "civmale"
+}, {
+  "hash": 377976310,
+  "name": "A_M_Y_EastSA_02",
+  "type": "civmale"
+}, {
+  "hash": 2010389054,
+  "name": "A_M_Y_Epsilon_01",
+  "type": "civmale"
+}, {
+  "hash": 2860711835,
+  "name": "A_M_Y_Epsilon_02",
+  "type": "civmale"
+}, {
+  "hash": 3519864886,
+  "name": "A_M_Y_Gay_01",
+  "type": "civmale"
+}, {
+  "hash": 2775713665,
+  "name": "A_M_Y_Gay_02",
+  "type": "civmale"
+}, {
+  "hash": 2600762591,
+  "name": "A_M_Y_GenCasPat_01",
+  "type": "civmale"
+}, {
+  "hash": 2557996913,
+  "name": "A_M_Y_GenStreet_01",
+  "type": "civmale"
+}, {
+  "hash": 891398354,
+  "name": "A_M_Y_GenStreet_02",
+  "type": "civmale"
+}, {
+  "hash": 3609190705,
+  "name": "A_M_Y_Golfer_01",
+  "type": "civmale"
+}, {
+  "hash": 3782053633,
+  "name": "A_M_Y_HasJew_01",
+  "type": "civmale"
+}, {
+  "hash": 1358380044,
+  "name": "A_M_Y_Hiker_01",
+  "type": "civmale"
+}, {
+  "hash": 2097407511,
+  "name": "A_M_Y_Hippy_01",
+  "type": "civmale"
+}, {
+  "hash": 587703123,
+  "name": "A_M_Y_Hipster_01",
+  "type": "civmale"
+}, {
+  "hash": 349505262,
+  "name": "A_M_Y_Hipster_02",
+  "type": "civmale"
+}, {
+  "hash": 1312913862,
+  "name": "A_M_Y_Hipster_03",
+  "type": "civmale"
+}, {
+  "hash": 706935758,
+  "name": "A_M_Y_Indian_01",
+  "type": "civmale"
+}, {
+  "hash": 767028979,
+  "name": "A_M_Y_Jetski_01",
+  "type": "civmale"
+}, {
+  "hash": 2445950508,
+  "name": "A_M_Y_Juggalo_01",
+  "type": "civmale"
+}, {
+  "hash": 452351020,
+  "name": "A_M_Y_KTown_01",
+  "type": "civmale"
+}, {
+  "hash": 696250687,
+  "name": "A_M_Y_KTown_02",
+  "type": "civmale"
+}, {
+  "hash": 321657486,
+  "name": "A_M_Y_Latino_01",
+  "type": "civmale"
+}, {
+  "hash": 1768677545,
+  "name": "A_M_Y_MethHead_01",
+  "type": "civmale"
+}, {
+  "hash": 810804565,
+  "name": "A_M_Y_MexThug_01",
+  "type": "civmale"
+}, {
+  "hash": 1694362237,
+  "name": "A_M_Y_MotoX_01",
+  "type": "civmale"
+}, {
+  "hash": 2007797722,
+  "name": "A_M_Y_MotoX_02",
+  "type": "civmale"
+}, {
+  "hash": 1264920838,
+  "name": "A_M_Y_MusclBeac_01",
+  "type": "civmale"
+}, {
+  "hash": 3374523516,
+  "name": "A_M_Y_MusclBeac_02",
+  "type": "civmale"
+}, {
+  "hash": 2206530719,
+  "name": "A_M_Y_Polynesian_01",
+  "type": "civmale"
+}, {
+  "hash": 4116817094,
+  "name": "A_M_Y_RoadCyc_01",
+  "type": "civmale"
+}, {
+  "hash": 623927022,
+  "name": "A_M_Y_Runner_01",
+  "type": "civmale"
+}, {
+  "hash": 2218630415,
+  "name": "A_M_Y_Runner_02",
+  "type": "civmale"
+}, {
+  "hash": 3613420592,
+  "name": "A_M_Y_Salton_01",
+  "type": "civmale"
+}, {
+  "hash": 3250873975,
+  "name": "A_M_Y_Skater_01",
+  "type": "civmale"
+}, {
+  "hash": 2952446692,
+  "name": "A_M_Y_Skater_02",
+  "type": "civmale"
+}, {
+  "hash": 553826858,
+  "name": "A_M_Y_SmartCasPat_01",
+  "type": "civmale"
+}, {
+  "hash": 3877027275,
+  "name": "A_M_Y_SouCent_01",
+  "type": "civmale"
+}, {
+  "hash": 2896414922,
+  "name": "A_M_Y_SouCent_02",
+  "type": "civmale"
+}, {
+  "hash": 3287349092,
+  "name": "A_M_Y_SouCent_03",
+  "type": "civmale"
+}, {
+  "hash": 2318861297,
+  "name": "A_M_Y_SouCent_04",
+  "type": "civmale"
+}, {
+  "hash": 3482496489,
+  "name": "A_M_Y_StBla_01",
+  "type": "civmale"
+}, {
+  "hash": 2563194959,
+  "name": "A_M_Y_StBla_02",
+  "type": "civmale"
+}, {
+  "hash": 2255803900,
+  "name": "A_M_Y_StLat_01",
+  "type": "civmale"
+}, {
+  "hash": 2989564573,
+  "name": "A_M_Y_StudioParty_01",
+  "type": "civmale"
+}, {
+  "hash": 605602864,
+  "name": "A_M_Y_StWhi_01",
+  "type": "civmale"
+}, {
+  "hash": 919005580,
+  "name": "A_M_Y_StWhi_02",
+  "type": "civmale"
+}, {
+  "hash": 3072929548,
+  "name": "A_M_Y_Sunbathe_01",
+  "type": "civmale"
+}, {
+  "hash": 3938633710,
+  "name": "A_M_Y_Surfer_01",
+  "type": "civmale"
+}, {
+  "hash": 2619283993,
+  "name": "A_M_Y_TattooCust_01",
+  "type": "civmale"
+}, {
+  "hash": 3247667175,
+  "name": "A_M_Y_VinDouche_01",
+  "type": "civmale"
+}, {
+  "hash": 1264851357,
+  "name": "A_M_Y_Vinewood_01",
+  "type": "civmale"
+}, {
+  "hash": 1561705728,
+  "name": "A_M_Y_Vinewood_02",
+  "type": "civmale"
+}, {
+  "hash": 534725268,
+  "name": "A_M_Y_Vinewood_03",
+  "type": "civmale"
+}, {
+  "hash": 835315305,
+  "name": "A_M_Y_Vinewood_04",
+  "type": "civmale"
+}, {
+  "hash": 2869588309,
+  "name": "A_M_Y_Yoga_01",
+  "type": "civmale"
+}, {
+  "hash": 2515474659,
+  "name": "CS_AmandaTownley",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3881194279,
+  "name": "CS_Andreas",
+  "type": "civmale"
+}, {
+  "hash": 650367097,
+  "name": "cs_ashley",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2539657518,
+  "name": "CS_Bankman",
+  "type": "civmale"
+}, {
+  "hash": 1767447799,
+  "name": "CS_Barry",
+  "type": "civmale"
+}, {
+  "hash": 3027157846,
+  "name": "CS_Beverly",
+  "type": "civmale"
+}, {
+  "hash": 4024807398,
+  "name": "CS_Brad",
+  "type": "civmale"
+}, {
+  "hash": 1915268960,
+  "name": "CS_BradCadaver",
+  "type": "civmale"
+}, {
+  "hash": 2362341647,
+  "name": "CS_Carbuyer",
+  "type": "civmale"
+}, {
+  "hash": 3935738944,
+  "name": "CS_Casey",
+  "type": "civmale"
+}, {
+  "hash": 819699067,
+  "name": "CS_ChengSr",
+  "type": "civmale"
+}, {
+  "hash": 3253960934,
+  "name": "CS_ChrisFormage",
+  "type": "civmale"
+}, {
+  "hash": 3687553076,
+  "name": "CS_Clay",
+  "type": "civmale"
+}, {
+  "hash": 216536661,
+  "name": "CS_Dale",
+  "type": "civmale"
+}, {
+  "hash": 2240226444,
+  "name": "CS_DaveNorton",
+  "type": "civmale"
+}, {
+  "hash": 3973074921,
+  "name": "cs_debra",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1870669624,
+  "name": "cs_denise",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 788622594,
+  "name": "CS_Devin",
+  "type": "civmale"
+}, {
+  "hash": 1198698306,
+  "name": "CS_Dom",
+  "type": "civmale"
+}, {
+  "hash": 1012965715,
+  "name": "CS_Dreyfuss",
+  "type": "civmale"
+}, {
+  "hash": 2745392175,
+  "name": "CS_DrFriedlander",
+  "type": "civmale"
+}, {
+  "hash": 3177620756,
+  "name": "CS_DrFriedlander_02",
+  "type": "civmale"
+}, {
+  "hash": 1191403201,
+  "name": "CS_Fabien",
+  "type": "civmale"
+}, {
+  "hash": 1482427218,
+  "name": "CS_FBISuit_01",
+  "type": "civmale"
+}, {
+  "hash": 103106535,
+  "name": "CS_Floyd",
+  "type": "civmale"
+}, {
+  "hash": 261428209,
+  "name": "CS_Guadalope",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3272931111,
+  "name": "cs_gurk",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1531218220,
+  "name": "CS_Hunter",
+  "type": "civmale"
+}, {
+  "hash": 808778210,
+  "name": "CS_Janet",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1145088004,
+  "name": "CS_JewelAss",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 60192701,
+  "name": "CS_JimmyBoston",
+  "type": "civmale"
+}, {
+  "hash": 3100414644,
+  "name": "CS_JimmyDiSanto",
+  "type": "civmale"
+}, {
+  "hash": 1836024091,
+  "name": "CS_JimmyDiSanto2",
+  "type": "civmale"
+}, {
+  "hash": 4036845097,
+  "name": "CS_JoeMinuteMan",
+  "type": "civmale"
+}, {
+  "hash": 4203395201,
+  "name": "CS_JohnnyKlebitz",
+  "type": "civmale"
+}, {
+  "hash": 1167549130,
+  "name": "CS_Josef",
+  "type": "civmale"
+}, {
+  "hash": 1158606749,
+  "name": "CS_Josh",
+  "type": "civmale"
+}, {
+  "hash": 1269774364,
+  "name": "CS_Karen_Daniels",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1162230285,
+  "name": "CS_LamarDavis",
+  "type": "civmale"
+}, {
+  "hash": 22425093,
+  "name": "CS_LamarDavis_02",
+  "type": "civmale"
+}, {
+  "hash": 949295643,
+  "name": "CS_Lazlow",
+  "type": "civmale"
+}, {
+  "hash": 1598839101,
+  "name": "CS_Lazlow_2",
+  "type": "civmale"
+}, {
+  "hash": 3046438339,
+  "name": "CS_LesterCrest",
+  "type": "civmale"
+}, {
+  "hash": 191074589,
+  "name": "CS_LesterCrest_2",
+  "type": "civmale"
+}, {
+  "hash": 496317824,
+  "name": "CS_LesterCrest_3",
+  "type": "civmale"
+}, {
+  "hash": 1918178165,
+  "name": "CS_LifeInvad_01",
+  "type": "civmale"
+}, {
+  "hash": 1477887514,
+  "name": "CS_Magenta",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4222842058,
+  "name": "CS_Manuel",
+  "type": "civmale"
+}, {
+  "hash": 1464721716,
+  "name": "CS_Marnie",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1129928304,
+  "name": "CS_MartinMadrazo",
+  "type": "civmale"
+}, {
+  "hash": 161007533,
+  "name": "CS_MaryAnn",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1890499016,
+  "name": "CS_Michelle",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3077190415,
+  "name": "CS_Milton",
+  "type": "civmale"
+}, {
+  "hash": 1167167044,
+  "name": "CS_Molly",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1270514905,
+  "name": "CS_MovPremF_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2372398717,
+  "name": "CS_MovPremMale",
+  "type": "civmale"
+}, {
+  "hash": 3284966005,
+  "name": "CS_MRK",
+  "type": "civmale"
+}, {
+  "hash": 1334976110,
+  "name": "CS_MRS_Thornhill",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3422397391,
+  "name": "CS_MrsPhillips",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1325314544,
+  "name": "CS_Natalia",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2023152276,
+  "name": "CS_NervousRon",
+  "type": "civmale"
+}, {
+  "hash": 731167118,
+  "name": "CS_NervousRon_02",
+  "type": "civmale"
+}, {
+  "hash": 3779566603,
+  "name": "CS_Nigel",
+  "type": "civmale"
+}, {
+  "hash": 518814684,
+  "name": "CS_Old_Man1A",
+  "type": "civmale"
+}, {
+  "hash": 2566514544,
+  "name": "CS_Old_Man2",
+  "type": "civmale"
+}, {
+  "hash": 2339419141,
+  "name": "CS_Omega",
+  "type": "civmale"
+}, {
+  "hash": 2905870170,
+  "name": "CS_Orleans",
+  "type": "civmale"
+}, {
+  "hash": 1798879480,
+  "name": "CS_Paper",
+  "type": "civmale"
+}, {
+  "hash": 3750433537,
+  "name": "CS_Patricia",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 788179139,
+  "name": "CS_Patricia_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1299047806,
+  "name": "CS_Priest",
+  "type": "civmale"
+}, {
+  "hash": 512955554,
+  "name": "CS_ProlSec_02",
+  "type": "civmale"
+}, {
+  "hash": 1179785778,
+  "name": "CS_RussianDrunk",
+  "type": "civmale"
+}, {
+  "hash": 3230888450,
+  "name": "CS_SiemonYetarian",
+  "type": "civmale"
+}, {
+  "hash": 4140949582,
+  "name": "CS_Solomon",
+  "type": "civmale"
+}, {
+  "hash": 2766184958,
+  "name": "CS_SteveHains",
+  "type": "civmale"
+}, {
+  "hash": 2302502917,
+  "name": "CS_Stretch",
+  "type": "civmale"
+}, {
+  "hash": 1123963760,
+  "name": "CS_Tanisha",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2288257085,
+  "name": "CS_TaoCheng",
+  "type": "civmale"
+}, {
+  "hash": 650034742,
+  "name": "CS_TaoCheng2",
+  "type": "civmale"
+}, {
+  "hash": 1397974313,
+  "name": "CS_TaosTranslator",
+  "type": "civmale"
+}, {
+  "hash": 3017289007,
+  "name": "CS_TaosTranslator2",
+  "type": "civmale"
+}, {
+  "hash": 1545995274,
+  "name": "CS_TennisCoach",
+  "type": "civmale"
+}, {
+  "hash": 978452933,
+  "name": "CS_Terry",
+  "type": "civmale"
+}, {
+  "hash": 1776856003,
+  "name": "CS_Tom",
+  "type": "civmale"
+}, {
+  "hash": 2349847778,
+  "name": "CS_TomEpsilon",
+  "type": "civmale"
+}, {
+  "hash": 101298480,
+  "name": "CS_TracyDiSanto",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3529955798,
+  "name": "CS_Wade",
+  "type": "civmale"
+}, {
+  "hash": 3937184496,
+  "name": "CS_Zimbor",
+  "type": "civmale"
+}, {
+  "hash": 2306246977,
+  "name": "CSB_Abigail",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 756308504,
+  "name": "CSB_Agatha",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3614493108,
+  "name": "CSB_Agent",
+  "type": "civmale"
+}, {
+  "hash": 1925887591,
+  "name": "CSB_Alan",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 117698822,
+  "name": "CSB_Anita",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2781317046,
+  "name": "CSB_Anton",
+  "type": "civmale"
+}, {
+  "hash": 3059505486,
+  "name": "CSB_ARY",
+  "type": "civmale"
+}, {
+  "hash": 3927407837,
+  "name": "CSB_ARY_02",
+  "type": "civmale"
+}, {
+  "hash": 1427949869,
+  "name": "CSB_Avery",
+  "type": "civmale"
+}, {
+  "hash": 2315189472,
+  "name": "CSB_AviSchwartzman_02",
+  "type": "civmale"
+}, {
+  "hash": 406009421,
+  "name": "CSB_Avon",
+  "type": "civmale"
+}, {
+  "hash": 3098086931,
+  "name": "CSB_Ballas_Leader",
+  "type": "civmale"
+}, {
+  "hash": 2884567044,
+  "name": "CSB_BallasOG",
+  "type": "civmale"
+}, {
+  "hash": 3397673303,
+  "name": "CSB_Billionaire",
+  "type": "civmale"
+}, {
+  "hash": 1594283837,
+  "name": "CSB_Bogdan",
+  "type": "civmale"
+}, {
+  "hash": 2193587873,
+  "name": "CSB_Bride",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3361779221,
+  "name": "CSB_Brucie2",
+  "type": "civmale"
+}, {
+  "hash": 2006035933,
+  "name": "CSB_Bryony",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2363277399,
+  "name": "CSB_BurgerDrug",
+  "type": "civmale"
+}, {
+  "hash": 71501447,
+  "name": "CSB_Car3guy1",
+  "type": "civmale"
+}, {
+  "hash": 327394568,
+  "name": "CSB_Car3guy2",
+  "type": "civmale"
+}, {
+  "hash": 592225333,
+  "name": "CSB_Celeb_01",
+  "type": "civmale"
+}, {
+  "hash": 2739391114,
+  "name": "CSB_Chef",
+  "type": "civmale"
+}, {
+  "hash": 2229008065,
+  "name": "CSB_Chef_03",
+  "type": "civmale"
+}, {
+  "hash": 2925257274,
+  "name": "CSB_Chef2",
+  "type": "civmale"
+}, {
+  "hash": 2831296918,
+  "name": "CSB_Chin_goon",
+  "type": "civmale"
+}, {
+  "hash": 3404326357,
+  "name": "CSB_Cletus",
+  "type": "civmale"
+}, {
+  "hash": 2595446627,
+  "name": "CSB_Cop",
+  "type": "civmale"
+}, {
+  "hash": 2756669323,
+  "name": "CSB_Customer",
+  "type": "civmale"
+}, {
+  "hash": 1117614067,
+  "name": "CSB_Dax",
+  "type": "civmale"
+}, {
+  "hash": 3045926185,
+  "name": "CSB_Denise_friend",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3957337349,
+  "name": "CSB_Dix",
+  "type": "civmale"
+}, {
+  "hash": 1835399538,
+  "name": "CSB_DJBlaMadon",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 949115134,
+  "name": "CSB_DrugDealer",
+  "type": "civmale"
+}, {
+  "hash": 3533210174,
+  "name": "CSB_EnglishDave",
+  "type": "civmale"
+}, {
+  "hash": 3713623407,
+  "name": "CSB_EnglishDave_02",
+  "type": "civmale"
+}, {
+  "hash": 466359675,
+  "name": "CSB_FOS_rep",
+  "type": "civmale"
+}, {
+  "hash": 2727244247,
+  "name": "CSB_G",
+  "type": "civmale"
+}, {
+  "hash": 345107131,
+  "name": "CSB_GeorginaCheng",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2120159624,
+  "name": "CSB_Golfer_A",
+  "type": "civmale"
+}, {
+  "hash": 3706572452,
+  "name": "CSB_Golfer_B",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2058033618,
+  "name": "CSB_Groom",
+  "type": "civmale"
+}, {
+  "hash": 3898166818,
+  "name": "CSB_Grove_str_dlr",
+  "type": "civmale"
+}, {
+  "hash": 2331262242,
+  "name": "CSB_Gustavo",
+  "type": "civmale"
+}, {
+  "hash": 3969814300,
+  "name": "CSB_Hao",
+  "type": "civmale"
+}, {
+  "hash": 3211915155,
+  "name": "CSB_Hao_02",
+  "type": "civmale"
+}, {
+  "hash": 2675868152,
+  "name": "CSB_HelmsmanPavel",
+  "type": "civmale"
+}, {
+  "hash": 1064198787,
+  "name": "CSB_Huang",
+  "type": "civmale"
+}, {
+  "hash": 1863555924,
+  "name": "CSB_Hugh",
+  "type": "civmale"
+}, {
+  "hash": 1987160310,
+  "name": "CSB_Imani",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3812756443,
+  "name": "CSB_Imran",
+  "type": "civmale"
+}, {
+  "hash": 2053038501,
+  "name": "CSB_IslDJ_00",
+  "type": "civmale"
+}, {
+  "hash": 887084708,
+  "name": "CSB_IslDJ_01",
+  "type": "civmale"
+}, {
+  "hash": 1712601360,
+  "name": "CSB_ISLDJ_02",
+  "type": "civmale"
+}, {
+  "hash": 2440761309,
+  "name": "CSB_IslDJ_03",
+  "type": "civmale"
+}, {
+  "hash": 2998686303,
+  "name": "CSB_IslDJ_04",
+  "type": "civmale"
+}, {
+  "hash": 1153203121,
+  "name": "CSB_JackHowitzer",
+  "type": "civmale"
+}, {
+  "hash": 3254803008,
+  "name": "CSB_Janitor",
+  "type": "civmale"
+}, {
+  "hash": 2727058989,
+  "name": "CSB_JIO",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3702591664,
+  "name": "CSB_JIO_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2108278433,
+  "name": "CSB_Johnny_Guns",
+  "type": "civmale"
+}, {
+  "hash": 3612049721,
+  "name": "CSB_JuanStrickler",
+  "type": "civmale"
+}, {
+  "hash": 1491358515,
+  "name": "CSB_Labrat",
+  "type": "civmale"
+}, {
+  "hash": 1373135346,
+  "name": "CSB_Luchadora",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3166991819,
+  "name": "CSB_Maude",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3685838978,
+  "name": "CSB_MiguelMadrazo",
+  "type": "civmale"
+}, {
+  "hash": 2260860904,
+  "name": "CSB_Mimi",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2700978005,
+  "name": "CSB_MJO",
+  "type": "civmale"
+}, {
+  "hash": 2566126104,
+  "name": "CSB_MJO_02",
+  "type": "civmale"
+}, {
+  "hash": 2560490906,
+  "name": "CSB_Money",
+  "type": "civmale"
+}, {
+  "hash": 2373903780,
+  "name": "CSB_Moodyman_02",
+  "type": "civmale"
+}, {
+  "hash": 1841036427,
+  "name": "CSB_MP_Agent14",
+  "type": "civmale"
+}, {
+  "hash": 2642001958,
+  "name": "CSB_Mrs_R",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3351027244,
+  "name": "CSB_Musician_00",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1631478380,
+  "name": "CSB_MWeather",
+  "type": "civmale"
+}, {
+  "hash": 3235579087,
+  "name": "CSB_Ortega",
+  "type": "civmale"
+}, {
+  "hash": 4095687067,
+  "name": "CSB_Oscar",
+  "type": "civmale"
+}, {
+  "hash": 1528799427,
+  "name": "CSB_Paige",
+  "type": "civmale"
+}, {
+  "hash": 2564310175,
+  "name": "CSB_Party_Promo",
+  "type": "civmale"
+}, {
+  "hash": 1635617250,
+  "name": "CSB_Popov",
+  "type": "civmale"
+}, {
+  "hash": 793443893,
+  "name": "CSB_PornDudes",
+  "type": "civmale"
+}, {
+  "hash": 4027271643,
+  "name": "CSB_PrologueDriver",
+  "type": "civmale"
+}, {
+  "hash": 2141384740,
+  "name": "CSB_ProlSec",
+  "type": "civmale"
+}, {
+  "hash": 3263172030,
+  "name": "CSB_Ramp_gang",
+  "type": "civmale"
+}, {
+  "hash": 2240582840,
+  "name": "CSB_Ramp_hic",
+  "type": "civmale"
+}, {
+  "hash": 569740212,
+  "name": "CSB_Ramp_hipster",
+  "type": "civmale"
+}, {
+  "hash": 1634506681,
+  "name": "CSB_Ramp_marine",
+  "type": "civmale"
+}, {
+  "hash": 4132362192,
+  "name": "CSB_Ramp_mex",
+  "type": "civmale"
+}, {
+  "hash": 411081129,
+  "name": "CSB_Rashcosvki",
+  "type": "civmale"
+}, {
+  "hash": 776079908,
+  "name": "CSB_Reporter",
+  "type": "civmale"
+}, {
+  "hash": 2297916218,
+  "name": "CSB_Req_Officer",
+  "type": "civmale"
+}, {
+  "hash": 2858686092,
+  "name": "CSB_RoccoPelosi",
+  "type": "civmale"
+}, {
+  "hash": 2346790124,
+  "name": "CSB_Screen_Writer",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 734593052,
+  "name": "CSB_Security_A",
+  "type": "civmale"
+}, {
+  "hash": 3552233440,
+  "name": "CSB_Sessanta",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1324952405,
+  "name": "CSB_Sol",
+  "type": "civmale"
+}, {
+  "hash": 543190380,
+  "name": "CSB_SoundEng_00",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3772505184,
+  "name": "CSB_SSS",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2934601397,
+  "name": "CSB_Stripper_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2168724337,
+  "name": "CSB_Stripper_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3392144504,
+  "name": "CSB_TalCC",
+  "type": "civmale"
+}, {
+  "hash": 3785408493,
+  "name": "CSB_TalMM",
+  "type": "civmale"
+}, {
+  "hash": 4086880849,
+  "name": "CSB_Thornton",
+  "type": "civmale"
+}, {
+  "hash": 3488666811,
+  "name": "CSB_TomCasino",
+  "type": "civmale"
+}, {
+  "hash": 1665391897,
+  "name": "CSB_Tonya",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1566545691,
+  "name": "CSB_TonyPrince",
+  "type": "civmale"
+}, {
+  "hash": 3727243251,
+  "name": "CSB_TrafficWarden",
+  "type": "civmale"
+}, {
+  "hash": 4017642090,
+  "name": "CSB_Undercover",
+  "type": "civmale"
+}, {
+  "hash": 2201152485,
+  "name": "CSB_Vagos_Leader",
+  "type": "civmale"
+}, {
+  "hash": 1224690857,
+  "name": "CSB_VagSpeak",
+  "type": "civmale"
+}, {
+  "hash": 3178697670,
+  "name": "CSB_Vernon",
+  "type": "civmale"
+}, {
+  "hash": 520636071,
+  "name": "CSB_Vincent",
+  "type": "civmale"
+}, {
+  "hash": 2782957088,
+  "name": "CSB_Vincent_2",
+  "type": "civmale"
+}, {
+  "hash": 1437043119,
+  "name": "CSB_Wendy",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2225189146,
+  "name": "G_F_ImportExport_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2705574861,
+  "name": "G_F_M_Fooliganz_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 361513884,
+  "name": "G_F_Y_ballas_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1309468115,
+  "name": "G_F_Y_Families_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4250220510,
+  "name": "G_F_Y_Lost_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1520708641,
+  "name": "G_F_Y_Vagos_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3164785898,
+  "name": "G_M_ImportExport_01",
+  "type": "civmale"
+}, {
+  "hash": 4058522530,
+  "name": "G_M_M_ArmBoss_01",
+  "type": "civmale"
+}, {
+  "hash": 4255728232,
+  "name": "G_M_M_ArmGoon_01",
+  "type": "civmale"
+}, {
+  "hash": 3882958867,
+  "name": "G_M_M_ArmLieut_01",
+  "type": "civmale"
+}, {
+  "hash": 2127932792,
+  "name": "G_M_M_CartelGuards_01",
+  "type": "civmale"
+}, {
+  "hash": 1821116645,
+  "name": "G_M_M_CartelGuards_02",
+  "type": "civmale"
+}, {
+  "hash": 1020431539,
+  "name": "G_M_M_CasRN_01",
+  "type": "civmale"
+}, {
+  "hash": 4128603535,
+  "name": "G_M_M_ChemWork_01",
+  "type": "civmale"
+}, {
+  "hash": 3118269184,
+  "name": "G_M_M_ChiBoss_01",
+  "type": "civmale"
+}, {
+  "hash": 275618457,
+  "name": "G_M_M_ChiCold_01",
+  "type": "civmale"
+}, {
+  "hash": 2119136831,
+  "name": "G_M_M_ChiGoon_01",
+  "type": "civmale"
+}, {
+  "hash": 4285659174,
+  "name": "G_M_M_ChiGoon_02",
+  "type": "civmale"
+}, {
+  "hash": 620276966,
+  "name": "G_M_M_Fooliganz_01",
+  "type": "civmale"
+}, {
+  "hash": 80921836,
+  "name": "G_M_M_FriedlanderGoons_01",
+  "type": "civmale"
+}, {
+  "hash": 3540189323,
+  "name": "G_M_M_GenThug_01",
+  "type": "civmale"
+}, {
+  "hash": 1642910562,
+  "name": "G_M_M_Goons_01",
+  "type": "civmale"
+}, {
+  "hash": 891945583,
+  "name": "G_M_M_KorBoss_01",
+  "type": "civmale"
+}, {
+  "hash": 1466037421,
+  "name": "G_M_M_MexBoss_01",
+  "type": "civmale"
+}, {
+  "hash": 1226102803,
+  "name": "G_M_M_MexBoss_02",
+  "type": "civmale"
+}, {
+  "hash": 565446671,
+  "name": "G_M_M_Prisoners_01",
+  "type": "civmale"
+}, {
+  "hash": 662575004,
+  "name": "G_M_M_Slasher_01",
+  "type": "civmale"
+}, {
+  "hash": 3310258058,
+  "name": "G_M_Y_ArmGoon_02",
+  "type": "civmale"
+}, {
+  "hash": 1752208920,
+  "name": "G_M_Y_Azteca_01",
+  "type": "civmale"
+}, {
+  "hash": 4096714883,
+  "name": "G_M_Y_BallaEast_01",
+  "type": "civmale"
+}, {
+  "hash": 588969535,
+  "name": "G_M_Y_BallaOrig_01",
+  "type": "civmale"
+}, {
+  "hash": 599294057,
+  "name": "G_M_Y_BallaSout_01",
+  "type": "civmale"
+}, {
+  "hash": 3896218551,
+  "name": "G_M_Y_FamCA_01",
+  "type": "civmale"
+}, {
+  "hash": 3681718840,
+  "name": "G_M_Y_FamDNF_01",
+  "type": "civmale"
+}, {
+  "hash": 2217749257,
+  "name": "G_M_Y_FamFor_01",
+  "type": "civmale"
+}, {
+  "hash": 611648169,
+  "name": "G_M_Y_Korean_01",
+  "type": "civmale"
+}, {
+  "hash": 2414729609,
+  "name": "G_M_Y_Korean_02",
+  "type": "civmale"
+}, {
+  "hash": 2093736314,
+  "name": "G_M_Y_KorLieut_01",
+  "type": "civmale"
+}, {
+  "hash": 1330042375,
+  "name": "G_M_Y_Lost_01",
+  "type": "civmale"
+}, {
+  "hash": 1032073858,
+  "name": "G_M_Y_Lost_02",
+  "type": "civmale"
+}, {
+  "hash": 850468060,
+  "name": "G_M_Y_Lost_03",
+  "type": "civmale"
+}, {
+  "hash": 3185399110,
+  "name": "G_M_Y_MexGang_01",
+  "type": "civmale"
+}, {
+  "hash": 653210662,
+  "name": "G_M_Y_MexGoon_01",
+  "type": "civmale"
+}, {
+  "hash": 832784782,
+  "name": "G_M_Y_MexGoon_02",
+  "type": "civmale"
+}, {
+  "hash": 2521633500,
+  "name": "G_M_Y_MexGoon_03",
+  "type": "civmale"
+}, {
+  "hash": 1329576454,
+  "name": "G_M_Y_PoloGoon_01",
+  "type": "civmale"
+}, {
+  "hash": 2733138262,
+  "name": "G_M_Y_PoloGoon_02",
+  "type": "civmale"
+}, {
+  "hash": 2422005962,
+  "name": "G_M_Y_SalvaBoss_01",
+  "type": "civmale"
+}, {
+  "hash": 663522487,
+  "name": "G_M_Y_SalvaGoon_01",
+  "type": "civmale"
+}, {
+  "hash": 846439045,
+  "name": "G_M_Y_SalvaGoon_02",
+  "type": "civmale"
+}, {
+  "hash": 62440720,
+  "name": "G_M_Y_SalvaGoon_03",
+  "type": "civmale"
+}, {
+  "hash": 4246489531,
+  "name": "G_M_Y_StrPunk_01",
+  "type": "civmale"
+}, {
+  "hash": 228715206,
+  "name": "G_M_Y_StrPunk_02",
+  "type": "civmale"
+}, {
+  "hash": 994527967,
+  "name": "HC_Driver",
+  "type": "civmale"
+}, {
+  "hash": 193469166,
+  "name": "HC_Gunman",
+  "type": "civmale"
+}, {
+  "hash": 2579169528,
+  "name": "HC_Hacker",
+  "type": "civmale"
+}, {
+  "hash": 1074457665,
+  "name": "IG_Abigail",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4185372713,
+  "name": "IG_AcidLabCook",
+  "type": "civmale"
+}, {
+  "hash": 1855569864,
+  "name": "IG_Agatha",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 610988552,
+  "name": "IG_Agent",
+  "type": "civmale"
+}, {
+  "hash": 1183124263,
+  "name": "IG_Agent_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1830688247,
+  "name": "IG_AmandaTownley",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1206185632,
+  "name": "IG_Andreas",
+  "type": "civmale"
+}, {
+  "hash": 3473698871,
+  "name": "IG_ARY",
+  "type": "civmale"
+}, {
+  "hash": 2275358319,
+  "name": "IG_ARY_02",
+  "type": "civmale"
+}, {
+  "hash": 2129936603,
+  "name": "IG_Ashley",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3088269167,
+  "name": "IG_Avery",
+  "type": "civmale"
+}, {
+  "hash": 3735478533,
+  "name": "IG_AviSchwartzman_02",
+  "type": "civmale"
+}, {
+  "hash": 4242698434,
+  "name": "IG_Avon",
+  "type": "civmale"
+}, {
+  "hash": 3678516463,
+  "name": "IG_Ballas_Leader",
+  "type": "civmale"
+}, {
+  "hash": 2802535058,
+  "name": "IG_BallasOG",
+  "type": "civmale"
+}, {
+  "hash": 2426248831,
+  "name": "IG_Bankman",
+  "type": "civmale"
+}, {
+  "hash": 797459875,
+  "name": "IG_Barry",
+  "type": "civmale"
+}, {
+  "hash": 3300333010,
+  "name": "IG_Benny",
+  "type": "civmale"
+}, {
+  "hash": 1943113851,
+  "name": "IG_Benny_02",
+  "type": "civmale"
+}, {
+  "hash": 1464257942,
+  "name": "IG_BestMen",
+  "type": "civmale"
+}, {
+  "hash": 3181518428,
+  "name": "IG_Beverly",
+  "type": "civmale"
+}, {
+  "hash": 28135809,
+  "name": "IG_Billionaire",
+  "type": "civmale"
+}, {
+  "hash": 3183167778,
+  "name": "IG_Brad",
+  "type": "civmale"
+}, {
+  "hash": 1633872967,
+  "name": "IG_Bride",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3893268832,
+  "name": "IG_Brucie2",
+  "type": "civmale"
+}, {
+  "hash": 2230970679,
+  "name": "IG_Car3guy1",
+  "type": "civmale"
+}, {
+  "hash": 1975732938,
+  "name": "IG_Car3guy2",
+  "type": "civmale"
+}, {
+  "hash": 3774489940,
+  "name": "IG_Casey",
+  "type": "civmale"
+}, {
+  "hash": 3676106820,
+  "name": "IG_Celeb_01",
+  "type": "civmale"
+}, {
+  "hash": 1240128502,
+  "name": "IG_Chef",
+  "type": "civmale"
+}, {
+  "hash": 4138965971,
+  "name": "IG_Chef_03",
+  "type": "civmale"
+}, {
+  "hash": 2240322243,
+  "name": "IG_Chef2",
+  "type": "civmale"
+}, {
+  "hash": 2867128955,
+  "name": "IG_ChengSr",
+  "type": "civmale"
+}, {
+  "hash": 678319271,
+  "name": "IG_ChrisFormage",
+  "type": "civmale"
+}, {
+  "hash": 1825562762,
+  "name": "IG_Clay",
+  "type": "civmale"
+}, {
+  "hash": 2634057640,
+  "name": "IG_ClayPain",
+  "type": "civmale"
+}, {
+  "hash": 3865252245,
+  "name": "IG_Cletus",
+  "type": "civmale"
+}, {
+  "hash": 1182012905,
+  "name": "IG_Dale",
+  "type": "civmale"
+}, {
+  "hash": 365775923,
+  "name": "IG_DaveNorton",
+  "type": "civmale"
+}, {
+  "hash": 4050142444,
+  "name": "IG_Dax",
+  "type": "civmale"
+}, {
+  "hash": 2181772221,
+  "name": "IG_Denise",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1952555184,
+  "name": "IG_Devin",
+  "type": "civmale"
+}, {
+  "hash": 4207997581,
+  "name": "IG_Dix",
+  "type": "civmale"
+}, {
+  "hash": 4219210853,
+  "name": "IG_DJBlaMadon",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 914073350,
+  "name": "IG_DJBlamRupert",
+  "type": "civmale"
+}, {
+  "hash": 400495475,
+  "name": "IG_DJBlamRyanH",
+  "type": "civmale"
+}, {
+  "hash": 3057799231,
+  "name": "IG_DJBlamRyanS",
+  "type": "civmale"
+}, {
+  "hash": 4221366718,
+  "name": "IG_DJDixManager",
+  "type": "civmale"
+}, {
+  "hash": 2580849741,
+  "name": "IG_DJGeneric_01",
+  "type": "civmale"
+}, {
+  "hash": 1241432569,
+  "name": "IG_DJSolFotios",
+  "type": "civmale"
+}, {
+  "hash": 2486302027,
+  "name": "IG_DJSolJakob",
+  "type": "civmale"
+}, {
+  "hash": 2123514453,
+  "name": "IG_DJSolManager",
+  "type": "civmale"
+}, {
+  "hash": 795497466,
+  "name": "IG_DJSolMike",
+  "type": "civmale"
+}, {
+  "hash": 1194880004,
+  "name": "IG_DJSolRobT",
+  "type": "civmale"
+}, {
+  "hash": 2972453492,
+  "name": "IG_DJTalAurelia",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2787461577,
+  "name": "IG_DJTalIgnazio",
+  "type": "civmale"
+}, {
+  "hash": 2620240008,
+  "name": "IG_Dom",
+  "type": "civmale"
+}, {
+  "hash": 3666413874,
+  "name": "IG_Dreyfuss",
+  "type": "civmale"
+}, {
+  "hash": 3422293493,
+  "name": "IG_DrFriedlander",
+  "type": "civmale"
+}, {
+  "hash": 2692738449,
+  "name": "IG_DrFriedlander_02",
+  "type": "civmale"
+}, {
+  "hash": 520923037,
+  "name": "IG_DrugDealer",
+  "type": "civmale"
+}, {
+  "hash": 205318924,
+  "name": "IG_EnglishDave",
+  "type": "civmale"
+}, {
+  "hash": 905946442,
+  "name": "IG_EnglishDave_02",
+  "type": "civmale"
+}, {
+  "hash": 435539666,
+  "name": "IG_Entourage_A",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3362171829,
+  "name": "IG_Entourage_B",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3499148112,
+  "name": "IG_Fabien",
+  "type": "civmale"
+}, {
+  "hash": 988062523,
+  "name": "IG_FBISuit_01",
+  "type": "civmale"
+}, {
+  "hash": 2981205682,
+  "name": "IG_Floyd",
+  "type": "civmale"
+}, {
+  "hash": 3809717386,
+  "name": "IG_Fooliganz_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 944592636,
+  "name": "IG_Fooliganz_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1344679353,
+  "name": "IG_Furry",
+  "type": "civmale"
+}, {
+  "hash": 2216405299,
+  "name": "IG_G",
+  "type": "civmale"
+}, {
+  "hash": 4014713647,
+  "name": "IG_GeorginaCheng",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1067129421,
+  "name": "IG_Golfer_A",
+  "type": "civmale"
+}, {
+  "hash": 1858893999,
+  "name": "IG_Golfer_B",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4274948997,
+  "name": "IG_Groom",
+  "type": "civmale"
+}, {
+  "hash": 1520835918,
+  "name": "IG_GunVanSeller",
+  "type": "civmale"
+}, {
+  "hash": 3045437975,
+  "name": "IG_Gustavo",
+  "type": "civmale"
+}, {
+  "hash": 1704428387,
+  "name": "IG_Hao",
+  "type": "civmale"
+}, {
+  "hash": 4035146080,
+  "name": "IG_Hao_02",
+  "type": "civmale"
+}, {
+  "hash": 3619807921,
+  "name": "IG_HelmsmanPavel",
+  "type": "civmale"
+}, {
+  "hash": 2017183759,
+  "name": "IG_HippyLeader",
+  "type": "civmale"
+}, {
+  "hash": 3218252083,
+  "name": "IG_Huang",
+  "type": "civmale"
+}, {
+  "hash": 3457361118,
+  "name": "IG_Hunter",
+  "type": "civmale"
+}, {
+  "hash": 772427594,
+  "name": "IG_Imani",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3802345064,
+  "name": "IG_IslDJ_00",
+  "type": "civmale"
+}, {
+  "hash": 1866942414,
+  "name": "IG_IslDJ_01",
+  "type": "civmale"
+}, {
+  "hash": 1562223483,
+  "name": "IG_IslDJ_02",
+  "type": "civmale"
+}, {
+  "hash": 322310057,
+  "name": "IG_IslDJ_03",
+  "type": "civmale"
+}, {
+  "hash": 2154719772,
+  "name": "IG_IslDJ_04",
+  "type": "civmale"
+}, {
+  "hash": 2979249514,
+  "name": "IG_ISLDJ_04_D_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4260779566,
+  "name": "IG_ISLDJ_04_D_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 590182749,
+  "name": "IG_ISLDJ_04_E_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2040422902,
+  "name": "IG_Jackie",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 225287241,
+  "name": "IG_Janet",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2050158196,
+  "name": "ig_JAY_Norris",
+  "type": "civmale"
+}, {
+  "hash": 257763003,
+  "name": "IG_JewelAss",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3986688045,
+  "name": "IG_JimmyBoston",
+  "type": "civmale"
+}, {
+  "hash": 1135976220,
+  "name": "IG_JimmyBoston_02",
+  "type": "civmale"
+}, {
+  "hash": 1459905209,
+  "name": "IG_JimmyDiSanto",
+  "type": "civmale"
+}, {
+  "hash": 2217591510,
+  "name": "IG_JimmyDiSanto2",
+  "type": "civmale"
+}, {
+  "hash": 1937203007,
+  "name": "IG_JIO",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3494374974,
+  "name": "IG_JIO_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3189787803,
+  "name": "IG_JoeMinuteMan",
+  "type": "civmale"
+}, {
+  "hash": 658984954,
+  "name": "IG_Johnny_Guns",
+  "type": "civmale"
+}, {
+  "hash": 2278195374,
+  "name": "ig_JohnnyKlebitz",
+  "type": "civmale"
+}, {
+  "hash": 3776618420,
+  "name": "IG_Josef",
+  "type": "civmale"
+}, {
+  "hash": 2040438510,
+  "name": "IG_Josh",
+  "type": "civmale"
+}, {
+  "hash": 507392637,
+  "name": "IG_JuanStrickler",
+  "type": "civmale"
+}, {
+  "hash": 3948009817,
+  "name": "IG_Karen_Daniels",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2810251555,
+  "name": "IG_Kaylee",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1530648845,
+  "name": "IG_KerryMcIntosh",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3628252818,
+  "name": "IG_KerryMcIntosh_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2682084818,
+  "name": "IG_Labrat",
+  "type": "civmale"
+}, {
+  "hash": 3426139884,
+  "name": "IG_Lacey_Jones_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1706635382,
+  "name": "IG_LamarDavis",
+  "type": "civmale"
+}, {
+  "hash": 421830750,
+  "name": "IG_LamarDavis_02",
+  "type": "civmale"
+}, {
+  "hash": 3756278757,
+  "name": "IG_Lazlow",
+  "type": "civmale"
+}, {
+  "hash": 2231650028,
+  "name": "IG_Lazlow_2",
+  "type": "civmale"
+}, {
+  "hash": 1302784073,
+  "name": "IG_LesterCrest",
+  "type": "civmale"
+}, {
+  "hash": 1849883942,
+  "name": "IG_LesterCrest_2",
+  "type": "civmale"
+}, {
+  "hash": 2013139108,
+  "name": "IG_LesterCrest_3",
+  "type": "civmale"
+}, {
+  "hash": 1401530684,
+  "name": "IG_LifeInvad_01",
+  "type": "civmale"
+}, {
+  "hash": 666718676,
+  "name": "IG_LifeInvad_02",
+  "type": "civmale"
+}, {
+  "hash": 3356359010,
+  "name": "IG_LilDee",
+  "type": "civmale"
+}, {
+  "hash": 4163779209,
+  "name": "IG_Luchadora",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4242313482,
+  "name": "IG_Magenta",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4055673113,
+  "name": "IG_Malc",
+  "type": "civmale"
+}, {
+  "hash": 4248931856,
+  "name": "IG_Manuel",
+  "type": "civmale"
+}, {
+  "hash": 411185872,
+  "name": "IG_Marnie",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2741999622,
+  "name": "IG_MaryAnn",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1224757029,
+  "name": "IG_Mason_Duggan",
+  "type": "civmale"
+}, {
+  "hash": 1005070462,
+  "name": "IG_Maude",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3214308084,
+  "name": "IG_Michelle",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2781707480,
+  "name": "IG_MiguelMadrazo",
+  "type": "civmale"
+}, {
+  "hash": 3408943538,
+  "name": "IG_Milton",
+  "type": "civmale"
+}, {
+  "hash": 2018483349,
+  "name": "IG_Mimi",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 761115490,
+  "name": "IG_MJO",
+  "type": "civmale"
+}, {
+  "hash": 952584644,
+  "name": "IG_MJO_02",
+  "type": "civmale"
+}, {
+  "hash": 2936266209,
+  "name": "IG_Molly",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 939183526,
+  "name": "IG_Money",
+  "type": "civmale"
+}, {
+  "hash": 2547074227,
+  "name": "IG_Moodyman_02",
+  "type": "civmale"
+}, {
+  "hash": 4227433577,
+  "name": "IG_MP_Agent14",
+  "type": "civmale"
+}, {
+  "hash": 3990661997,
+  "name": "IG_MRK",
+  "type": "civmale"
+}, {
+  "hash": 503621995,
+  "name": "IG_MRS_Thornhill",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 946007720,
+  "name": "IG_MrsPhillips",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 595139263,
+  "name": "IG_Musician_00",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3726105915,
+  "name": "IG_Natalia",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3170921201,
+  "name": "IG_NervousRon",
+  "type": "civmale"
+}, {
+  "hash": 74809322,
+  "name": "IG_NervousRon_02",
+  "type": "civmale"
+}, {
+  "hash": 3367442045,
+  "name": "IG_Nigel",
+  "type": "civmale"
+}, {
+  "hash": 1906124788,
+  "name": "IG_Old_Man1A",
+  "type": "civmale"
+}, {
+  "hash": 4011150407,
+  "name": "IG_Old_Man2",
+  "type": "civmale"
+}, {
+  "hash": 1006915658,
+  "name": "IG_OldRichGuy",
+  "type": "civmale"
+}, {
+  "hash": 1625728984,
+  "name": "IG_Omega",
+  "type": "civmale"
+}, {
+  "hash": 768005095,
+  "name": "IG_ONeil",
+  "type": "civmale"
+}, {
+  "hash": 1641334641,
+  "name": "IG_Orleans",
+  "type": "civmale"
+}, {
+  "hash": 648372919,
+  "name": "IG_Ortega",
+  "type": "civmale"
+}, {
+  "hash": 357551935,
+  "name": "IG_Paige",
+  "type": "civmale"
+}, {
+  "hash": 2577072326,
+  "name": "IG_Paper",
+  "type": "civmale"
+}, {
+  "hash": 2243470389,
+  "name": "IG_Party_Promo",
+  "type": "civmale"
+}, {
+  "hash": 3312325004,
+  "name": "IG_Patricia",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3272690865,
+  "name": "IG_Patricia_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2253313678,
+  "name": "IG_Pilot",
+  "type": "civmale"
+}, {
+  "hash": 645279998,
+  "name": "IG_Popov",
+  "type": "civmale"
+}, {
+  "hash": 1681385341,
+  "name": "IG_Priest",
+  "type": "civmale"
+}, {
+  "hash": 666086773,
+  "name": "IG_ProlSec_02",
+  "type": "civmale"
+}, {
+  "hash": 3845001836,
+  "name": "IG_Ramp_Gang",
+  "type": "civmale"
+}, {
+  "hash": 1165307954,
+  "name": "IG_Ramp_Hic",
+  "type": "civmale"
+}, {
+  "hash": 3740245870,
+  "name": "IG_Ramp_Hipster",
+  "type": "civmale"
+}, {
+  "hash": 3870061732,
+  "name": "IG_Ramp_Mex",
+  "type": "civmale"
+}, {
+  "hash": 940330470,
+  "name": "IG_Rashcosvki",
+  "type": "civmale"
+}, {
+  "hash": 3944177684,
+  "name": "IG_Req_Officer",
+  "type": "civmale"
+}, {
+  "hash": 3585757951,
+  "name": "IG_RoccoPelosi",
+  "type": "civmale"
+}, {
+  "hash": 1024089777,
+  "name": "IG_RussianDrunk",
+  "type": "civmale"
+}, {
+  "hash": 1476581877,
+  "name": "IG_Sacha",
+  "type": "civmale"
+}, {
+  "hash": 4293277303,
+  "name": "IG_Screen_Writer",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 793664635,
+  "name": "IG_Security_A",
+  "type": "civmale"
+}, {
+  "hash": 924556713,
+  "name": "IG_Sessanta",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1283141381,
+  "name": "IG_SiemonYetarian",
+  "type": "civmale"
+}, {
+  "hash": 3786117468,
+  "name": "IG_Sol",
+  "type": "civmale"
+}, {
+  "hash": 2260598310,
+  "name": "IG_Solomon",
+  "type": "civmale"
+}, {
+  "hash": 3661356520,
+  "name": "IG_SoundEng_00",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 991486725,
+  "name": "IG_SSS",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 941695432,
+  "name": "IG_SteveHains",
+  "type": "civmale"
+}, {
+  "hash": 915948376,
+  "name": "IG_Stretch",
+  "type": "civmale"
+}, {
+  "hash": 3828621987,
+  "name": "IG_TalCC",
+  "type": "civmale"
+}, {
+  "hash": 3885222120,
+  "name": "IG_Talina",
+  "type": "civmale"
+}, {
+  "hash": 1182156569,
+  "name": "IG_TalMM",
+  "type": "civmale"
+}, {
+  "hash": 226559113,
+  "name": "IG_Tanisha",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3697041061,
+  "name": "IG_TaoCheng",
+  "type": "civmale"
+}, {
+  "hash": 1506159504,
+  "name": "IG_TaoCheng2",
+  "type": "civmale"
+}, {
+  "hash": 2089096292,
+  "name": "IG_TaosTranslator",
+  "type": "civmale"
+}, {
+  "hash": 3828553631,
+  "name": "IG_TaosTranslator2",
+  "type": "civmale"
+}, {
+  "hash": 2721800023,
+  "name": "ig_TennisCoach",
+  "type": "civmale"
+}, {
+  "hash": 1728056212,
+  "name": "IG_Terry",
+  "type": "civmale"
+}, {
+  "hash": 2482949079,
+  "name": "IG_Thornton",
+  "type": "civmale"
+}, {
+  "hash": 55858852,
+  "name": "IG_TomCasino",
+  "type": "civmale"
+}, {
+  "hash": 3447159466,
+  "name": "IG_TomEpsilon",
+  "type": "civmale"
+}, {
+  "hash": 3402126148,
+  "name": "IG_Tonya",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 761829301,
+  "name": "IG_TonyPrince",
+  "type": "civmale"
+}, {
+  "hash": 3728026165,
+  "name": "IG_TracyDiSanto",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1461287021,
+  "name": "IG_TrafficWarden",
+  "type": "civmale"
+}, {
+  "hash": 1382414087,
+  "name": "IG_TylerDix",
+  "type": "civmale"
+}, {
+  "hash": 1511543927,
+  "name": "IG_TylerDix_02",
+  "type": "civmale"
+}, {
+  "hash": 2205902046,
+  "name": "IG_Vagos_Leader",
+  "type": "civmale"
+}, {
+  "hash": 4194109068,
+  "name": "IG_VagSpeak",
+  "type": "civmale"
+}, {
+  "hash": 3451031970,
+  "name": "IG_Vernon",
+  "type": "civmale"
+}, {
+  "hash": 736659122,
+  "name": "IG_Vincent",
+  "type": "civmale"
+}, {
+  "hash": 197443027,
+  "name": "IG_Vincent_2",
+  "type": "civmale"
+}, {
+  "hash": 363712933,
+  "name": "IG_Vincent_3",
+  "type": "civmale"
+}, {
+  "hash": 2459507570,
+  "name": "IG_Wade",
+  "type": "civmale"
+}, {
+  "hash": 1108376739,
+  "name": "IG_WarehouseBoss",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1850188817,
+  "name": "IG_Wendy",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 188012277,
+  "name": "IG_Zimbor",
+  "type": "civmale"
+}, {
+  "hash": 2139205821,
+  "name": "MP_F_BennyMech_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 848542158,
+  "name": "MP_F_BoatStaff_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 606876839,
+  "name": "MP_F_CarDesign_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3287737221,
+  "name": "MP_F_CHBar_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1264941816,
+  "name": "MP_F_Cocaine_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3079205365,
+  "name": "MP_F_Counterfeit_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1943971979,
+  "name": "MP_F_DeadHooker",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1126998116,
+  "name": "MP_F_ExecPA_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1500695792,
+  "name": "MP_F_ExecPA_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2014985464,
+  "name": "MP_F_Forgery_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2627665880,
+  "name": "MP_F_Freemode_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 431423238,
+  "name": "MP_F_HeliStaff_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3534913217,
+  "name": "MP_F_Meth_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3509125021,
+  "name": "MP_F_Misty_01",
+  "type": "civmale"
+}, {
+  "hash": 695248020,
+  "name": "MP_F_StripperLite",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2992993187,
+  "name": "MP_F_Weed_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1822283721,
+  "name": "MP_G_M_Pros_01",
+  "type": "civmale"
+}, {
+  "hash": 1173958009,
+  "name": "MP_HeadTargets",
+  "type": "civmale"
+}, {
+  "hash": 2618542997,
+  "name": "MP_M_AvonGoon",
+  "type": "civmale"
+}, {
+  "hash": 3361671816,
+  "name": "MP_M_BoatStaff_01",
+  "type": "civmale"
+}, {
+  "hash": 1297520375,
+  "name": "MP_M_BogdanGoon",
+  "type": "civmale"
+}, {
+  "hash": 3237179831,
+  "name": "MP_M_Claude_01",
+  "type": "civmale"
+}, {
+  "hash": 1456705429,
+  "name": "MP_M_Cocaine_01",
+  "type": "civmale"
+}, {
+  "hash": 2555758964,
+  "name": "MP_M_Counterfeit_01",
+  "type": "civmale"
+}, {
+  "hash": 1161072059,
+  "name": "MP_M_ExArmy_01",
+  "type": "civmale"
+}, {
+  "hash": 1048844220,
+  "name": "MP_M_ExecPA_01",
+  "type": "civmale"
+}, {
+  "hash": 866411749,
+  "name": "MP_M_FamDD_01",
+  "type": "civmale"
+}, {
+  "hash": 1558115333,
+  "name": "MP_M_FIBSec_01",
+  "type": "COP"
+}, {
+  "hash": 1631482011,
+  "name": "MP_M_Forgery_01",
+  "type": "civmale"
+}, {
+  "hash": 1885233650,
+  "name": "MP_M_Freemode_01",
+  "type": "civmale"
+}, {
+  "hash": 3299219389,
+  "name": "MP_M_G_VagFun_01",
+  "type": "civmale"
+}, {
+  "hash": 943915367,
+  "name": "MP_M_Marston_01",
+  "type": "civmale"
+}, {
+  "hash": 3988008767,
+  "name": "MP_M_Meth_01",
+  "type": "civmale"
+}, {
+  "hash": 4007317449,
+  "name": "MP_M_Niko_01",
+  "type": "civmale"
+}, {
+  "hash": 3660355662,
+  "name": "MP_M_SecuroGuard_01",
+  "type": "civmale"
+}, {
+  "hash": 416176080,
+  "name": "MP_M_ShopKeep_01",
+  "type": "civmale"
+}, {
+  "hash": 4154933561,
+  "name": "MP_M_WareMech_01",
+  "type": "civmale"
+}, {
+  "hash": 921328393,
+  "name": "MP_M_WeapExp_01",
+  "type": "civmale"
+}, {
+  "hash": 1099321454,
+  "name": "MP_M_WeapWork_01",
+  "type": "civmale"
+}, {
+  "hash": 2441008217,
+  "name": "MP_M_Weed_01",
+  "type": "civmale"
+}, {
+  "hash": 3455013896,
+  "name": "MP_S_M_Armoured_01",
+  "type": "civmale"
+}, {
+  "hash": 2937109846,
+  "name": "P_Franklin_02",
+  "type": "civmale"
+}, {
+  "hash": 2602752943,
+  "name": "Player_One",
+  "type": "PLAYER_1"
+}, {
+  "hash": 2608926626,
+  "name": "Player_Two",
+  "type": "PLAYER_2"
+}, {
+  "hash": 225514697,
+  "name": "Player_Zero",
+  "type": "PLAYER_0"
+}, {
+  "hash": 12394276,
+  "name": "S_F_M_Autoshop_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 373000027,
+  "name": "S_F_M_Fembarber",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3767780806,
+  "name": "S_F_M_Maid_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3248235618,
+  "name": "S_F_M_RetailStaff_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2923947184,
+  "name": "S_F_M_Shop_HIGH",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3243617472,
+  "name": "S_F_M_StudioAssist_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 824925120,
+  "name": "S_F_M_SweatShop_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3845594002,
+  "name": "S_F_M_Warehouse_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1567728751,
+  "name": "S_F_Y_AirHostess_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2014052797,
+  "name": "S_F_Y_Bartender_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1250841910,
+  "name": "S_F_Y_Baywatch_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3269663242,
+  "name": "S_F_Y_BeachBarStaff_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3163733717,
+  "name": "S_F_Y_Casino_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3240507723,
+  "name": "S_F_Y_ClubBar_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1438999163,
+  "name": "S_F_Y_ClubBar_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 368603149,
+  "name": "S_F_Y_Cop_01",
+  "type": "COP"
+}, {
+  "hash": 1777626099,
+  "name": "S_F_Y_Factory_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 42647445,
+  "name": "S_F_Y_Hooker_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 348382215,
+  "name": "S_F_Y_Hooker_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 51789996,
+  "name": "S_F_Y_Hooker_03",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3579522037,
+  "name": "S_F_Y_Migrant_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 587253782,
+  "name": "S_F_Y_MovPrem_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2680682039,
+  "name": "S_F_Y_Ranger_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2874755766,
+  "name": "S_F_Y_Scrubs_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1096929346,
+  "name": "S_F_Y_Sheriff_01",
+  "type": "COP"
+}, {
+  "hash": 2842568196,
+  "name": "S_F_Y_Shop_LOW",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1055701597,
+  "name": "S_F_Y_Shop_MID",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1381498905,
+  "name": "S_F_Y_Stripper_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1846523796,
+  "name": "S_F_Y_Stripper_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1544875514,
+  "name": "S_F_Y_StripperLite",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2231547570,
+  "name": "S_F_Y_SweatShop_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 233415434,
+  "name": "S_M_M_AmmuCountry",
+  "type": "civmale"
+}, {
+  "hash": 2512875213,
+  "name": "S_M_M_Armoured_01",
+  "type": "civmale"
+}, {
+  "hash": 1669696074,
+  "name": "S_M_M_Armoured_02",
+  "type": "civmale"
+}, {
+  "hash": 68070371,
+  "name": "S_M_M_AutoShop_01",
+  "type": "civmale"
+}, {
+  "hash": 4033578141,
+  "name": "S_M_M_AutoShop_02",
+  "type": "civmale"
+}, {
+  "hash": 109850898,
+  "name": "S_M_M_Autoshop_03",
+  "type": "civmale"
+}, {
+  "hash": 2681481517,
+  "name": "S_M_M_Bouncer_01",
+  "type": "civmale"
+}, {
+  "hash": 1376128402,
+  "name": "S_M_M_Bouncer_02",
+  "type": "civmale"
+}, {
+  "hash": 3387290987,
+  "name": "S_M_M_CCrew_01",
+  "type": "civmale"
+}, {
+  "hash": 788443093,
+  "name": "S_M_M_ChemSec_01",
+  "type": "civmale"
+}, {
+  "hash": 1650288984,
+  "name": "S_M_M_CIASec_01",
+  "type": "civmale"
+}, {
+  "hash": 436345731,
+  "name": "S_M_M_CntryBar_01",
+  "type": "civmale"
+}, {
+  "hash": 349680864,
+  "name": "S_M_M_DockWork_01",
+  "type": "civmale"
+}, {
+  "hash": 3564307372,
+  "name": "S_M_M_Doctor_01",
+  "type": "civmale"
+}, {
+  "hash": 1547070595,
+  "name": "S_M_M_DrugProcess_01",
+  "type": "civmale"
+}, {
+  "hash": 3988550982,
+  "name": "S_M_M_FIBOffice_01",
+  "type": "civmale"
+}, {
+  "hash": 653289389,
+  "name": "S_M_M_FIBOffice_02",
+  "type": "civmale"
+}, {
+  "hash": 2072724299,
+  "name": "S_M_M_FIBSec_01",
+  "type": "COP"
+}, {
+  "hash": 2423573072,
+  "name": "S_M_M_FieldWorker_01",
+  "type": "civmale"
+}, {
+  "hash": 2841034142,
+  "name": "S_M_M_Gaffer_01",
+  "type": "civmale"
+}, {
+  "hash": 1240094341,
+  "name": "S_M_M_Gardener_01",
+  "type": "civmale"
+}, {
+  "hash": 411102470,
+  "name": "S_M_M_GenTransport",
+  "type": "civmale"
+}, {
+  "hash": 1099825042,
+  "name": "S_M_M_HairDress_01",
+  "type": "civmale"
+}, {
+  "hash": 3688051673,
+  "name": "S_M_M_HazmatWorker_01",
+  "type": "civmale"
+}, {
+  "hash": 4049719826,
+  "name": "S_M_M_HighSec_01",
+  "type": "civmale"
+}, {
+  "hash": 691061163,
+  "name": "S_M_M_HighSec_02",
+  "type": "civmale"
+}, {
+  "hash": 518696223,
+  "name": "S_M_M_HighSec_03",
+  "type": "civmale"
+}, {
+  "hash": 1442749254,
+  "name": "S_M_M_HighSec_04",
+  "type": "civmale"
+}, {
+  "hash": 985359552,
+  "name": "S_M_M_HighSec_05",
+  "type": "civmale"
+}, {
+  "hash": 2842417644,
+  "name": "S_M_M_Janitor",
+  "type": "civmale"
+}, {
+  "hash": 2659242702,
+  "name": "S_M_M_LatHandy_01",
+  "type": "civmale"
+}, {
+  "hash": 3724572669,
+  "name": "S_M_M_LifeInvad_01",
+  "type": "civmale"
+}, {
+  "hash": 3684436375,
+  "name": "S_M_M_Linecook",
+  "type": "civmale"
+}, {
+  "hash": 1985653476,
+  "name": "S_M_M_LSMetro_01",
+  "type": "civmale"
+}, {
+  "hash": 2124742566,
+  "name": "S_M_M_Mariachi_01",
+  "type": "civmale"
+}, {
+  "hash": 4074414829,
+  "name": "S_M_M_Marine_01",
+  "type": "army"
+}, {
+  "hash": 4028996995,
+  "name": "S_M_M_Marine_02",
+  "type": "army"
+}, {
+  "hash": 3977045190,
+  "name": "S_M_M_Migrant_01",
+  "type": "civmale"
+}, {
+  "hash": 1684083350,
+  "name": "S_M_M_MovAlien_01",
+  "type": "civmale"
+}, {
+  "hash": 3630066984,
+  "name": "S_M_M_MovPrem_01",
+  "type": "civmale"
+}, {
+  "hash": 3887273010,
+  "name": "S_M_M_MovSpace_01",
+  "type": "civmale"
+}, {
+  "hash": 3008586398,
+  "name": "S_M_M_Paramedic_01",
+  "type": "MEDIC"
+}, {
+  "hash": 3881519900,
+  "name": "S_M_M_Pilot_01",
+  "type": "civmale"
+}, {
+  "hash": 4131252449,
+  "name": "S_M_M_Pilot_02",
+  "type": "civmale"
+}, {
+  "hash": 1650036788,
+  "name": "S_M_M_Postal_01",
+  "type": "civmale"
+}, {
+  "hash": 1936142927,
+  "name": "S_M_M_Postal_02",
+  "type": "civmale"
+}, {
+  "hash": 1456041926,
+  "name": "S_M_M_PrisGuard_01",
+  "type": "civmale"
+}, {
+  "hash": 2597948825,
+  "name": "S_M_M_RaceOrg_01",
+  "type": "civmale"
+}, {
+  "hash": 1092080539,
+  "name": "S_M_M_Scientist_01",
+  "type": "civmale"
+}, {
+  "hash": 3613962792,
+  "name": "S_M_M_Security_01",
+  "type": "civmale"
+}, {
+  "hash": 451459928,
+  "name": "S_M_M_SnowCop_01",
+  "type": "COP"
+}, {
+  "hash": 2035992488,
+  "name": "S_M_M_StrPerf_01",
+  "type": "civmale"
+}, {
+  "hash": 469792763,
+  "name": "S_M_M_StrPreach_01",
+  "type": "civmale"
+}, {
+  "hash": 3465614249,
+  "name": "S_M_M_StrVend_01",
+  "type": "civmale"
+}, {
+  "hash": 2679204136,
+  "name": "S_M_M_StudioAssist_02",
+  "type": "civmale"
+}, {
+  "hash": 3819113407,
+  "name": "S_M_M_StudioProd_01",
+  "type": "civmale"
+}, {
+  "hash": 3725116432,
+  "name": "S_M_M_StudioSouEng_02",
+  "type": "civmale"
+}, {
+  "hash": 3289859051,
+  "name": "S_M_M_Tattoo_01",
+  "type": "civmale"
+}, {
+  "hash": 1498487404,
+  "name": "S_M_M_Trucker_01",
+  "type": "civmale"
+}, {
+  "hash": 2680389410,
+  "name": "S_M_M_UPS_01",
+  "type": "civmale"
+}, {
+  "hash": 3502104854,
+  "name": "S_M_M_UPS_02",
+  "type": "civmale"
+}, {
+  "hash": 660117393,
+  "name": "S_M_M_Warehouse_01",
+  "type": "civmale"
+}, {
+  "hash": 2912874939,
+  "name": "S_M_O_Busker_01",
+  "type": "civmale"
+}, {
+  "hash": 1644266841,
+  "name": "S_M_Y_AirWorker",
+  "type": "civmale"
+}, {
+  "hash": 2651349821,
+  "name": "S_M_Y_AmmuCity_01",
+  "type": "civmale"
+}, {
+  "hash": 1657546978,
+  "name": "S_M_Y_ArmyMech_01",
+  "type": "army"
+}, {
+  "hash": 2988916046,
+  "name": "S_M_Y_Autopsy_01",
+  "type": "army"
+}, {
+  "hash": 3852538118,
+  "name": "S_M_Y_Barman_01",
+  "type": "civmale"
+}, {
+  "hash": 189425762,
+  "name": "S_M_Y_BayWatch_01",
+  "type": "civmale"
+}, {
+  "hash": 3019107892,
+  "name": "S_M_Y_BlackOps_01",
+  "type": "civmale"
+}, {
+  "hash": 2047212121,
+  "name": "S_M_Y_BlackOps_02",
+  "type": "civmale"
+}, {
+  "hash": 1349953339,
+  "name": "S_M_Y_BlackOps_03",
+  "type": "civmale"
+}, {
+  "hash": 3640249671,
+  "name": "S_M_Y_BusBoy_01",
+  "type": "civmale"
+}, {
+  "hash": 337826907,
+  "name": "S_M_Y_Casino_01",
+  "type": "civmale"
+}, {
+  "hash": 261586155,
+  "name": "S_M_Y_Chef_01",
+  "type": "civmale"
+}, {
+  "hash": 71929310,
+  "name": "S_M_Y_Clown_01",
+  "type": "civmale"
+}, {
+  "hash": 1299424319,
+  "name": "S_M_Y_ClubBar_01",
+  "type": "civmale"
+}, {
+  "hash": 3621428889,
+  "name": "S_M_Y_Construct_01",
+  "type": "civmale"
+}, {
+  "hash": 3321821918,
+  "name": "S_M_Y_Construct_02",
+  "type": "civmale"
+}, {
+  "hash": 1581098148,
+  "name": "S_M_Y_Cop_01",
+  "type": "COP"
+}, {
+  "hash": 3835149295,
+  "name": "S_M_Y_Dealer_01",
+  "type": "civmale"
+}, {
+  "hash": 2606068340,
+  "name": "S_M_Y_DevinSec_01",
+  "type": "civmale"
+}, {
+  "hash": 2255894993,
+  "name": "S_M_Y_DockWork_01",
+  "type": "civmale"
+}, {
+  "hash": 579932932,
+  "name": "S_M_Y_Doorman_01",
+  "type": "civmale"
+}, {
+  "hash": 1976765073,
+  "name": "S_M_Y_DWService_01",
+  "type": "civmale"
+}, {
+  "hash": 4119890438,
+  "name": "S_M_Y_DWService_02",
+  "type": "civmale"
+}, {
+  "hash": 1097048408,
+  "name": "S_M_Y_Factory_01",
+  "type": "civmale"
+}, {
+  "hash": 3065114024,
+  "name": "S_M_Y_Fireman_01",
+  "type": "FIREMAN"
+}, {
+  "hash": 4000686095,
+  "name": "S_M_Y_Garbage",
+  "type": "civmale"
+}, {
+  "hash": 815693290,
+  "name": "S_M_Y_Grip_01",
+  "type": "civmale"
+}, {
+  "hash": 1939545845,
+  "name": "S_M_Y_HwayCop_01",
+  "type": "COP"
+}, {
+  "hash": 1702441027,
+  "name": "S_M_Y_Marine_01",
+  "type": "army"
+}, {
+  "hash": 1490458366,
+  "name": "S_M_Y_Marine_02",
+  "type": "army"
+}, {
+  "hash": 1925237458,
+  "name": "S_M_Y_Marine_03",
+  "type": "army"
+}, {
+  "hash": 1021093698,
+  "name": "S_M_Y_Mime",
+  "type": "civmale"
+}, {
+  "hash": 1209091352,
+  "name": "S_M_Y_PestCont_01",
+  "type": "civmale"
+}, {
+  "hash": 2872052743,
+  "name": "S_M_Y_Pilot_01",
+  "type": "civmale"
+}, {
+  "hash": 1596003233,
+  "name": "S_M_Y_PrisMuscl_01",
+  "type": "civmale"
+}, {
+  "hash": 2981862233,
+  "name": "S_M_Y_Prisoner_01",
+  "type": "civmale"
+}, {
+  "hash": 4017173934,
+  "name": "S_M_Y_Ranger_01",
+  "type": "COP"
+}, {
+  "hash": 3227390873,
+  "name": "S_M_Y_Robber_01",
+  "type": "civmale"
+}, {
+  "hash": 2974087609,
+  "name": "S_M_Y_Sheriff_01",
+  "type": "COP"
+}, {
+  "hash": 1846684678,
+  "name": "S_M_Y_Shop_MASK",
+  "type": "civmale"
+}, {
+  "hash": 2457805603,
+  "name": "S_M_Y_StrVend_01",
+  "type": "civmale"
+}, {
+  "hash": 2374966032,
+  "name": "S_M_Y_Swat_01",
+  "type": "Swat"
+}, {
+  "hash": 3389018345,
+  "name": "S_M_Y_USCG_01",
+  "type": "COP"
+}, {
+  "hash": 999748158,
+  "name": "S_M_Y_Valet_01",
+  "type": "civmale"
+}, {
+  "hash": 2907468364,
+  "name": "S_M_Y_Waiter_01",
+  "type": "civmale"
+}, {
+  "hash": 1221043248,
+  "name": "S_M_Y_WareTech_01",
+  "type": "civmale"
+}, {
+  "hash": 2719478597,
+  "name": "S_M_Y_WestSec_01",
+  "type": "civmale"
+}, {
+  "hash": 3200789669,
+  "name": "S_M_Y_WestSec_02",
+  "type": "civmale"
+}, {
+  "hash": 1426951581,
+  "name": "S_M_Y_WinClean_01",
+  "type": "civmale"
+}, {
+  "hash": 1142162924,
+  "name": "S_M_Y_XMech_01",
+  "type": "civmale"
+}, {
+  "hash": 3189832196,
+  "name": "S_M_Y_XMech_02",
+  "type": "civmale"
+}, {
+  "hash": 1762949645,
+  "name": "S_M_Y_XMech_02_MP",
+  "type": "civmale"
+}, {
+  "hash": 1057201338,
+  "name": "slod_human",
+  "type": "civmale"
+}, {
+  "hash": 2238511874,
+  "name": "slod_large_quadped",
+  "type": "civmale"
+}, {
+  "hash": 762327283,
+  "name": "slod_small_quadped",
+  "type": "civmale"
+}, {
+  "hash": 3138220789,
+  "name": "U_F_M_CasinoCash_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 338154536,
+  "name": "U_F_M_CasinoShop_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 773063444,
+  "name": "U_F_M_Corpse_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 223828550,
+  "name": "U_F_M_Debbie_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3623056905,
+  "name": "U_F_M_Drowned_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1095737979,
+  "name": "U_F_M_Miranda",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3954904244,
+  "name": "U_F_M_Miranda_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2718472679,
+  "name": "U_F_M_ProMourn_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1415150394,
+  "name": "U_F_O_Carol",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2630685688,
+  "name": "U_F_O_Eileen",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 894928436,
+  "name": "U_F_O_MovieStar",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3306347811,
+  "name": "U_F_O_ProlHost_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2503965067,
+  "name": "U_F_Y_Beth",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4198014287,
+  "name": "U_F_Y_BikerChic",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3064628686,
+  "name": "U_F_Y_COMJane",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2624589981,
+  "name": "U_F_Y_corpse_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 228356856,
+  "name": "U_F_Y_corpse_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 222643882,
+  "name": "U_F_Y_DanceBurl_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 130590395,
+  "name": "U_F_Y_DanceLthr_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2900533745,
+  "name": "U_F_Y_DanceRave_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 2526768638,
+  "name": "U_F_Y_HotPosh_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4040474158,
+  "name": "U_F_Y_JewelAss_01",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 967594628,
+  "name": "U_F_Y_Lauren",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1573528872,
+  "name": "U_F_Y_Mistress",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 602513566,
+  "name": "U_F_Y_PoppyMich",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1823868411,
+  "name": "U_F_Y_PoppyMich_02",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 3538133636,
+  "name": "U_F_Y_Princess",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 1535236204,
+  "name": "U_F_Y_SpyActress",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 450271392,
+  "name": "U_F_Y_Taylor",
+  "type": "CIVFEMALE"
+}, {
+  "hash": 4042020578,
+  "name": "U_M_M_Aldinapoli",
+  "type": "civmale"
+}, {
+  "hash": 3272005365,
+  "name": "U_M_M_BankMan",
+  "type": "civmale"
+}, {
+  "hash": 1984382277,
+  "name": "U_M_M_BikeHire_01",
+  "type": "civmale"
+}, {
+  "hash": 2543361176,
+  "name": "U_M_M_Blane",
+  "type": "civmale"
+}, {
+  "hash": 4161104501,
+  "name": "U_M_M_Curtis",
+  "type": "civmale"
+}, {
+  "hash": 1646160893,
+  "name": "U_M_M_DOA_01",
+  "type": "civmale"
+}, {
+  "hash": 712602007,
+  "name": "U_M_M_EdToh",
+  "type": "civmale"
+}, {
+  "hash": 874722259,
+  "name": "U_M_M_FIBArchitect",
+  "type": "civmale"
+}, {
+  "hash": 728636342,
+  "name": "U_M_M_FilmDirector",
+  "type": "civmale"
+}, {
+  "hash": 1169888870,
+  "name": "U_M_M_GlenStank_01",
+  "type": "civmale"
+}, {
+  "hash": 3293887675,
+  "name": "U_M_M_Griff_01",
+  "type": "civmale"
+}, {
+  "hash": 3459037009,
+  "name": "U_M_M_Jesus_01",
+  "type": "civmale"
+}, {
+  "hash": 2899099062,
+  "name": "U_M_M_JewelSec_01",
+  "type": "civmale"
+}, {
+  "hash": 3872144604,
+  "name": "U_M_M_JewelThief",
+  "type": "civmale"
+}, {
+  "hash": 479578891,
+  "name": "U_M_M_MarkFost",
+  "type": "civmale"
+}, {
+  "hash": 2180468199,
+  "name": "U_M_M_PartyTarget",
+  "type": "civmale"
+}, {
+  "hash": 1888624839,
+  "name": "U_M_M_ProlSec_01",
+  "type": "civmale"
+}, {
+  "hash": 3465937675,
+  "name": "U_M_M_ProMourn_01",
+  "type": "civmale"
+}, {
+  "hash": 1624626906,
+  "name": "U_M_M_RivalPap",
+  "type": "civmale"
+}, {
+  "hash": 2886641112,
+  "name": "U_M_M_SpyActor",
+  "type": "civmale"
+}, {
+  "hash": 1813637474,
+  "name": "U_M_M_StreetArt_01",
+  "type": "civmale"
+}, {
+  "hash": 2526968950,
+  "name": "U_M_M_Vince",
+  "type": "civmale"
+}, {
+  "hash": 2423691919,
+  "name": "U_M_M_WillyFist",
+  "type": "civmale"
+}, {
+  "hash": 3543068589,
+  "name": "U_M_M_YuleMonster",
+  "type": "civmale"
+}, {
+  "hash": 4188740747,
+  "name": "U_M_O_Dean",
+  "type": "civmale"
+}, {
+  "hash": 732742363,
+  "name": "U_M_O_FilmNoir",
+  "type": "civmale"
+}, {
+  "hash": 1189322339,
+  "name": "U_M_O_FinGuru_01",
+  "type": "civmale"
+}, {
+  "hash": 2585681490,
+  "name": "U_M_O_TapHillBilly",
+  "type": "civmale"
+}, {
+  "hash": 1787764635,
+  "name": "U_M_O_Tramp_01",
+  "type": "civmale"
+}, {
+  "hash": 4037813798,
+  "name": "U_M_Y_Abner",
+  "type": "civmale"
+}, {
+  "hash": 3479321132,
+  "name": "U_M_Y_AntonB",
+  "type": "civmale"
+}, {
+  "hash": 3658575486,
+  "name": "U_M_Y_BabyD",
+  "type": "civmale"
+}, {
+  "hash": 1380197501,
+  "name": "U_M_Y_Baygor",
+  "type": "civmale"
+}, {
+  "hash": 2340239206,
+  "name": "U_M_Y_BurgerDrug_01",
+  "type": "civmale"
+}, {
+  "hash": 4150317356,
+  "name": "U_M_Y_Caleb",
+  "type": "civmale"
+}, {
+  "hash": 610290475,
+  "name": "U_M_Y_Chip",
+  "type": "civmale"
+}, {
+  "hash": 2495782975,
+  "name": "U_M_Y_Corpse_01",
+  "type": "civmale"
+}, {
+  "hash": 2145640135,
+  "name": "U_M_Y_CroupThief_01",
+  "type": "civmale"
+}, {
+  "hash": 755956971,
+  "name": "U_M_Y_Cyclist_01",
+  "type": "civmale"
+}, {
+  "hash": 1443057394,
+  "name": "U_M_Y_DanceBurl_01",
+  "type": "civmale"
+}, {
+  "hash": 4202382694,
+  "name": "U_M_Y_DanceLthr_01",
+  "type": "civmale"
+}, {
+  "hash": 2145639711,
+  "name": "U_M_Y_DanceRave_01",
+  "type": "civmale"
+}, {
+  "hash": 2243544680,
+  "name": "U_M_Y_FIBMugger_01",
+  "type": "civmale"
+}, {
+  "hash": 1278330017,
+  "name": "U_M_Y_Gabriel",
+  "type": "civmale"
+}, {
+  "hash": 3333724719,
+  "name": "U_M_Y_Guido_01",
+  "type": "civmale"
+}, {
+  "hash": 3005388626,
+  "name": "U_M_Y_GunVend_01",
+  "type": "civmale"
+}, {
+  "hash": 4030826507,
+  "name": "U_M_Y_Hippie_01",
+  "type": "civmale"
+}, {
+  "hash": 880829941,
+  "name": "U_M_Y_ImpoRage",
+  "type": "civmale"
+}, {
+  "hash": 2431602996,
+  "name": "U_M_Y_Juggernaut_01",
+  "type": "civmale"
+}, {
+  "hash": 2738943447,
+  "name": "U_M_Y_Juggernaut_02",
+  "type": "civmale"
+}, {
+  "hash": 2109968527,
+  "name": "U_M_Y_Justin",
+  "type": "civmale"
+}, {
+  "hash": 3367706194,
+  "name": "U_M_Y_Mani",
+  "type": "civmale"
+}, {
+  "hash": 1191548746,
+  "name": "U_M_Y_MilitaryBum",
+  "type": "civmale"
+}, {
+  "hash": 1346941736,
+  "name": "U_M_Y_Paparazzi",
+  "type": "civmale"
+}, {
+  "hash": 921110016,
+  "name": "U_M_Y_Party_01",
+  "type": "civmale"
+}, {
+  "hash": 3696858125,
+  "name": "U_M_Y_Pogo_01",
+  "type": "civmale"
+}, {
+  "hash": 2073775040,
+  "name": "U_M_Y_Prisoner_01",
+  "type": "civmale"
+}, {
+  "hash": 2237544099,
+  "name": "U_M_Y_ProlDriver_01",
+  "type": "civmale"
+}, {
+  "hash": 1011059922,
+  "name": "U_M_Y_RSRanger_01",
+  "type": "civmale"
+}, {
+  "hash": 1794381917,
+  "name": "U_M_Y_SBike",
+  "type": "civmale"
+}, {
+  "hash": 3446096293,
+  "name": "U_M_Y_SmugMech_01",
+  "type": "civmale"
+}, {
+  "hash": 2442448387,
+  "name": "U_M_Y_StagGrm_01",
+  "type": "civmale"
+}, {
+  "hash": 2494442380,
+  "name": "U_M_Y_Tattoo_01",
+  "type": "civmale"
+}, {
+  "hash": 4218162071,
+  "name": "U_M_Y_Ushi",
+  "type": "civmale"
+}, {
+  "hash": 2890614022,
+  "name": "U_M_Y_Zombie_01",
+  "type": "civmale"
+} ]

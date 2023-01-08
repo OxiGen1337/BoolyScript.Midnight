@@ -240,7 +240,7 @@ function NotifyService:notify(title_s, text_s, r, g, b)
     local notifyHash = "Notify_Render_" .. os.clock() .. math.random(1337)
     local titleTextSize = draw.get_text_size(title_s)
     local textSize = draw.get_text_size(text_s)
-    local notifyHeight = 10 + titleTextSize.y + 10 + textSize.y + 10
+    local notifyHeight = 10 + titleTextSize.y + 5 + textSize.y + 10
     local notifyWidth = 10 + math.max(titleTextSize.x, textSize.x) + 10
     local yOffset = 20.0
     for _, height in pairs(config.notifies) do
@@ -326,7 +326,7 @@ function NotifyService:notify(title_s, text_s, r, g, b)
         draw.set_color(0, 255, 255, 255, alpha)
         draw.text(
             leftUpper.x + 10,
-            leftUpper.y + titleTextSize.y + 10 + 10,
+            leftUpper.y + titleTextSize.y + 10 + 5,
             cropString(text_s, math.abs(leftUpper.x - rightDown.x) - 10)
         )
         if state == 3 then
@@ -386,28 +386,28 @@ function Option.new(submenu_mt, name_s, hash_s, type_n, value_n, callback_f)
 end
 
 function Submenu:setActive(state)
-    local function getClickableOption(selectedOption)
+    local function getClickableOption(self, selectedOption)
         if #self.options < 2 then return 1 end
         if self.isDynamic then return selectedOption end
         if selectedOption > #self.options then 
-            return getClickableOption(1)
+            return getClickableOption(self, 1)
         end
         if (self.options[selectedOption].type ~= OPTIONS.SEPARATOR) and (self.options[selectedOption].type ~= OPTIONS.STATE_BAR) then
             return selectedOption
         else
-            return getClickableOption(selectedOption + 1)
+            return getClickableOption(self, selectedOption + 1)
         end
     end
     if state then
         config.activeSubmenu = self.ID
-        self.selectedOption = getClickableOption(self.selectedOption)
         table.insert(config.path, self)
     else
         if config.activeSubmenu == self.ID then
             table.remove(config.path)
-            config.activeSubmenu = config.path[#config.path]
+            config.activeSubmenu = config.path[#config.path].ID
         end
     end
+    config.path[#config.path].selectedOption = getClickableOption(config.path[#config.path], config.path[#config.path].selectedOption)
     return self
 end
 
@@ -518,6 +518,7 @@ end
 
 function Submenu:remove()
     if not self then return end
+    if config.path[#config.path] == self then self:setActive(false) end
     for ID, sub in ipairs(submenus) do
         if sub.hash == self.hash then 
             table.remove(submenus, ID)
@@ -1073,8 +1074,11 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         if not config.isOpened then return end
 
         local submenu = config.path[#config.path]
-        --if #submenu.options == 0 then table.remove(config.path) end
-        --submenu = config.path[#config.path]
+        if #submenu.options == 0 then 
+            submenu:setActive(false) 
+            notify.default("DrawUI", "There is nothing to see yet.")    
+        end
+        submenu = config.path[#config.path]
 
         local bg = {}
         bg.lu = {

@@ -23,6 +23,7 @@ paths.logs.netEvents = paths.folders.logs .. '\\' .. 'Network Events.log'
 paths.logs.scriptEvents = paths.folders.logs .. '\\' .. 'Script Events.log'
 
 paths.files.weapons = paths.folders.dumps .. '\\' .. 'weapons.json'
+paths.files.peds = paths.folders.dumps .. '\\' .. 'peds.json'
 paths.files.weaponHashes = paths.folders.dumps .. '\\' .. 'WeaponList.json'
 
 paths.files.config = paths.folders.user .. '\\config.json'
