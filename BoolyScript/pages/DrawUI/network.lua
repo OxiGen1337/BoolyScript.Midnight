@@ -151,7 +151,7 @@ Network:add_bool_option("Kick spammers", "BS_Network_KickSpammers", function (st
     if state then 
         local messages = {}
         listener.register("BS_Network_KickSpammers", GET_EVENTS_LIST().OnChatMsg, function (pid, text)
-            -- if pid == player.index() then return end
+            if pid == player.index() then return end
             local rid = player.get_rid(pid)
             if not messages[rid] then messages[rid] = {} end
             table.insert(messages[rid], text)
@@ -168,7 +168,7 @@ Network:add_bool_option("Kick spammers", "BS_Network_KickSpammers", function (st
             if cnt <= 3 then return end
             notify.warning("Network chat", string.format("Spammer detected | Name: %s\nKicking player...", player.get_name(pid)))
             messages[rid] = {}
-            -- player.kick_idm(pid)
+            player.kick_idm(pid)
         end)
     elseif listener.exists("BS_Network_KickSpammers", GET_EVENTS_LIST().OnChatMsg) then
         listener.remove("BS_Network_KickSpammers", GET_EVENTS_LIST().OnChatMsg)

@@ -1074,9 +1074,9 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         if not config.isOpened then return end
 
         local submenu = config.path[#config.path]
-        if #submenu.options == 0 then 
+        if #submenu.options == 0 and not submenu.isDynamic then
             submenu:setActive(false) 
-            notify.default("DrawUI", "There is nothing to see yet.")    
+            notify.default("DrawUI", "There is nothing to see yet.")
         end
         submenu = config.path[#config.path]
 

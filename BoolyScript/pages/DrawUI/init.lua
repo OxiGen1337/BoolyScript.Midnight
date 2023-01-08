@@ -16,19 +16,4 @@ task.executeAsScript("Load_Submenus", function ()
     require("BoolyScript/pages/DrawUI/recovery")
 end)
 
--- HOME_SUBMENU:add_click_option("Parse & Crop peds", "", function ()
---     parse.json(paths.files.peds, function (content)
---         local out = {}
---         for _, pedInfo in ipairs(content) do
---             local new = {
---                 name = pedInfo["Name"] or "Unknown",
---                 hash = pedInfo["Hash"] or 0,
---                 type = pedInfo["Pedtype"] or "Unsorted"
---             }
---             table.insert(out, new)
---         end
---         local file = io.open("C:\\Users\\dimon\\Downloads\\lua\\Git\\BoolyScript\\dumps\\peds_new.json", "w+")
---         file:write(json:encode_pretty(out))
---         file:close()
---     end)
--- end)
+
