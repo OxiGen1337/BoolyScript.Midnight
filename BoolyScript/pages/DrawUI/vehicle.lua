@@ -24,7 +24,7 @@ Vehicle:add_choose_option("Switch seat", "BS_Vehicle_SwitchSeat", false, {"Drive
     if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
 	PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), vehicle, pos-2)
-end)
+end):setConfigIgnore()
 
 Vehicle:add_separator("Movement", "BS_Vehicle_Movement")
 

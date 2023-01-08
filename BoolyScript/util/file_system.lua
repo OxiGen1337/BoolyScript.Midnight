@@ -15,9 +15,7 @@ function filesys.doesFolderExist(path)
 end
 
 function filesys.createDir(path)
-    if not pcall(os.execute, "mkdir " .. path) then
-		log.error("File system", "Failed to create directory with path:\n\t" .. path .. "\n\tPossible reason: Cyrillic symbols in the path.\n\tTo solve it, create that folder by yourself.")
-	end
+    return os.execute("mkdir " .. "\"" .. path .. "\"")
 end
 
 function filesys.delete(path)

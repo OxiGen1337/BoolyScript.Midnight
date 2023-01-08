@@ -34,7 +34,6 @@ end)
 local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards_Submenu") do
     local groups = {}
     local pedsSubmenus = {}
-    local spawnedBodyguards = {}
     local weapons = {
         ["None"] = 2725352035,
         ["Pistol"] = 453432689, 
@@ -92,14 +91,14 @@ local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards
         end)
         settings:add_separator("All bodyguards", "BS_World_Bodyguards_Settings_All")
         settings:add_click_option("Teleport to me", "BS_World_Bodyguards_Settings_TpToMe", function ()
-            for ped, _ in pairs(spawnedBodyguards) do
+            for ped, _ in pairs(Stuff.bodyguards) do
                 local ped = tonumber(ped)
                 local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), math.random(-5, 5), math.random(-5, 5), 0)
                 ENTITY.SET_ENTITY_COORDS(ped, coords.x, coords.y, coords.z, false, false, false, false)
             end
         end)
         settings:add_click_option("Update", "BS_World_Bodyguards_Settings_Update", function ()
-            for ped, _ in pairs(spawnedBodyguards) do
+            for ped, _ in pairs(Stuff.bodyguards) do
                 local ped = tonumber(ped)
                 ENTITY.SET_ENTITY_INVINCIBLE(ped, config.godmode)
                 ENTITY.SET_ENTITY_PROOFS(ped, config.godmode, config.godmode, config.godmode, config.godmode, config.godmode, config.godmode, true, config.godmode)
@@ -122,13 +121,13 @@ local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards
             end
         end):setHint("Applies all settings above for all spawned\nbodyguards.")
         settings:add_click_option("Remove", "BS_World_Bodyguards_Settings_Remove", function ()
-            for ped, t in pairs(spawnedBodyguards) do
+            for ped, t in pairs(Stuff.bodyguards) do
                 local ped = tonumber(ped)
                 entity.delete(ped)
                 t[1]:remove()
                 t[2]:remove()
             end
-            spawnedBodyguards = {}
+            Stuff.bodyguards = {}
         end)
         bodyguards:add_sub_option("Settings", "BS_World_Bodyguards_Settings_Submenu", settings)
     end
@@ -191,7 +190,7 @@ local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards
                             sub:add_choose_option("Set invincible", "BS_World_Bodyguards_" .. name .. "_Spawned_GodMode", false, {"Set", "Remove"}, function (pos, option)
                                 ENTITY.SET_ENTITY_INVINCIBLE(ped, pos == 1)
                                 option:setValue((pos == 1) and 2 or 1, true)
-                            end)
+                            end):setConfigIgnore()
                             local variations = {"None", "Pistol", "AK-74", "M4", "M16", "MG", "Shotgun", "RPG"}
                             sub:add_choose_option("Weapon",  "BS_World_Bodyguards_" .. name .. "_Spawned_Weapons", false, variations, function (pos)
                                 WEAPON.GIVE_WEAPON_TO_PED(ped, weapons[variations[pos]], -1, false, true)
@@ -202,9 +201,25 @@ local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards
                                 entity.delete(ped)
                                 subOption:remove()
                                 sub:remove()
-                                spawnedBodyguards[tostring(ped)] = nil
+                                Stuff.bodyguards[tostring(ped)] = nil
                             end)
-                            spawnedBodyguards[tostring(ped)] = {sub, subOption}
+                            Stuff.bodyguards[tostring(ped)] = {sub, subOption}
+                            local taskName = "BS_World_Bodyguards"
+                            if not task.exists(taskName) then 
+                                task.createTask(taskName, 0.0, nil, function ()
+                                    for ped_s, t in pairs(Stuff.bodyguards) do
+                                        local ped = tonumber(ped_s)
+                                        if ENTITY.GET_ENTITY_HEALTH(ped) <= 100 then
+                                            if ENTITY.DOES_ENTITY_EXIST(ped) then
+                                                entity.delete(ped)
+                                            end
+                                            t[1]:remove()
+                                            t[2]:remove()
+                                            Stuff.bodyguards[ped_s] = nil
+                                        end
+                                    end
+                                end)
+                            end
                         end
                     end)
                 end)
@@ -221,7 +236,8 @@ local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards
 end
 
 World:add_separator("Area cleanup", "BS_World_AreaCleanup")
-local cleanupRadius
+
+local cleanupRadius = World:add_num_option("Cleanup radius", "BS_World_CleanupRadius", 0, 600, 100):setValue(300)
 
 World:add_looped_option("Peds cleanup", "BS_World_PedsCleanup", 0.0, function ()
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), true)
@@ -257,5 +273,3 @@ World:add_looped_option("Projectiles cleanup", "BS_World_ProjCleanup", 0.0, func
 
     MISC.CLEAR_AREA_OF_PROJECTILES(coords.x, coords.y, coords.z, radius, 0)
 end)
-
-cleanupRadius = World:add_num_option("Cleanup radius", "BS_World_CleanupRadius", 0, 600, 100):setValue(300)

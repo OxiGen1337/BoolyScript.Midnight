@@ -89,7 +89,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
                 ENTITY.DETACH_ENTITY(hdl, false, false)
             end
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_choose_option("Attach ramp", "BS_PlayerList_Player_Vehicle_AttachRamp", false, {"Detach & delete", "Small ramp", "Big ramp"}, function(pos)
         local vehicle = player.get_vehicle_handle(selectedPlayer)
         if vehicle == 0 then
@@ -113,7 +113,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
                 end
             end
         end)
-    end)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Kick from vehicle", "BS_PlayerList_Player_Vehicle_VehicleKick", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end

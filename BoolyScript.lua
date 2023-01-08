@@ -40,7 +40,9 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         }
         for _, path in ipairs(t) do
             if not fs.directory_exists(path) then 
-                filesys.createDir(path:gsub(" ","_"))
+                if not filesys.createDir(path) then
+		            log.error("File system", "Failed to create directory with path:\n\t" .. path .. "\n\tPossible reason: Cyrillic symbols in the path.\n\tTo solve it, create that folder by yourself.")
+                end
             end
         end
     end
