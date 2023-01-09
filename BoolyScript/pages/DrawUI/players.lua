@@ -547,7 +547,6 @@ PlayerSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Player_Se
     PlayerSettings:add_bool_option("Pussy mode", "BS_PlayerList_Player_Settings_PussyMode", function (state, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
-        addActiveAction(pid, option, state)
         pussy_mode = state
     end):setHint("Blocks syncs after sending kick/crash for 30s")
     PlayerInteractions:add_sub_option("Settings", "BS_PlayerList_Settings_SubOption", PlayerSettings)
