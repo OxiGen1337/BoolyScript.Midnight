@@ -367,22 +367,36 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
     table.insert(submenus, PlayerVehicle)
 end
 
+local kickvalues = {
+    "Host/Vote", "Script Events", "IDM"
+}
+
+local crashvalues = {
+    "Script Event", "Vehicle Task"
+}
+
 PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Removals_Submenu") do
-    PlayerRemovals:add_click_option("Kick [Host/Vote]", "BS_PlayerList_Player_Removals_Kick", function ()
+    PlayerRemovals:add_choose_option("Kick", "BS_PlayerList_Player_Removals_Kick", false, kickvalues, function (value, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
-        player.kick(pid)
-    end)    
-    PlayerRemovals:add_click_option("Kick [Script Events]", "BS_PlayerList_Player_Removals_SEKick", function ()
+        addActiveAction(pid, option, value)
+        if not player.is_banned(pid) then player.ban(pid, 30, "Manual | Kick [" .. kickvalues[value] .. "]") end
+        if value == 1 then player.kick(pid) end
+        if value == 2 then player.kick_brute(pid) end
+        if value == 3 then player.kick_idm(pid) end
+    end):setConfigIgnore()
+    PlayerRemovals:add_choose_option("Crash", "BS_PlayerList_Player_Removals_Crash", false, crashvalues, function (value, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
-        player.kick_brute(pid)
-    end)    
-    PlayerRemovals:add_click_option("Kick [IDM]", "BS_PlayerList_Player_Removals_IDMKick", function ()
-        local pid = selectedPlayer
-        if not pid or not player.is_connected(pid) then return end
-        player.kick_idm(pid)
-    end)
+        if value == 2 and not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
+        addActiveAction(pid, option, value)
+        if not player.is_banned(pid) then player.ban(pid, 30, "Manual | Crash [" .. crashvalues[value] .. "]") end
+        if value == 1 then scripts.events.crash(pid) end
+        if value == 2 then
+            local vehicle = player.get_vehicle_handle(pid)
+            for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, val, 1488) end
+        end
+    end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Removals", "BS_PlayerList_Player_Removals_SubOption", PlayerRemovals)
     table.insert(submenus, PlayerRemovals)
 end
@@ -474,6 +488,13 @@ PlayerNeutral = Submenu.add_static_submenu("Neutral", "BS_Players_Neutral_Submen
     PlayerInteractions:add_sub_option("Neutral", "BS_Players_Neutral_SubOption", PlayerNeutral)
 end
 
+local bountyvalues = {
+    "1000", "2000", "3000",
+    "4000", "5000", "6000",
+    "7000", "8000", "9000",
+    "10000", "1", "1337",
+    "69", "6969", "1488"
+}
 PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Griefing_Submenu") do
     PlayerGriefing:add_click_option("Teleport to island", "BS_PlayerList_Player_Griefing_TeleportToIsland", function ()
         local pid = selectedPlayer
@@ -495,10 +516,17 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         if not pid or not player.is_connected(pid) then return end
         player.teleport_to_cutscene(pid)
     end):setConfigIgnore()
-    PlayerGriefing:add_click_option("Set 10K bounty", "BS_PlayerList_Player_Griefing_SetBounty", function ()
+    PlayerGriefing:add_choose_option("Set bounty", "BS_PlayerList_Player_Griefing_SetBounty", false, bountyvalues, function (value, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
-        player.set_bounty(pid, 10000, true)
+        addActiveAction(pid, option, value)
+        player.set_bounty(pid, tonumber(bountyvalues[value]), true)
+    end):setConfigIgnore()
+    PlayerGriefing:add_choose_option("Passive mode", "BS_PlayerList_Player_Griefing_PassiveMode", false, {"Unblock", "Block"}, function (value, option)
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        addActiveAction(pid, option, value)
+        script.send(pid, 1920583171, pid, 1 - value)
     end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Griefing_SubOption", PlayerGriefing)
     table.insert(submenus, PlayerGriefing)
