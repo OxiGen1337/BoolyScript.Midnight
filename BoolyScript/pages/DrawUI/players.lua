@@ -1,5 +1,16 @@
 local players = {}
 
+local pussy_mode = false
+
+local function pussy_func(pid, time, reason)
+    if pussy_mode and not player.is_banned(pid) then
+        player.ban(pid, time, reason)
+        notify.success(reason, "Blocked syncs with " .. player.get_name(pid) .. " for " .. time .. "s")
+    elseif pussy_mode and player.is_banned(pid) then
+        notify.fatal(reason, "Failed to block syncs with " .. player.get_name(pid) .. " | Already blocked")
+    end
+end
+
 local activeActions = {}
 local function addActiveAction(pid, option, value)
     if not option then return nil end
@@ -380,7 +391,7 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         addActiveAction(pid, option, value)
-        if not player.is_banned(pid) then player.ban(pid, 30, "Manual | Kick [" .. kickvalues[value] .. "]") end
+        pussy_func(pid, 30, "Manual | Kick [" .. kickvalues[value] .. "]")
         if value == 1 then player.kick(pid) end
         if value == 2 then player.kick_brute(pid) end
         if value == 3 then player.kick_idm(pid) end
@@ -390,7 +401,7 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
         if not pid or not player.is_connected(pid) then return end
         if value == 2 and not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         addActiveAction(pid, option, value)
-        if not player.is_banned(pid) then player.ban(pid, 30, "Manual | Crash [" .. crashvalues[value] .. "]") end
+        pussy_func(pid, 30, "Manual | Crash [" .. crashvalues[value] .. "]")
         if value == 1 then scripts.events.crash(pid) end
         if value == 2 then
             local vehicle = player.get_vehicle_handle(pid)
@@ -530,6 +541,17 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
     end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Griefing_SubOption", PlayerGriefing)
     table.insert(submenus, PlayerGriefing)
+end
+
+PlayerSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Player_Settings_Submenu") do
+    PlayerSettings:add_bool_option("Pussy mode", "BS_PlayerList_Player_Settings_PussyMode", function (state, option)
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        addActiveAction(pid, option, state)
+        pussy_mode = state
+    end):setHint("Blocks syncs after sending kick/crash for 30s")
+    PlayerInteractions:add_sub_option("Settings", "BS_PlayerList_Settings_SubOption", PlayerSettings)
+    table.insert(submenus, PlayerSettings)
 end
 
 
