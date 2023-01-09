@@ -141,7 +141,7 @@ function OnFeatureTick()
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
             listener.remove(hash_s, events.OnFeatureTick)
         else 
-            local out = callback_f() 
+            local out = callback_f()
             if out == false then listener.remove(hash_s, events.OnFeatureTick) end
         end
     end

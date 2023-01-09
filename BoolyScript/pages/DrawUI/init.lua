@@ -3,7 +3,7 @@ require("BoolyScript/util/DrawUI")
 Main = Submenu.add_static_submenu("BoolyScript", "BS_Main_Submenu")
 HOME_SUBMENU:add_sub_option("BoolyScript", "BS_Main_SubOption", Main)
 
-task.executeAsScript("Load_Submenus", function ()
+task.executeAsScript("Load_Submenus_DrawUI", function ()
     require("BoolyScript/pages/DrawUI/presets_mgr")
     require("BoolyScript/pages/DrawUI/self")
     require("BoolyScript/pages/DrawUI/weapon")
@@ -15,5 +15,3 @@ task.executeAsScript("Load_Submenus", function ()
     require("BoolyScript/pages/DrawUI/misc")
     require("BoolyScript/pages/DrawUI/recovery")
 end)
-
-

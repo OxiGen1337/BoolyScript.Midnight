@@ -25,8 +25,6 @@ local config = {
     scrollerSmooth = 2.5,
     isActionDown = false,
     enabelSmoothScroller = false,
-    offset_x = 1400,
-    offset_y = 300,
     renderedNotifies = 0,
     notifyHeight = 60,
     notifyWidth = 200,
@@ -35,6 +33,10 @@ local config = {
     notifies = {},
     isClickSoundEnabled = true,
 }
+
+config.offset_x = draw.get_window_width() - 100 - config.width
+config.offset_y = 200
+
 
 DrawUI = {}
 DrawUI.getSelectedOption = function ()
@@ -107,7 +109,7 @@ local id_to_key = {
     [81] = {"q", "Q"},
     [82] = {"r", "R"},
     [83] = {"s", "S"},
-    [83] = {"t", "T"},
+    [84] = {"t", "T"},
     [85] = {"u", "U"},
     [86] = {"v", "V"},
     [87] = {"w", "W"},
@@ -416,6 +418,7 @@ function Submenu:add_sub_option(name_s, hash_s, submenu_mt, on_opened_f)
         submenu_mt:setActive(true)
         if on_opened_f then on_opened_f() end
     end)
+    option:setConfigIgnore()
     return option
 end
 
@@ -690,13 +693,14 @@ Configs.loadConfig = function ()
         parse.json(paths.files.config, function (config)        
             for _, option in ipairs(options) do
                 if not option.configIgnore then
+                    log.dbg(option.hash)
                     local value = config[option.hash]
                     if value then
-                        Option.setValue(option,value)
+                        Option.setValue(option, value)
                     end
                 end
             end
-            -- log.success("Settings", "Config has been loaded.")
+            log.success("Settings", "Config has been loaded.")
         end)
     else
         log.warning("Settings", "Config doesn't exist.")
@@ -937,9 +941,6 @@ listener.register("DrawUI_disableControls", GET_EVENTS_LIST().OnFeatureTick, fun
     PAD.DISABLE_CONTROL_ACTION(2, 26, true) --INPUT_CREATOR_RT
 
     PAD.DISABLE_CONTROL_ACTION(2, 27, true) --INPUT_PHONE
-    PAD.DISABLE_CONTROL_ACTION(2, 200, true) --INPUT_FRONTEND_PAUSE_ALTERNATE
-    PAD.DISABLE_CONTROL_ACTION(2, 199, true) --INPUT_FRONTEND_PAUSE
-    PAD.DISABLE_CONTROL_ACTION(2, 202, true) --INPUT_FRONTEND_CANCEL
 
     PAD.DISABLE_CONTROL_ACTION(2, 244, true) --INPUT_INTERACTION_MENU
     PAD.DISABLE_CONTROL_ACTION(2, 245, true) --INPUT_MP_TEXT_CHAT_ALL

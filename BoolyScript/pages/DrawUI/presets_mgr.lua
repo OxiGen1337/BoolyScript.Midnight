@@ -37,30 +37,17 @@ local function saveWepLoadout(name)
     local file = io.open(path, 'w+')
     local configTable = {}
     for _, wepInfo in ipairs(ParsedFiles.weapons) do
-        if WEAPON.HAS_PED_GOT_WEAPON(PLAYER.PLAYER_PED_ID(), wepInfo['Hash'], false)
-        and not isEmpty(wepInfo['Category']) 
-        and blWepCategories[wepInfo['Category']] ~= false
-        and not isEmpty(wepInfo['TranslatedLabel']) 
-        and not isEmpty(wepInfo['TranslatedLabel']['Name'])
-        and wepInfo['TranslatedLabel']['Name'] ~= 'WT_INVALID'
-        and not isEmpty(wepInfo['Tints'])
-        then
-            print(WEAPON.HAS_PED_GOT_WEAPON(PLAYER.PLAYER_PED_ID(), wepInfo['Hash'], false))
-            configTable[wepInfo['Name']] = {}
-            configTable[wepInfo['Name']]['Name'] = wepInfo['TranslatedLabel']['Name']
-            configTable[wepInfo['Name']]['Hash'] = wepInfo['Hash']
-            configTable[wepInfo['Name']]['TintIndex'] = WEAPON.GET_PED_WEAPON_TINT_INDEX(PLAYER.PLAYER_PED_ID(), wepInfo['Hash'])
-            configTable[wepInfo['Name']]['Components'] = {}
-            for _, componentInfo in ipairs(wepInfo['Components']) do
-                if WEAPON.HAS_PED_GOT_WEAPON_COMPONENT(PLAYER.PLAYER_PED_ID(), wepInfo['Hash'], componentInfo['Hash'])
-                and not isEmpty(componentInfo['TranslatedLabel']) 
-                and not isEmpty(componentInfo['TranslatedLabel']['Name']) 
-                then
-                    configTable[wepInfo['Name']]['Components'][componentInfo['TranslatedLabel']['Name']] = {}
-                    configTable[wepInfo['Name']]['Components'][componentInfo['TranslatedLabel']['Name']]['Name'] = componentInfo['TranslatedLabel']['Name']
-                    configTable[wepInfo['Name']]['Components'][componentInfo['TranslatedLabel']['Name']]['Hash'] = componentInfo['Hash']
+        if WEAPON.HAS_PED_GOT_WEAPON(PLAYER.PLAYER_PED_ID(), wepInfo['Hash'], false) then
+            local out = {}
+            out.hash = wepInfo['Hash'] or 0
+            out.tint = WEAPON.GET_PED_WEAPON_TINT_INDEX(PLAYER.PLAYER_PED_ID(), wepInfo['Hash'])
+            out.components = {}
+            for _, componentInfo in ipairs(wepInfo['Components'] or {}) do
+                if WEAPON.HAS_PED_GOT_WEAPON_COMPONENT(PLAYER.PLAYER_PED_ID(), wepInfo['Hash'], componentInfo['Hash']) then
+                    table.insert(out.components, componentInfo['Hash'])
                 end
             end
+            table.insert(configTable, out)
         end
     end
     file:write(json:encode_pretty(configTable))
@@ -76,17 +63,15 @@ local function loadWepLoadout(path)
     end
     local parsedTable = parse.json(path)
     WEAPON.REMOVE_ALL_PED_WEAPONS(PLAYER.PLAYER_PED_ID(), false)
-    for _, wepInfo in pairs(parsedTable) do
-        local hash = wepInfo['Hash']
-        local tintIndex = wepInfo['TintIndex']
-        local componentsT = wepInfo['Components']
+    for _, wepInfo in ipairs(parsedTable) do
+        local hash = wepInfo.hash
+        local tintIndex = wepInfo.tint
+        local components = wepInfo.components
         WEAPON.GIVE_WEAPON_TO_PED(PLAYER.PLAYER_PED_ID(), hash, 9999, false, false)
         WEAPON.SET_PED_WEAPON_TINT_INDEX(PLAYER.PLAYER_PED_ID(), hash, tintIndex)
-        for _, componentInfo in pairs(componentsT) do
-            WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(PLAYER.PLAYER_PED_ID(), hash, componentInfo['Hash'])
-            --wait(0)
+        for _, componentHash in ipairs(components) do
+            WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(PLAYER.PLAYER_PED_ID(), hash, componentHash)
         end
-        --wait(0)
     end
     notify.success("Saved loadouts", "Successfully loaded weapon loadout.", GET_NOTIFY_ICONS().weapons)
 end
@@ -94,7 +79,7 @@ end
 PresetsMgr:add_click_option("Load loadout", "BS_PresetsMgr_WepManager_LoadLoadout", function()
     local name = wepLoadoutsTable[savedLoadouts:getValue()]
     local path = paths.folders.loadouts .. '\\' .. name
-    thread.create(function ()
+    task.executeAsScript("BS_PresetsMgr_WepManager_LoadLoadout", function ()
         loadWepLoadout(path)
     end)
 end)
@@ -103,7 +88,7 @@ PresetsMgr:add_bool_option("Load loadout every session", "BS_PresetsMgr_WepManag
     local name = "BS_PresetsMgr_WepManager_LoadEverySession"
     if state then
         listener.register(name, GET_EVENTS_LIST().OnTransitionEnd, function ()
-            thread.create(function ()
+            task.executeAsScript("BS_PresetsMgr_WepManager_LoadEverySession", function ()
                 local name = wepLoadoutsTable[savedLoadouts:getValue()]
                 local path = paths.folders.loadouts .. '\\' .. name
                 loadWepLoadout(path)
@@ -122,12 +107,12 @@ PresetsMgr:add_click_option("Delete loadout", "BS_PresetsMgr_WepManager_DeleteLo
     reloadWepLoadouts()
 end)
 
-local loadoutName = PresetsMgr:add_text_input("Loadout name", "BS_PresetsMgr_WepManager_LoadoutName")
+local loadoutName = PresetsMgr:add_text_input("Loadout name", "BS_PresetsMgr_WepManager_LoadoutName"):setConfigIgnore()
 
 PresetsMgr:add_click_option("Save loadout", "BS_PresetsMgr_WepManager_SaveLoadout", function()
     local name = loadoutName:getValue()
     if isEmpty(name) then name = "Untitled" end
-    thread.create(function ()
+    task.executeAsScript("BS_PresetsMgr_WepManager_SaveLoadout", function ()
         saveWepLoadout(name)
     end)
 end)
@@ -211,7 +196,7 @@ end
 PresetsMgr:add_click_option("Load outfit", "BS_PresetsMgr_OutfitManager_LoadOutfit", function()
     local name = outfitsTable[savedOutfits:getValue()]
     local path = paths.folders.outfits .. '\\' .. name
-    thread.create(function ()
+    task.executeAsScript("BS_PresetsMgr_OutfitManager_LoadOutfit", function ()
         loadOutfit(path)
     end)
 end)
@@ -220,7 +205,7 @@ PresetsMgr:add_bool_option("Load outfit every session", "BS_PresetsMgr_OutfitMan
     local name = "BS_PresetsMgr_OutfitManager_LoadEverySession"
     if state then
         listener.register(name, GET_EVENTS_LIST().OnTransitionEnd, function ()
-            thread.create(function ()
+            task.executeAsScript("BS_PresetsMgr_OutfitManager_LoadEverySession", function ()
                 local name = outfitsTable[savedOutfits:getValue()]
                 local path = paths.folders.outfits .. '\\' .. name
                 loadOutfit(path)
@@ -239,7 +224,7 @@ PresetsMgr:add_click_option("Delete outfit", "BS_PresetsMgr_OutfitManager_Delete
     reloadOutfits()
 end)
 
-local outfitName = PresetsMgr:add_text_input("Outfit name", "BS_PresetsMgr_OutfitManager_OutfitName")
+local outfitName = PresetsMgr:add_text_input("Outfit name", "BS_PresetsMgr_OutfitManager_OutfitName"):setConfigIgnore()
 
 PresetsMgr:add_click_option("Save outfit", "BS_PresetsMgr_OutfitManager_SaveOutfit", function()
     local name = outfitName:getValue()
@@ -249,9 +234,7 @@ end)
 
 PresetsMgr:add_click_option("Refresh outfits", "BS_PresetsMgr_OutfitManager_RefreshOutfits", reloadOutfits)
 
-listener.register("BS_PresetsMgr_WeaponAndOutfitsRefresh", GET_EVENTS_LIST().OnInit, function ()
-    reloadOutfits()
-    reloadWepLoadouts()
-end)
+reloadOutfits()
+reloadWepLoadouts()
 
 -- END

@@ -17,7 +17,8 @@ local function removeTask(hash)
 end
 
 listener.register("System_Tick", GET_EVENTS_LIST().OnFeatureTick, function ()    
-    for hash, params in pairs(GET_ACTIVE_TASKS()) do
+    for ID, params in ipairs(GET_ACTIVE_TASKS()) do
+        local hash = params.hash
         local timerCheck = (not timers[hash]) or (os.clock() - timers[hash] >= params.delay)
         local countCheck = (not count[hash]) or (count[hash] < n(params.count)) or (not params.count)
         if countCheck then

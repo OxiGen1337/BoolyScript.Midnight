@@ -52,7 +52,7 @@ local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards
     }
     local search = Submenu.add_static_submenu("Search", "BS_World_Bodyguards_Search_Submenu") do
         local options = {}
-        local name = search:add_text_input("Name/Hash", "BS_World_Bodyguards_Search_Name")
+        local name = search:add_text_input("Name/Hash", "BS_World_Bodyguards_Search_Name"):setConfigIgnore()
         search:add_click_option("Find", "BS_World_Bodyguards_Search_Find", function ()
             if name:getValue() == "" then return notify.warning("Bodyguards", "Enter ped's name/hash before.") end
             notify.important("Bodyguards", "Searching for the results...")
@@ -213,6 +213,10 @@ local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards
                                             if ENTITY.DOES_ENTITY_EXIST(ped) then
                                                 entity.delete(ped)
                                             end
+                                            t[1]:remove()
+                                            t[2]:remove()
+                                            Stuff.bodyguards[ped_s] = nil
+                                        elseif not ENTITY.DOES_ENTITY_EXIST(ped) then
                                             t[1]:remove()
                                             t[2]:remove()
                                             Stuff.bodyguards[ped_s] = nil
