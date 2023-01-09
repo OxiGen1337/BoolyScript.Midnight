@@ -1,6 +1,6 @@
 
 BSVERSION = "[Midnight] [0.2]"
-DEBUG = true
+DEBUG = false
 
 local temp = require
 
