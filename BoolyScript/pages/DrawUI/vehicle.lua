@@ -26,6 +26,40 @@ Vehicle:add_choose_option("Switch seat", "BS_Vehicle_SwitchSeat", false, {"Drive
 	PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), vehicle, pos-2)
 end):setConfigIgnore()
 
+local ufoSpawner = Submenu.add_static_submenu("UFO spawner", "BS_Vehicle_UfoSpawner_Submenu") do
+    local ufoHash = string.joaat("p_spinning_anus_s")
+    ufoSpawner:add_click_option("Spawn UFO", "BS_Vehicle_UfoSpawner_Spawn", function ()
+        local opressorHash = string.joaat("oppressor2")
+        entity.spawn_veh(opressorHash, function (oppressor)
+            PED.SET_PED_INTO_VEHICLE(player.id(), oppressor, -1)
+            entity.spawn_obj(ufoHash, function (spawnedUfo)                
+                table.insert(Stuff.ufos, spawnedUfo)
+                ENTITY.SET_ENTITY_COLLISION(spawnedUfo, false, false)
+                ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedUfo, oppressor, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false, 0, true)
+            end)
+        end)
+    end)
+    ufoSpawner:add_click_option("Attach UFO to current vehicle", "BS_Vehicle_UfoSpawner_Attach", function ()
+        local ped = player.id()
+        local vehicle = player.get_vehicle_handle(player.index())
+        if vehicle == 0 then return end
+        callbacks.requestModel(ufoHash, function()
+            entity.spawn_obj(ufoHash, function (spawnedUfo)                
+                table.insert(Stuff.ufos, spawnedUfo)
+                ENTITY.SET_ENTITY_COLLISION(spawnedUfo, false, false)
+                ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedUfo, vehicle, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, false, 0, true)
+            end)
+        end)
+    end)
+    ufoSpawner:add_click_option("Clear all UFOs", "BS_Vehicle_UfoSpawner_Clear", function ()
+        for _, hdl in ipairs(Stuff.ufos) do
+            entity.delete(hdl)
+        end
+        Stuff.ufos = {}
+    end)
+    Vehicle:add_sub_option("UFO spawner", "BS_Vehicle_UfoSpawner_SubOption", ufoSpawner)
+end
+
 Vehicle:add_separator("Movement", "BS_Vehicle_Movement")
 
 Vehicle:add_looped_option("Engine always on", "BS_Vehicle_Movement_EngineAlwOn", 0.0, function ()

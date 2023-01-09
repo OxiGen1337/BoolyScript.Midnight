@@ -183,7 +183,7 @@ local function loadOutfit(path)
         PED.SET_PED_COMPONENT_VARIATION(PLAYER.PLAYER_PED_ID(), componentID, drawableID, textureID, paletteID)
         --wait(0)
     end
-    for ID_s, value_t in ipairs(content.props) do
+    for ID_s, value_t in pairs(content.props) do
         local componentID = tonumber(ID_s)
         local drawableID = value_t['drawable']
         local textureID = value_t['texture']

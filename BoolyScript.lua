@@ -32,9 +32,9 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
     do
         local t = {
             paths.folders.user,
-            paths.folders.translations,
+            -- paths.folders.translations,
             paths.folders.outfits,
-            paths.folders.chat_spammer,
+            -- paths.folders.chat_spammer,
             paths.folders.loadouts,
             paths.folders.logs,
         }

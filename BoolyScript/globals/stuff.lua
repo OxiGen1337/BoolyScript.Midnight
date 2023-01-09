@@ -1,6 +1,7 @@
 Stuff = {
     ramps = {},
     bodyguards = {},
+    ufos = {},
 }
 
 ParsedFiles = {

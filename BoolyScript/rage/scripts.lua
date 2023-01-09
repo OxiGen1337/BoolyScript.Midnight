@@ -55,6 +55,11 @@ scripts.globals["setInPersonalVehicle"] = function ()
     script_global:new(2639783):at(8):set_long(1)
 end
 
+scripts.globals["callGooch"] = function ()
+    script_global:new(2756259):set_int64(6)
+    script_global:new(2756261):set_int64(171)
+end
+
 scripts.events = {}
 
 scripts.events['crash'] = function(pid)

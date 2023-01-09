@@ -31,9 +31,15 @@ PlayerInteractions = Submenu.add_static_submenu("Player", "BS_PlayerList_Player_
     table.insert(submenus, PlayerInteractions)
 end
 
--- PlayerInteractions:add_click_option("Test", "", function ()
---     script.send(selectedPlayer, 243072129, selectedPlayer, 263, -1)
--- end)
+PlayerSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Player_Settings_Submenu") do
+    PlayerSettings:add_bool_option("Pussy mode", "BS_PlayerList_Player_Settings_PussyMode", function (state, option)
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        pussy_mode = state
+    end):setHint("Blocks syncs after sending kick/crash for 30s")
+    PlayerInteractions:add_sub_option("Settings", "BS_PlayerList_Settings_SubOption", PlayerSettings)
+    table.insert(submenus, PlayerSettings)
+end
 
 PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Teleport_Submenu") do
     PlayerTeleport:add_click_option("Teleport to player", "BS_PlayerList_Player_Teleport_ToPlayer", function ()
@@ -542,17 +548,6 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
     PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Griefing_SubOption", PlayerGriefing)
     table.insert(submenus, PlayerGriefing)
 end
-
-PlayerSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Player_Settings_Submenu") do
-    PlayerSettings:add_bool_option("Pussy mode", "BS_PlayerList_Player_Settings_PussyMode", function (state, option)
-        local pid = selectedPlayer
-        if not pid or not player.is_connected(pid) then return end
-        pussy_mode = state
-    end):setHint("Blocks syncs after sending kick/crash for 30s")
-    PlayerInteractions:add_sub_option("Settings", "BS_PlayerList_Settings_SubOption", PlayerSettings)
-    table.insert(submenus, PlayerSettings)
-end
-
 
 -- for pid = 0, 32 do
 --     local option = setmetatable({}, Option)
