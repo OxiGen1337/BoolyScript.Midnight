@@ -157,6 +157,7 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe_Submen
         ["Legs"] = 4,
         ["Hands"] = 5,
         ["Foot"] = 6,
+        ["Misc"] = 7,
         ["Accessories"] = 8,
         ["Bags"] = 9,
         ["Decals & masks"] = 10,

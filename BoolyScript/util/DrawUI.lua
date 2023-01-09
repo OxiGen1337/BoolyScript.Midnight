@@ -142,6 +142,7 @@ local id_to_key = {
     [229] = {"\\", "|"},
     [221] = {"]", "}"},
     [222] = {"\\", "\""},
+    [32] = {" ", " "},
 }
 
 function getKeyFromID(key, isShiftDown)
@@ -693,7 +694,6 @@ Configs.loadConfig = function ()
         parse.json(paths.files.config, function (config)        
             for _, option in ipairs(options) do
                 if not option.configIgnore then
-                    log.dbg(option.hash)
                     local value = config[option.hash]
                     if value then
                         Option.setValue(option, value)
@@ -1156,7 +1156,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         draw.texture(
             materials.footerArrows,
             bg.lu.x + config.width/2 - config.footerArrowsSize/2 - 2, 
-            bg.rd.y + 30/2 - config.footerArrowsSize/2, 
+            bg.rd.y + config.optionHeight/2 - config.footerArrowsSize/2, 
             config.footerArrowsSize + 2,
             config.footerArrowsSize
         )
