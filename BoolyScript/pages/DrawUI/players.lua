@@ -545,34 +545,194 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         addActiveAction(pid, option, value)
         script.send(pid, 1920583171, pid, 1 - value)
     end):setConfigIgnore()
+    do
+        PlayerGriefing:add_separator("Attackers", "BS_PlayerList_Player_Griefing_Attackers")
+        local attackersSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Griefing_Attackers_Settings_Submenu")
+        local config = {
+            weapon = 2725352035,
+            count = 1,
+            godmode = false,
+            group = nil,
+        }
+        local weapons = {
+            ["None"] = 2725352035,
+            ["Pistol"] = 453432689, 
+            ["AK-74"] = 3220176749, 
+            ["M4"] = 2210333304, 
+            ["M16"] = 3520460075, 
+            ["MG"] = 2634544996, 
+            ["Shotgun"] = 487013001, 
+            ["RPG"] = 2982836145, 
+        }
+        local variations = {"None", "Pistol", "AK-74", "M4", "M16", "MG", "Shotgun", "RPG"}
+        attackersSettings:add_choose_option("Weapon", "BS_PlayerList_Griefing_Attackers_Settings_Weapon", true, variations, function (pos)
+            config.weapon = weapons[variations[pos]]
+        end)
+        attackersSettings:add_num_option("Count", "BS_PlayerList_Griefing_Attackers_Settings_Count", 1, 30, 1, function (pos)
+            config.count = pos
+        end):setValue(1, true)
+        attackersSettings:add_bool_option("Invincibility", "BS_PlayerList_Griefing_Attackers_Settings_GodMode", function (state)
+            config.godmode = state
+        end)
+        attackersSettings:add_click_option("Clear all attackers", "BS_PlayerList_Griefing_Attackers_Settings_ClearAll", function ()
+            local cnt = #Stuff.attackers
+            for _, ped in ipairs(Stuff.attackers) do
+                entity.delete(ped)
+            end
+            Stuff.attackers = {}
+            notify.success("Attackers", "Successfully removed " .. cnt .. " attackers.")
+        end)
+        PlayerGriefing:add_sub_option("Settings", "BS_PlayerList_Griefing_Attackers_Settings_SubOption", attackersSettings)
+        PlayerGriefing:add_choose_option("NPCs", "BS_PlayerList_Player_Griefing_SendPed", false, {"Super-hero", "Jesus", "Drunk Russian", "Mime"}, function (pos, option)
+            local hash = pos == 1 and "u_m_y_imporage" or pos == 2 and "u_m_m_jesus_01" or pos == 3 and "IG_RussianDrunk" or pos == 4 and "s_m_y_mime"
+            hash = string.joaat(hash)
+            local playerPed = player.get_entity_handle(selectedPlayer)
+            if task.exists("BS_PlayerList_Player_Griefing_SendPed") then notify.warning("Attackers", "The script hasn't finished previous attacker sending yet.\nTry again later.") return end
+            task.createTask("BS_PlayerList_Player_Griefing_SendPed", 0.1, config.count, function ()                
+                callbacks.requestModel(hash, function()
+                    local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(playerPed, math.random(-10, 10) + .0, math.random(-10, 10)+ .0, 0.0)
+                    entity.spawn_ped(hash, coords, function (attacker)
+                        table.insert(Stuff.attackers, attacker)
+                        if not config.group then
+                            config.group = PED.CREATE_GROUP(0)
+                            PED.SET_PED_AS_GROUP_LEADER(attacker, config.group)
+                        end
+                        PED.SET_PED_AS_GROUP_MEMBER(attacker, config.group)
+                        if config.godmode then
+                            ENTITY.SET_ENTITY_INVINCIBLE(attacker, true)
+                        end
+                        TASK.TASK_COMBAT_PED(attacker, playerPed, 0, 16)
+                        PED.SET_PED_ACCURACY(attacker, 100.0)
+                        PED.SET_PED_COMBAT_ABILITY(attacker, 2)
+                        PED.SET_PED_AS_ENEMY(attacker, true)
+                        PED.SET_PED_ARMOUR(attacker, 200)
+                        PED.SET_PED_MAX_HEALTH(attacker, 10000)
+                        ENTITY.SET_ENTITY_HEALTH(attacker, 10000, 0)
+                        PED.SET_PED_FLEE_ATTRIBUTES(attacker, 0, false)
+                        PED.SET_PED_COMBAT_ATTRIBUTES(attacker, 46, true)
+                        WEAPON.GIVE_WEAPON_TO_PED(attacker, config.weapon, 0, false, true)
+                    end)
+                end)
+            end)
+            addActiveAction(selectedPlayer, option, pos)
+        end):setConfigIgnore()
+        PlayerGriefing:add_choose_option("Animals", "BS_PlayerList_Player_Griefing_SendAnimal", false, {"Shepherd", "Husky", "Chop"}, function (pos, option)            
+            local hash = pos == 1 and "A_C_shepherd" or pos == 2 and "A_C_Husky" or pos == 3 and "A_C_Chop"
+            hash = string.joaat(hash)
+            local playerPed = player.get_entity_handle(selectedPlayer)
+            if task.exists("BS_PlayerList_Player_Griefing_SendAnimal") then notify.warning("Attackers", "The script hasn't finished previous attacker sending yet.\nTry again later.") return end
+            task.createTask("BS_PlayerList_Player_Griefing_SendAnimal", 0.1, config.count, function ()                
+                callbacks.requestModel(hash, function()
+                    local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(playerPed, math.random(-10, 10) + .0, math.random(-10, 10)+ .0, 0.0)
+                    entity.spawn_ped(hash, coords, function (attacker)
+                        table.insert(Stuff.attackers, attacker)
+                        if config.godmode then
+                            ENTITY.SET_ENTITY_INVINCIBLE(attacker, true)
+                        end
+                        TASK.TASK_COMBAT_PED(attacker, playerPed, 0, 16)
+                        PED.SET_PED_ACCURACY(attacker, 100.0)
+                        PED.SET_PED_COMBAT_ABILITY(attacker, 2)
+                        PED.SET_PED_AS_ENEMY(attacker, true)
+                        PED.SET_PED_MAX_HEALTH(attacker, 10000)
+                        ENTITY.SET_ENTITY_HEALTH(attacker, 10000, 0)
+                    end)
+                end)
+            end)
+            addActiveAction(selectedPlayer, option, pos)
+        end):setConfigIgnore()
+        PlayerGriefing:add_choose_option("Jets", "BS_PlayerList_Player_Griefing_SendJets", false, {"B-11 Strikeforce", "Lazer", "UFO"}, function (pos, option)            
+            local hash = pos == 1 and "strikeforce" or pos == 2 and "Lazer" or pos == 3 and "strikeforce"
+            hash = string.joaat(hash)
+            local playerPed = player.get_entity_handle(selectedPlayer)
+            if task.exists("BS_PlayerList_Player_Griefing_SendJets") then notify.warning("Attackers", "The script hasn't finished previous attacker sending yet.\nTry again later.") return end
+            task.createTask("BS_PlayerList_Player_Griefing_SendJets", 0.1, config.count, function ()                
+                callbacks.requestModel(hash, function()
+                    callbacks.requestModel(-163714847, function()
+                        local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(playerPed, math.random(-50, 50) + .0,  math.random(-50, 50) + .0, 150.0)
+                        entity.spawn_veh(hash, coords, function (aircraft)
+                            table.insert(Stuff.attackers, aircraft)
+                            VEHICLE.CONTROL_LANDING_GEAR(aircraft, 3)
+                            VEHICLE.SET_HELI_BLADES_FULL_SPEED(aircraft)
+                            VEHICLE.SET_VEHICLE_FORWARD_SPEED(aircraft, VEHICLE.GET_VEHICLE_ESTIMATED_MAX_SPEED(aircraft))
+                            if config.godmode then
+                                ENTITY.SET_ENTITY_INVINCIBLE(aircraft, true)
+                            end
+                            for i = -1, VEHICLE.GET_VEHICLE_MODEL_NUMBER_OF_SEATS(hash) - 2 do
+                                entity.spawn_ped(-163714847, coords, function (ped)
+                                    table.insert(Stuff.attackers, ped)
+                                    if i == -1 then
+                                        TASK.TASK_PLANE_MISSION(ped, aircraft, 0, playerPed, 0.0, 0.0, 0.0, 6, 0.0, 0.0, 0.0, 50.0, 40.0, true)
+                                    end
+                                    PED.SET_PED_COMBAT_ATTRIBUTES(ped, 5, true)
+                                    PED.SET_PED_COMBAT_ATTRIBUTES(ped, 46, true)
+                                    PED.SET_PED_INTO_VEHICLE(ped, aircraft, i)
+                                    TASK.TASK_COMBAT_PED(ped, playerPed, 0, 16)
+                                    PED.SET_PED_COMBAT_ABILITY(ped, 2)
+                                    PED.SET_PED_ACCURACY(ped, 100.0)
+                                    PED.SET_PED_ARMOUR(ped, 200)
+                                    PED.SET_PED_MAX_HEALTH(ped, 1000)
+                                    ENTITY.SET_ENTITY_HEALTH(ped, 1000, 0)
+                                    if pos == 3 then
+                                        local ufoHash = string.joaat("p_spinning_anus_s")
+                                        callbacks.requestModel(ufoHash, function()
+                                            entity.spawn_obj(ufoHash, coords, function (spawnedUfo)
+                                                table.insert(Stuff.attackers, spawnedUfo)
+                                                ENTITY.SET_ENTITY_COLLISION(spawnedUfo, false, false)
+                                                ENTITY.SET_ENTITY_VISIBLE(aircraft, false, false)
+                                                ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedUfo, aircraft, 0, 0.0, 0.0, 5.0, 0.0, 0.0, 0, true, true, false, false, 0, true)
+                                            end)
+                                        end)
+                                    end
+                                end)
+                            end
+                        end)
+                    end)
+                end)
+            end)
+            addActiveAction(selectedPlayer, option, pos)
+        end):setConfigIgnore()
+        PlayerGriefing:add_choose_option("Tanks", "BS_PlayerList_Player_Griefing_SendTank", false, {"APC", "Rhino"}, function (pos, option)            
+            local hash = pos == 1 and "apc" or pos == 2 and "RHINO"
+            hash = string.joaat(hash)
+            local playerPed = player.get_entity_handle(selectedPlayer)
+            if task.exists("BS_PlayerList_Player_Griefing_SendTank") then notify.warning("Attackers", "The script hasn't finished previous attacker sending yet.\nTry again later.") return end
+            task.createTask("BS_PlayerList_Player_Griefing_SendTank", 0.1, config.count, function ()                
+                callbacks.requestModel(hash, function()
+                    local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(playerPed, math.random(-10, 10) + .0, math.random(-10, 10)+ .0, 0.0)
+                    entity.spawn_veh(hash, coords, function (tank)
+                        local group = nil
+                        table.insert(Stuff.attackers, tank)
+                        for i = -1, VEHICLE.GET_VEHICLE_MODEL_NUMBER_OF_SEATS(hash) - 2 do
+                            entity.spawn_ped(-163714847, coords, function (driver)
+                                if not group then
+                                    group = PED.CREATE_GROUP(0)
+                                    PED.SET_PED_AS_GROUP_LEADER(driver, group)
+                                end
+                                PED.SET_PED_AS_GROUP_MEMBER(driver, group)
+                                table.insert(Stuff.attackers, driver)
+                                if i == -1 then
+                                    TASK.TASK_VEHICLE_CHASE(driver, playerPed)
+                                end
+                                PED.SET_PED_INTO_VEHICLE(driver, tank, i)
+                                WEAPON.GIVE_WEAPON_TO_PED(driver, config.weapon, 1000, false, true)
+                                PED.SET_PED_COMBAT_ATTRIBUTES(driver, 5, true)
+                                PED.SET_PED_COMBAT_ATTRIBUTES(driver, 46, true)
+                                TASK.TASK_COMBAT_PED(driver, playerPed, 0, 16)
+                                if config.godmode then
+                                    ENTITY.SET_ENTITY_INVINCIBLE(tank, true)
+                                    ENTITY.SET_ENTITY_INVINCIBLE(driver, true)
+                                end
+                            end)
+                        end
+                    end)
+                end)
+            end)
+            addActiveAction(selectedPlayer, option, pos)
+        end):setConfigIgnore()
+    end
     PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Griefing_SubOption", PlayerGriefing)
     table.insert(submenus, PlayerGriefing)
 end
-
--- for pid = 0, 32 do
---     local option = setmetatable({}, Option)
---     option.ID = #players + 1
---     option.name = "PID: " .. pid
---     option.type = OPTIONS.SUB
---     option.hash = "PlayerList_" .. pid
---     option.value = pid
---     option.callback = function ()
---         selectedPlayer = pid
---         PlayerInteractions:setActive(true)
---         if activeActions[pid + 1] then
---             for option, value in pairs(activeActions[pid + 1]) do
---                 option:setValue(value, true)
---             end
---         else
---             for _, submenu in ipairs(submenus) do
---                 for _, option in ipairs(submenu.options) do
---                     option:reset(true)
---                 end
---             end
---         end
---     end
---     table.insert(players, option)
--- end
 
 local function getPlayerFlags(pid)
     if not player.is_connected(pid) then return "" end

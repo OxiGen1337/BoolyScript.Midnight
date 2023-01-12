@@ -168,7 +168,11 @@ Network:add_bool_option("Kick spammers", "BS_Network_KickSpammers", function (st
             if cnt <= 3 then return end
             notify.warning("Network chat", string.format("Spammer detected | Name: %s\nKicking player...", player.get_name(pid)))
             messages[rid] = {}
-            player.kick_idm(pid)
+            if player.is_session_host(player.index()) then -- Checks is the local player host
+                player.kick(pid) -- HOST/VOTE kick
+            else
+                player.kick_idm(pid) -- UNBLOCKABLE IDM kick
+            end
         end)
     elseif listener.exists("BS_Network_KickSpammers", GET_EVENTS_LIST().OnChatMsg) then
         listener.remove("BS_Network_KickSpammers", GET_EVENTS_LIST().OnChatMsg)

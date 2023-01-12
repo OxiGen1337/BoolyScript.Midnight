@@ -187,7 +187,11 @@ local function loadOutfit(path)
         local componentID = tonumber(ID_s)
         local drawableID = value_t['drawable']
         local textureID = value_t['texture']
-        PED.SET_PED_PROP_INDEX(PLAYER.PLAYER_PED_ID(), componentID, drawableID, textureID)
+        if drawableID == -1 then
+            PED.CLEAR_PED_PROP(PLAYER.PLAYER_PED_ID(), componentID, false)
+        else
+            PED.SET_PED_PROP_INDEX(PLAYER.PLAYER_PED_ID(), componentID, drawableID, textureID)
+        end
         --wait(0)
     end
     notify.success("Saved outfits", "Successfully loaded outfit.", GET_NOTIFY_ICONS().self)

@@ -2,6 +2,7 @@ Stuff = {
     ramps = {},
     bodyguards = {},
     ufos = {},
+    attackers = {},
 }
 
 ParsedFiles = {
