@@ -143,6 +143,13 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         player.vehicle_disown(pid)
     end):setConfigIgnore()
+    PlayerVehicle:add_click_option("Disable vehicle", "BS_PlayerList_Player_Vehicle_Disable", function ()
+        local pid = selectedPlayer
+        if not pid or not player.is_connected(pid) then return end
+        if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
+        script.send(pid, -513394492, pid)
+        script.send(pid, -852914485, 0, 0, 0, 0, 1, 2000000000)
+    end):setConfigIgnore()
     PlayerVehicle:add_click_option("Send EMP", "BS_PlayerList_Player_Vehicle_EMP", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
