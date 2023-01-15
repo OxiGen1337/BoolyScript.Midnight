@@ -97,4 +97,8 @@ function features.makeFirstLetUpper(text)
 	return output
 end
 
+function features.getFPS()
+	return DrawUI.dbg.fps
+end
+
 return features
