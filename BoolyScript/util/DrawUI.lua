@@ -33,9 +33,9 @@ local config = {
     isClickSoundEnabled = true,
 }
 
+
 config.offset_x = draw.get_window_width() - 100 - config.width
 config.offset_y = 200
-
 
 DrawUI = {}
 DrawUI.getSelectedOption = function ()
@@ -45,6 +45,12 @@ end
 DrawUI.isOpened = function ()
     return config.isOpened
 end
+
+DrawUI.dbg = {
+    fps = 0,
+    lastSec = math.ceil(os.clock()),
+    frameCount = 0,
+}
 
 local arrowsControls = {
     open = 119,
@@ -961,6 +967,15 @@ listener.register("DrawUI_controlsStateCheck", GET_EVENTS_LIST().OnFrame, functi
 end)
 
 listener.register("DrawUI_disableControls", GET_EVENTS_LIST().OnFeatureTick, function ()
+    do -- DEBUG BLOCK
+        if math.ceil(os.clock()) == DrawUI.dbg.lastSec then
+            DrawUI.dbg.frameCount = DrawUI.dbg.frameCount + 1
+        else
+            DrawUI.dbg.lastSec = math.ceil(os.clock())
+            DrawUI.dbg.fps = DrawUI.dbg.frameCount
+            DrawUI.dbg.frameCount = 0
+        end
+    end
     if not config.isOpened then return end
     PAD.DISABLE_CONTROL_ACTION(2, 0, true) --INPUT_NEXT_CAMERA
     PAD.DISABLE_CONTROL_ACTION(2, 26, true) --INPUT_CREATOR_RT
