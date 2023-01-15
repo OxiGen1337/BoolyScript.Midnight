@@ -408,7 +408,10 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
         if value == 2 and not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
         addActiveAction(pid, option, value)
         pussy_func(pid, 30, "Manual | Crash [" .. crashvalues[value] .. "]")
-        if value == 1 then scripts.events.crash(pid) end
+        if value == 1 then
+            script.send(pid, 879177392, 1, math.random(2000000000, 2147483647))
+            script.send(pid, -904555865, 0, math.random(2000000000, 2147483647))
+        end
         if value == 2 then
             local vehicle = player.get_vehicle_handle(pid)
             for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, val, 1488) end
