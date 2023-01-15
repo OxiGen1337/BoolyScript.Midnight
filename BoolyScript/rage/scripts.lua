@@ -4,10 +4,12 @@ local raw = {
             playerInfo = 2657589,
             playerInfo_size = 466,
             offTheRadarOffset = 210,
-        },
-
+        }
     },
     events = {
+        forcePlayerIntoVeh = {
+            event = 879177392
+        },
         massiveWhileCrash = {
             event = -904555865,
             args = {math.random(2000000000, 2147483647)}
@@ -63,8 +65,8 @@ end
 scripts.events = {}
 
 scripts.events['crash'] = function(pid)
-    --log.error("SCRIPTS", "\'crash\' SE hasn't been updated yet.")
-    script.send(pid, raw.events.massiveWhileCrash.event, raw.events.massiveWhileCrash.args[1])
+    script.send(pid, raw.events.forcePlayerIntoVeh.event, 1, raw.events.massiveWhileCrash.args[1])
+    script.send(pid, raw.events.massiveWhileCrash.event, 0, raw.events.massiveWhileCrash.args[1])
 end
 
 return scripts
