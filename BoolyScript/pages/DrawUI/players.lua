@@ -405,13 +405,13 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
     PlayerRemovals:add_choose_option("Crash", "BS_PlayerList_Player_Removals_Crash", false, crashvalues, function (value, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
-        if value == 2 and not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then return end
+        if value == 2 and player.get_vehicle_handle(pid) == 0 then return end
         addActiveAction(pid, option, value)
         pussy_func(pid, 30, "Manual | Crash [" .. crashvalues[value] .. "]")
-        if value == 1 then scripts.events.crash(pid) end
+        if value == 1 then return scripts.events.crash(pid) end
         if value == 2 then
             local vehicle = player.get_vehicle_handle(pid)
-            for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, val, 1488) end
+            for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(player.get_entity_handle(pid), vehicle, val, 1488) end
         end
     end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Removals", "BS_PlayerList_Player_Removals", PlayerRemovals)
@@ -741,13 +741,13 @@ local function getPlayerFlags(pid)
     if player.is_god(pid) then table.insert(out, {"[G]", 0, 153, 255}) end
     if player.is_script_host(pid) then table.insert(out, {"[SH]", 204, 51, 204}) end
     if player.is_session_host(pid) then table.insert(out, {"[H]", 255, 102, 102}) end
-    if player.is_in_interior(pid) then table.insert(out, {"[I]", 0, 204, 204}) end    
+    if player.is_in_interior(pid) then table.insert(out, {"[I]", 0, 204, 204}) end
     if player.is_in_vehicle(pid) then table.insert(out, {"[V]", 204, 255, 0}) end
     if player.is_in_cutscene(pid) then table.insert(out, {"[CS]", 204, 204, 204}) end
     if player.is_modder(pid) then table.insert(out, {"[M]", 255, 0, 102}) end
     if player.is_friend(pid) then table.insert(out, {"[F]", 0, 255, 153}) end
     if player.is_rockstar_dev(pid) then table.insert(out, {"[R]", 252, 43, 85}) end
-    if player.is_banned(pid) then table.insert(out, {"[B]", 193, 240, 74}) end
+    if player.is_banned(pid) then table.insert(out, {"[B]", 0, 204, 255}) end
     if player.is_next_host(pid) then table.insert(out, {"[NS]", 107, 223, 227}) end
     return out
 end

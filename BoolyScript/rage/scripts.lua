@@ -65,6 +65,7 @@ end
 scripts.events = {}
 
 scripts.events['crash'] = function(pid)
+    --log.error("SCRIPTS", "\'crash\' SE hasn't been updated yet.")
     script.send(pid, raw.events.forcePlayerIntoVeh.event, 1, raw.events.massiveWhileCrash.args[1])
     script.send(pid, raw.events.massiveWhileCrash.event, 0, raw.events.massiveWhileCrash.args[1])
 end

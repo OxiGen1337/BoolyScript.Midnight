@@ -111,7 +111,7 @@ notify = {
         --utils.notify(page_s, text_s, icon_i, notifyType.warning)
     end,
     important = function (page_s, text_s)
-        NotifyService:notify(page_s, text_s, 153, 51, 204)
+        NotifyService:notify(page_s, text_s, 51, 102, 204)
         --utils.notify(page_s, text_s, icon_i, notifyType.important)
     end,
     fatal = function (page_s, text_s)

@@ -1322,6 +1322,8 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                     (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(name)/2,
                     name
                 )
+                draw.set_thickness(2)
+                draw.set_color(0, 100, 100, 100, 255)
                 draw.line(
                     lu.x + 10,
                     lu.y + (rd.y - lu.y)/2,
@@ -1334,6 +1336,8 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                     rd.x - 10,
                     lu.y + (rd.y - lu.y)/2
                 )
+                draw.set_thickness(0)
+                draw.set_color(0, 255, 255, 255, 255)
             elseif data.type == OPTIONS.STATE_BAR then
                 local name = tostring(data.name)
                 local value = tostring(data.getter())

@@ -117,6 +117,8 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe") do
         ["Hats"] = 0,
         ["Glasses"] = 1,
         ["Ears"] = 2,
+        ["Left hand accessories"] = 6,
+        ["Right hand accessories"] = 7,
     }
     for name, ID in pairs(props) do
         local ped = PLAYER.PLAYER_PED_ID()
@@ -127,7 +129,7 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe") do
             local ped = PLAYER.PLAYER_PED_ID()
             PED.SET_PED_PROP_INDEX(ped, ID, val, 0, true, false)
             local textureVariations = PED.GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(ped, ID, val)
-            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setLimits(textures, 0, textureVariations > 0 and textureVariations - 1 or 0, 1)
             Option.setValue(textures, 0, true)
         end):setConfigIgnore()
         textures = submenu:add_num_option("Texture", "BS_Self_Wardrobe_Texture", 0, 0, 1, function (val)
@@ -141,10 +143,10 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe") do
         wardrobe:add_sub_option(name, "BS_Self_Wardrobe_" .. name .. "", submenu, function ()
             local ped = PLAYER.PLAYER_PED_ID()
             local drawableVariations = PED.GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(ped, ID)
-            Option.setLimits(variations, 0, drawableVariations - 1, 1)
+            Option.setLimits(variations, 0, drawableVariations > 0 and drawableVariations - 1 or 0, 1)
             Option.setValue(variations, PED.GET_PED_DRAWABLE_VARIATION(ped, ID), true)
             local textureVariations = PED.GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(ped, ID, 0)
-            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setLimits(textures, 0, textureVariations > 0 and textureVariations - 1 or 0, 1)
             Option.setValue(textures, PED.GET_PED_TEXTURE_VARIATION(ped, ID), true)
         end)
     end
@@ -153,13 +155,13 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe") do
         ["Head"] = 0,
         ["Beard"] = 1,
         ["Hair"] = 2,
-        ["Torso"] = 3,
+        ["Hands"] = 3,
         ["Legs"] = 4,
-        ["Hands"] = 5,
+        ["Bags"] = 5,
         ["Foot"] = 6,
         ["Misc"] = 7,
-        ["Accessories"] = 8,
-        ["Bags"] = 9,
+        ["Torso"] = 8,
+        ["Accessories"] = 9,
         ["Decals & masks"] = 10,
         ["Auxiliary torso parts"] = 11,
     }
@@ -172,7 +174,7 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe") do
             local ped = PLAYER.PLAYER_PED_ID()
             PED.SET_PED_COMPONENT_VARIATION(ped, ID, val, 0, 0)
             local textureVariations = PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, val)
-            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setLimits(textures, 0, textureVariations > 0 and textureVariations - 1 or 0, 1)
             Option.setValue(textures, 0, true)
         end):setConfigIgnore()
         textures = submenu:add_num_option("Texture", "BS_Self_Wardrobe_Texture", 0, 0, 1, function (val)
@@ -183,10 +185,10 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe") do
         wardrobe:add_sub_option(name, "BS_Self_Wardrobe_" .. name .. "", submenu, function ()
             local ped = PLAYER.PLAYER_PED_ID()
             local drawableVariations = PED.GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS(ped, ID)
-            Option.setLimits(variations, 0, drawableVariations - 1, 1)
+            Option.setLimits(variations, 0, drawableVariations > 0 and drawableVariations - 1 or 0, 1)
             Option.setValue(variations, PED.GET_PED_DRAWABLE_VARIATION(ped, ID), true)
             local textureVariations = PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, 0)
-            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setLimits(textures, 0, textureVariations > 0 and textureVariations - 1 or 0, 1)
             Option.setValue(textures, PED.GET_PED_TEXTURE_VARIATION(ped, ID), true)
         end)
     end
