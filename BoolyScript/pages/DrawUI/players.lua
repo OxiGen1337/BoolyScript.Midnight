@@ -509,6 +509,15 @@ PlayerNeutral = Submenu.add_static_submenu("Neutral", "BS_Players_Neutral") do
         if not player.is_connected(pid) then return end
         player.off_the_radar(pid)
     end)
+    local optionNotifSpam
+    optionNotifSpam = PlayerNeutral:add_looped_option("Notification spam", "BS_Players_Neutral_NotifSpam", 1.0, function ()
+        local pid = selectedPlayer
+        if not player.is_connected(pid) then return end
+        scripts.events.sendRandomNotif(pid)
+        addActiveAction(pid, optionNotifSpam, true)
+    end, function()
+        addActiveAction(pid, optionNotifSpam, false)
+    end)
     PlayerInteractions:add_sub_option("Neutral", "BS_Players_Neutral", PlayerNeutral)
 end
 
