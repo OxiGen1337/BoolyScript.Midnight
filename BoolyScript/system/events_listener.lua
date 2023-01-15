@@ -22,6 +22,8 @@ local events = {
     OnModderDetected = 17,
     OnGameState = 18,
     OnPlayerActive = 19,
+    OnSpectating = 20,
+    OnStopSpectating = 21,
 }
 
 for _, ID in pairs(events) do
@@ -353,6 +355,34 @@ function OnPlayerActive(pid)
         else 
             local out = callback_f(pid) 
             if out == false then listener.remove(hash_s, events.OnPlayerActive) end
+        end
+    end
+end
+
+function OnSpectating(spec, target, isMe)
+    local event = onEventFunctions[events.OnSpectating]
+    for _, t in ipairs(event) do
+        local hash_s, callback_f = t["hash"], t["callback"]
+        if not callback_f then 
+            log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
+            listener.remove(hash_s, events.OnSpectating)
+        else 
+            local out = callback_f(spec, target, isMe)
+            if out == false then listener.remove(hash_s, events.OnSpectating) end
+        end
+    end
+end
+
+function OnStopSpectating(spec, target, isMe)
+    local event = onEventFunctions[events.OnStopSpectating]
+    for _, t in ipairs(event) do
+        local hash_s, callback_f = t["hash"], t["callback"]
+        if not callback_f then 
+            log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
+            listener.remove(hash_s, events.OnStopSpectating)
+        else 
+            local out = callback_f(spec, target, isMe)
+            if out == false then listener.remove(hash_s, events.OnStopSpectating) end
         end
     end
 end

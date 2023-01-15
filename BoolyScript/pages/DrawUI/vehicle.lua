@@ -3,8 +3,8 @@ require("BoolyScript/util/notify_system")
 local gui = require("BoolyScript/globals/gui")
 require("BoolyScript/system/events_listener")
 
-Vehicle = Submenu.add_static_submenu("Vehicle", "BS_Vehicle_Submenu")
-Main:add_sub_option("Vehicle", "BS_Vehicle_SubOption", Vehicle)
+Vehicle = Submenu.add_static_submenu("Vehicle", "BS_Vehicle")
+Main:add_sub_option("Vehicle", "BS_Vehicle", Vehicle)
 
 -- function Stuff.vehicleCheck()
 --     local ped = player.id()
@@ -26,7 +26,7 @@ Vehicle:add_choose_option("Switch seat", "BS_Vehicle_SwitchSeat", false, {"Drive
 	PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), vehicle, pos-2)
 end):setConfigIgnore()
 
-local ufoSpawner = Submenu.add_static_submenu("UFO spawner", "BS_Vehicle_UfoSpawner_Submenu") do
+local ufoSpawner = Submenu.add_static_submenu("UFO spawner", "BS_Vehicle_UfoSpawner") do
     local ufoHash = string.joaat("p_spinning_anus_s")
     ufoSpawner:add_click_option("Spawn UFO", "BS_Vehicle_UfoSpawner_Spawn", function ()
         local opressorHash = string.joaat("oppressor2")
@@ -57,7 +57,7 @@ local ufoSpawner = Submenu.add_static_submenu("UFO spawner", "BS_Vehicle_UfoSpaw
         end
         Stuff.ufos = {}
     end)
-    Vehicle:add_sub_option("UFO spawner", "BS_Vehicle_UfoSpawner_SubOption", ufoSpawner)
+    Vehicle:add_sub_option("UFO spawner", "BS_Vehicle_UfoSpawner", ufoSpawner)
 end
 
 Vehicle:add_separator("Movement", "BS_Vehicle_Movement")

@@ -6,8 +6,8 @@ local parse = require("BoolyScript/util/parse")
 local filesys = require("BoolyScript/util/file_system")
 require("BoolyScript/globals/stuff")
 
-PresetsMgr = Submenu.add_static_submenu("Presets", "BS_PresetsMgr_Submenu")
-Main:add_sub_option("Presets", "BS_PresetsMgr_SubOption", PresetsMgr)
+PresetsMgr = Submenu.add_static_submenu("Presets", "BS_PresetsMgr")
+Main:add_sub_option("Presets", "BS_PresetsMgr", PresetsMgr)
 
 PresetsMgr:add_separator("Weapons manager", "BS_PresetsMgr_WepManager")
 

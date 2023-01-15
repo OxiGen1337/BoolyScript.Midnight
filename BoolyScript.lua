@@ -1,5 +1,5 @@
 
-BSVERSION = "[Midnight] [0.2]"
+BSVERSION = "0.3"
 DEBUG = true
 
 local temp = require
@@ -27,7 +27,7 @@ gui = require("BoolyScript/globals/gui")
 
 listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
     log.init("Loading BoolyScript...")
-    log.init(string.format("Version -> %s.", BSVERSION))
+    log.init(string.format("Version -> [Midnight] [%s].", BSVERSION))
     log.init("Verifying required directories...")
     do
         local t = {
@@ -56,6 +56,9 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         end)
         parse.json(paths.files.peds, function (content)
             ParsedFiles['peds'] = content
+        end)
+        parse.txt(paths.files.objects, function (content)
+            ParsedFiles['objects'] = content
         end)
     end
     do -- Loading all pages added in 'pages' folder; it only loads init.lua so that file has to require everything that's in the page

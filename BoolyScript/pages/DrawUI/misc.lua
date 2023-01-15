@@ -1,5 +1,5 @@
-Misc = Submenu.add_static_submenu("Misc", "BS_Misc_Submenu")
-Main:add_sub_option("Misc", "BS_Misc_SubOption", Misc)
+Misc = Submenu.add_static_submenu("Misc", "BS_Misc")
+Main:add_sub_option("Misc", "BS_Misc", Misc)
 
 Misc:add_click_option("Unlock all achievements", "BS_Misc_UnlockAllAchievs", function()
     for ID = 1, 78 do

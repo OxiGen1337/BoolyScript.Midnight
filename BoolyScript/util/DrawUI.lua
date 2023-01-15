@@ -6,11 +6,10 @@ local json = require("BoolyScript/modules/JSON")
 require("BoolyScript/system/events_listener")
 
 local config = {
-    width = 325,
-    height = 500,
-    optionHeight = 30,
+    width = 325.0,
+    height = 500.0,
+    optionHeight = 30.0,
     selectedOption = 1,
-    activeSubmenu = nil,
     maxOptions = 12,
     scrollOffset = 0,
     isInputBoxDisplayed = false,
@@ -182,6 +181,10 @@ OPTIONS = {
 local submenus = {}
 local options = {}
 
+GET_OPTIONS =  function ()
+    return options
+end
+
 Submenu = {
     ID = nil,
     name = nil,
@@ -197,6 +200,7 @@ Submenu = {
     getSubmenus = function ()
         return submenus
     end,
+    translationIgnore = false,
 }
 Submenu.__index = Submenu
 
@@ -218,6 +222,7 @@ Option = {
     hint = "",
     default = nil,
     configIgnore = false,
+    translationIgnore = false,
     tags = {},
 }
 Option.__index = Option
@@ -358,7 +363,6 @@ function Submenu.add_main_submenu(name_s, hash_s)
     local submenu = Submenu.add_static_submenu(name_s, hash_s)
     if config.path[1] then log.error("DrawUI", "Main submenu already exists. You can't add multiple main submenus.") return end
     config.path[1] = submenu
-    config.activeSubmenu = 1
     return submenu
 end
 
@@ -380,7 +384,12 @@ function Option.new(submenu_mt, name_s, hash_s, type_n, value_n, callback_f)
     option.name = name_s
     option.type = type_n
     option.hash = hash_s
-    option.callback = callback_f
+    option.callback = function (...)
+        local args = {...}
+        task.executeAsScript(hash_s .. tostring(os.clock()) .. tostring(math.random(1337)), function ()
+            if callback_f then callback_f(table.unpack(args)) end
+        end)
+    end
     option.value = value_n
     option.submenu = submenu_mt
     table.insert(submenu_mt.options, option)
@@ -402,12 +411,10 @@ function Submenu:setActive(state)
         end
     end
     if state then
-        config.activeSubmenu = self.ID
         table.insert(config.path, self)
     else
-        if config.activeSubmenu == self.ID then
+        if config.path[#config.path] == self then
             table.remove(config.path)
-            config.activeSubmenu = config.path[#config.path].ID
         end
     end
     config.path[#config.path].selectedOption = getClickableOption(config.path[#config.path], config.path[#config.path].selectedOption)
@@ -425,7 +432,7 @@ end
 
 
 function Submenu:isOpened()
-    return config.activeSubmenu == self.ID
+    return config.path[#config.path] == self
 end
 
 function Submenu:add_click_option(name_s, hash_s, callback_f)
@@ -520,11 +527,17 @@ function Submenu:setName(name_s)
     return self
 end
 
+
+function Submenu:setTranslationIgnore()
+    self.translationIgnore = true
+    return self
+end
+
 function Submenu:remove()
     if not self then return end
     if config.path[#config.path] == self then self:setActive(false) end
     for ID, sub in ipairs(submenus) do
-        if sub.hash == self.hash then 
+        if sub == self then
             table.remove(submenus, ID)
         end
     end
@@ -543,8 +556,16 @@ end
 
 function Option:setValue(value, ignoreCallback_b)
     if not self then return end
-    if (self.type == OPTIONS.NUM or self.type == OPTIONS.FLOAT or self.type == OPTIONS.CHOOSE) and type(value) == "number" then
+    if self.type == OPTIONS.NUM or self.type == OPTIONS.FLOAT then
         self.value = value
+        if self.callback and not ignoreCallback_b then self.callback(self.value, self) end
+        return self
+    elseif (self.type == OPTIONS.CHOOSE and type(value) == "number" ) then
+        if value <= #self.table then
+            self.value = value
+        else
+            self.value = 1
+        end
         if self.callback and not ignoreCallback_b then self.callback(self.value, self) end
         return self
     elseif (self.type == OPTIONS.BOOL and type(value) == "boolean") then
@@ -624,6 +645,11 @@ function Option:setConfigIgnore()
     return self
 end
 
+function Option:setTranslationIgnore()
+    self.translationIgnore = true
+    return self
+end
+
 function Option:setLimits(min_n, max_n, step_n)
     if type(min_n) == "number" and type(max_n) == "number" and type(step_n) == "number" then
         self.minValue = min_n
@@ -651,15 +677,13 @@ end
 function Option:remove()
     if not self then return end
     for ID, opt in ipairs(self.submenu.options) do
-        if opt.hash == self.hash then 
+        if opt == self then
             table.remove(self.submenu.options, ID)
+            self = nil
+            return nil
         end
     end
-    for i = self.ID, #self.submenu.options do
-        self.submenu.options[i].ID = self.submenu.options[i].ID - 1
-    end
-    self = nil
-    return nil
+    log.error("Options", "Failed to remove option.")
 end
 
 function Option:addTag(tag_t)
@@ -687,6 +711,7 @@ Configs.saveConfig = function ()
     file:write(json:encode_pretty(out))
     file:close()
     log.success("Settings", "Config has been updated.")
+    notify.success("Settings", "Config has been updated.")
 end
 
 Configs.loadConfig = function ()
@@ -701,6 +726,7 @@ Configs.loadConfig = function ()
                 end
             end
             log.success("Settings", "Config has been loaded.")
+            notify.success("Settings", "Config has been loaded.")
         end)
     else
         log.warning("Settings", "Config doesn't exist.")
@@ -872,7 +898,7 @@ local function onControl(key, isDown, ignoreControlsState)
                     if selected.value - selected.step < selected.minValue then
                         selected.value = selected.maxValue
                     else
-                        selected.value = selected.value - selected.step
+                        selected.value = tonumber(tostring(selected.value - selected.step))
                     end
                     playClickSound()
                     if selected.callback then selected.callback(selected.value, selected) end
@@ -956,8 +982,8 @@ end)
 
 HOME_SUBMENU = Submenu.add_main_submenu("Home", "home_sub")
 
-local settings = Submenu.add_static_submenu("Settings", "Main_Settings_Submenu") do
-    HOME_SUBMENU:add_sub_option("Settings", "Main_Settings_SubOption", settings)
+local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
+    HOME_SUBMENU:add_sub_option("Settings", "Main_Settings", settings)
     settings:add_choose_option("Controls", "Main_Settings_Controls", true, {"Arrows", "Numpad"}, function (pos, option)
         if pos == 1 then
             controls = arrowsControls
@@ -989,10 +1015,10 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings_Submenu")
     settings:add_float_option("Option height", "Main_Settings_Height", 5.0, 40.0, 1.0, function (val)
         config.optionHeight = val
     end):setValue(config.optionHeight)
-    settings:add_float_option("UI offset [X]", "Main_Settings_OffsetX", 0.0, draw.get_window_width(), 10.0, function (val)
+    settings:add_num_option("UI offset [X]", "Main_Settings_OffsetX", 0.0, draw.get_window_width(), 10, function (val)
         config.offset_x = val
     end):setValue(config.offset_x)
-    settings:add_float_option("UI offset [Y]", "Main_Settings_OffsetY", 0.0, draw.get_window_height(), 10.0, function (val)
+    settings:add_num_option("UI offset [Y]", "Main_Settings_OffsetY", 0.0, draw.get_window_height(), 10, function (val)
         config.offset_y = val
     end):setValue(config.offset_y)
     settings:add_bool_option("Smooth scroller [Beta]", "Main_Settings_SmoothScroller", function (state)
@@ -1007,7 +1033,7 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings_Submenu")
     settings:add_bool_option("Play menu sounds", "Main_Settings_PlayMenuSounds", function (state)
         config.isClickSoundEnabled = state
     end):setValue(false)
-    -- local keys = Submenu.add_static_submenu("Keys", "Main_Settings_Keys_Submenu") do
+    -- local keys = Submenu.add_static_submenu("Keys", "Main_Settings_Keys") do
     --     keys:add_text_input()
     -- end
     settings:add_separator("Config", "Main_Settings_Config")
@@ -1075,8 +1101,28 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         if not config.isOpened then return end
 
         local submenu = config.path[#config.path]
-        if #submenu.options == 0 and not submenu.isDynamic then
-            submenu:setActive(false) 
+
+        if submenu.isDynamic then
+            local options = {}
+            for _, option in ipairs(submenu.options) do
+                option:remove()
+            end
+            submenu.options = options
+            submenu.getter(submenu)
+            local function getClickableOption(selectedOption)
+                if #submenu.options == 0 then submenu:setActive(false) return end
+                if #submenu.options == 1 then return 1 end
+                if selectedOption > #submenu.options then 
+                    return getClickableOption(1)
+                end
+                if submenu.options[selectedOption] then return selectedOption end
+                return getClickableOption(selectedOption - 1)
+            end
+            submenu.selectedOption = getClickableOption(submenu.selectedOption)
+        end
+
+        if #submenu.options == 0 then
+            submenu:setActive(false)
             notify.default("DrawUI", "There is nothing to see yet.")
         end
         submenu = config.path[#config.path]
@@ -1136,13 +1182,13 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             pos
         )
         
-        draw.texture(
-            materials.header,
-            bg.lu.x,
-            -- bg.lu.y - config.optionHeight - 90,
-            bg.lu.y - 90 - config.optionHeight,
-            config.width,
-            90
+        draw.texture( -- HEADER
+        materials.header,
+        bg.lu.x,
+        -- bg.lu.y - config.optionHeight - 90,
+        bg.lu.y - 90 - config.optionHeight,
+        config.width,
+        90
         )
 
         draw.set_color(0, 34, 41, 47, 255) -- FOOTER
@@ -1152,29 +1198,24 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             bg.rd.x,
             bg.rd.y + config.optionHeight
         )
+
+
         config.footerArrowsSize = 28.0
-        draw.texture(
+        draw.texture( -- FOOTER ARROWS
             materials.footerArrows,
             bg.lu.x + config.width/2 - config.footerArrowsSize/2 - 2, 
             bg.rd.y + config.optionHeight/2 - config.footerArrowsSize/2, 
             config.footerArrowsSize + 2,
             config.footerArrowsSize
         )
+
+        draw.set_color(0, 255, 255, 255, 255)
+        draw.text( -- VERSION
+            bg.lu.x + 10,
+            bg.rd.y + config.optionHeight/2 - draw.get_text_size_y(BSVERSION)/2,
+            BSVERSION
+        )
         
-        if submenu.isDynamic then
-            submenu.options = {}
-            submenu.getter()
-            local function getClickableOption(selectedOption)
-                if #submenu.options == 0 then submenu:setActive(false) return end
-                if #submenu.options == 1 then return 1 end
-                if selectedOption > #submenu.options then 
-                    return getClickableOption(1)
-                end
-                if submenu.options[selectedOption] then return selectedOption end
-                return getClickableOption(selectedOption - 1)
-            end
-            submenu.selectedOption = getClickableOption(submenu.selectedOption)
-        end
         
         if #submenu.options > 0 then -- SELECTED OPTION
             local data = submenu.options[submenu.selectedOption]
@@ -1339,9 +1380,9 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                 elseif data.type == OPTIONS.NUM then
                     symbol = string.format("<%i of %i>", data.value, data.maxValue)
                 elseif data.type == OPTIONS.FLOAT then
-                    symbol = string.format("<%s of %s>", data.value + .0, data.maxValue + .0)
+                    symbol = string.format("<%s of %s>", data.value, data.maxValue)
                 elseif data.type == OPTIONS.CHOOSE then
-                    symbol = string.format("<%s>", data.table[data.value])
+                    symbol = string.format("<%s (%i/%i)>", data.table[data.value], data.value, #data.table)
                 elseif data.type == OPTIONS.SUB then
                     material = materials.sub
                 elseif data.type == OPTIONS.TEXT_INPUT then

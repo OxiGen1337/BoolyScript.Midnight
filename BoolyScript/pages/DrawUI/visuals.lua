@@ -1,5 +1,5 @@
-Visual = Submenu.add_static_submenu("Visual", "BS_Visual_Submenu")
-Main:add_sub_option("Visual", "BS_Visual_SubOption", Visual)
+Visual = Submenu.add_static_submenu("Visual", "BS_Visual")
+Main:add_sub_option("Visual", "BS_Visual", Visual)
 
 Visual:add_num_option("Fake wanted lvl", "BS_Visual_FakeWanted", 0, 6, 1, function(num)
 	MISC.SET_FAKE_WANTED_LEVEL(math.ceil(num))

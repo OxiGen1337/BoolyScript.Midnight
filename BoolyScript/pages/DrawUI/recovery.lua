@@ -1,5 +1,5 @@
-Recovery = Submenu.add_static_submenu("Recovery", "BS_Recovery_Submenu")
-Main:add_sub_option("Recovery", "BS_Recovery_SubOption", Recovery)
+Recovery = Submenu.add_static_submenu("Recovery", "BS_Recovery")
+Main:add_sub_option("Recovery", "BS_Recovery", Recovery)
 
 Recovery:add_click_option("Summon the Gooch", "BS_Recovery_Gooch", function ()
     scripts.globals.callGooch()

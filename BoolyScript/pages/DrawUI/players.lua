@@ -23,7 +23,7 @@ local submenus = {}
 
 local selectedPlayer = nil
 
-PlayerInteractions = Submenu.add_static_submenu("Player", "BS_PlayerList_Player_Submenu") do 
+PlayerInteractions = Submenu.add_static_submenu("Player", "BS_PlayerList_Player") do 
     PlayerInteractions:add_state_bar("Name:", "BS_PlayerList_Interactions_NameBar", function ()
         if not selectedPlayer or not player.is_connected(selectedPlayer) then return "None" end
         return player.get_name(selectedPlayer)
@@ -31,17 +31,17 @@ PlayerInteractions = Submenu.add_static_submenu("Player", "BS_PlayerList_Player_
     table.insert(submenus, PlayerInteractions)
 end
 
-PlayerSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Player_Settings_Submenu") do
+PlayerSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Player_Settings") do
     PlayerSettings:add_bool_option("Pussy mode", "BS_PlayerList_Player_Settings_PussyMode", function (state, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         pussy_mode = state
     end):setHint("Blocks syncs after sending kick/crash for 30s")
-    PlayerInteractions:add_sub_option("Settings", "BS_PlayerList_Settings_SubOption", PlayerSettings)
+    PlayerInteractions:add_sub_option("Settings", "BS_PlayerList_Settings", PlayerSettings)
     table.insert(submenus, PlayerSettings)
 end
 
-PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Teleport_Submenu") do
+PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Teleport") do
     PlayerTeleport:add_click_option("Teleport to player", "BS_PlayerList_Player_Teleport_ToPlayer", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -82,11 +82,11 @@ PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Te
         local interior = player.get_interior_handle(pid)
         player.teleport_to_interior(player.index(), interior)
     end):setConfigIgnore()
-    PlayerInteractions:add_sub_option("Teleport", "BS_PlayerList_Teleport_SubOption", PlayerTeleport)
+    PlayerInteractions:add_sub_option("Teleport", "BS_PlayerList_Teleport", PlayerTeleport)
     table.insert(submenus, PlayerTeleport)
 end
 
-PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehicle_Submenu") do
+PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehicle") do
     PlayerVehicle:add_bool_option("Attach to my vehicle", "BS_PlayerList_Player_Vehicle_VehicleAttach", function(state, option)
         local base = player.get_vehicle_handle(player.index())
         if base == 0 then
@@ -380,7 +380,7 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         local vehicle = player.get_vehicle_handle(pid)
         TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, 1, 2147483647)
     end):setConfigIgnore()
-    PlayerInteractions:add_sub_option("Vehicle", "BS_PlayerList_Player_Vehicle_SubOption", PlayerVehicle)
+    PlayerInteractions:add_sub_option("Vehicle", "BS_PlayerList_Player_Vehicle", PlayerVehicle)
     table.insert(submenus, PlayerVehicle)
 end
 
@@ -392,7 +392,7 @@ local crashvalues = {
     "Script Event", "Vehicle Task"
 }
 
-PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Removals_Submenu") do
+PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Removals") do
     PlayerRemovals:add_choose_option("Kick", "BS_PlayerList_Player_Removals_Kick", false, kickvalues, function (value, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -414,11 +414,11 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
             for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), vehicle, val, 1488) end
         end
     end):setConfigIgnore()
-    PlayerInteractions:add_sub_option("Removals", "BS_PlayerList_Player_Removals_SubOption", PlayerRemovals)
+    PlayerInteractions:add_sub_option("Removals", "BS_PlayerList_Player_Removals", PlayerRemovals)
     table.insert(submenus, PlayerRemovals)
 end
 
-PlayerBlocks = Submenu.add_static_submenu("Block", "BS_PlayerList_Player_Block_Submenu") do
+PlayerBlocks = Submenu.add_static_submenu("Block", "BS_PlayerList_Player_Block") do
     PlayerBlocks:add_bool_option("Block sync", "BS_PlayerList_Player_Block_Sync", function (state, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -469,11 +469,11 @@ PlayerBlocks = Submenu.add_static_submenu("Block", "BS_PlayerList_Player_Block_S
         end
         addActiveAction(pid, option, state)
     end):setConfigIgnore()
-    PlayerInteractions:add_sub_option("Block", "BS_PlayerList_Player_Block_SubOption", PlayerBlocks)
+    PlayerInteractions:add_sub_option("Block", "BS_PlayerList_Player_Block", PlayerBlocks)
     table.insert(submenus, PlayerBlocks)
 end
 
-PlayerNeutral = Submenu.add_static_submenu("Neutral", "BS_Players_Neutral_Submenu") do
+PlayerNeutral = Submenu.add_static_submenu("Neutral", "BS_Players_Neutral") do
     PlayerNeutral:add_click_option("Copy outfit", "BS_Players_Neutral_CopyOutfit", function ()
         local pid = selectedPlayer
         if not player.is_connected(pid) then return end
@@ -502,7 +502,7 @@ PlayerNeutral = Submenu.add_static_submenu("Neutral", "BS_Players_Neutral_Submen
         if not player.is_connected(pid) then return end
         player.off_the_radar(pid)
     end)
-    PlayerInteractions:add_sub_option("Neutral", "BS_Players_Neutral_SubOption", PlayerNeutral)
+    PlayerInteractions:add_sub_option("Neutral", "BS_Players_Neutral", PlayerNeutral)
 end
 
 local bountyvalues = {
@@ -512,7 +512,7 @@ local bountyvalues = {
     "10000", "1", "1337",
     "69", "6969", "1488"
 }
-PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Griefing_Submenu") do
+PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Griefing") do
     PlayerGriefing:add_click_option("Teleport to island", "BS_PlayerList_Player_Griefing_TeleportToIsland", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
@@ -547,7 +547,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
     end):setConfigIgnore()
     do
         PlayerGriefing:add_separator("Attackers", "BS_PlayerList_Player_Griefing_Attackers")
-        local attackersSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Griefing_Attackers_Settings_Submenu")
+        local attackersSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Griefing_Attackers_Settings")
         local config = {
             weapon = 2725352035,
             count = 1,
@@ -582,7 +582,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
             Stuff.attackers = {}
             notify.success("Attackers", "Successfully removed " .. cnt .. " attackers.")
         end)
-        PlayerGriefing:add_sub_option("Settings", "BS_PlayerList_Griefing_Attackers_Settings_SubOption", attackersSettings)
+        PlayerGriefing:add_sub_option("Settings", "BS_PlayerList_Griefing_Attackers_Settings", attackersSettings)
         PlayerGriefing:add_choose_option("NPCs", "BS_PlayerList_Player_Griefing_SendPed", false, {"Super-hero", "Jesus", "Drunk Russian", "Mime"}, function (pos, option)
             local hash = pos == 1 and "u_m_y_imporage" or pos == 2 and "u_m_m_jesus_01" or pos == 3 and "IG_RussianDrunk" or pos == 4 and "s_m_y_mime"
             hash = string.joaat(hash)
@@ -730,7 +730,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
             addActiveAction(selectedPlayer, option, pos)
         end):setConfigIgnore()
     end
-    PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Griefing_SubOption", PlayerGriefing)
+    PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Griefing", PlayerGriefing)
     table.insert(submenus, PlayerGriefing)
 end
 
@@ -752,7 +752,7 @@ local function getPlayerFlags(pid)
     return out
 end
 
-PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList_Submenu", function ()
+PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList", function ()
     for pid = 0, 32 do
         if player.is_connected(pid) then
             PlayerList:add_sub_option(player.get_name(pid), "Player_" .. pid, PlayerInteractions, function ()
@@ -775,7 +775,7 @@ PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList_Submenu"
     end
 end)
 
-Main:add_sub_option("Players", "BS_PlayerList_SubOption", PlayerList)
+Main:add_sub_option("Players", "BS_PlayerList", PlayerList)
 
 PlayerInteractions:add_click_option("Copy info", "BS_Players_Info_CopyInfo", function ()
     local pid = selectedPlayer

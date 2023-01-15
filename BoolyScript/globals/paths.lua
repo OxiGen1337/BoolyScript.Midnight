@@ -24,6 +24,7 @@ paths.logs.scriptEvents = paths.folders.logs .. '\\' .. 'Script Events.log'
 
 paths.files.weapons = paths.folders.dumps .. '\\' .. 'weapons.json'
 paths.files.peds = paths.folders.dumps .. '\\' .. 'peds.json'
+paths.files.objects = paths.folders.dumps .. '\\' .. 'ObjectList.ini'
 paths.files.weaponHashes = paths.folders.dumps .. '\\' .. 'WeaponList.json'
 
 paths.files.config = paths.folders.user .. '\\config.json'

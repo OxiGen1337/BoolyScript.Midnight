@@ -9,4 +9,5 @@ ParsedFiles = {
     weapons = {},
     weaponHashes = {},
     peds = {},
+    objects = {},
 }
