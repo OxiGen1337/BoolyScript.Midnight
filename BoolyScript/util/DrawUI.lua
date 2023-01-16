@@ -11,7 +11,6 @@ local config = {
     optionHeight = 30.0,
     selectedOption = 1,
     maxOptions = 12,
-    scrollOffset = 0,
     isInputBoxDisplayed = false,
     inputBoxText = "",
     inputBoxCallback = nil,
@@ -31,6 +30,8 @@ local config = {
     lastNotifyOffset = 0,
     notifies = {},
     isClickSoundEnabled = true,
+    footerArrowsSize = 28.0,
+    drawSlider = true,
 }
 
 
@@ -198,7 +199,6 @@ Submenu = {
     isDynamic = false,
     options = {},
     selectedOption = 1,
-    scrollOffset = 0,
     --for dynamic submenus
     getter = function ()
         
@@ -207,6 +207,9 @@ Submenu = {
         return submenus
     end,
     translationIgnore = false,
+    sliderPos = nil,
+    scrollerPos = nil,
+    textPos = nil,
 }
 Submenu.__index = Submenu
 
@@ -811,18 +814,8 @@ local function onControl(key, isDown, ignoreControlsState)
 
             if submenu.selectedOption > 1 then
                 submenu.selectedOption = getClickableOption(submenu.selectedOption - 1)
-                if submenu.selectedOption > config.maxOptions then
-                    submenu.scrollOffset = submenu.selectedOption - config.maxOptions
-                else
-                    submenu.scrollOffset = 0
-                end
             else
                 submenu.selectedOption = getClickableOption(#submenu.options)
-                if #submenu.options > config.maxOptions then
-                    submenu.scrollOffset = submenu.selectedOption - config.maxOptions
-                else
-                    submenu.scrollOffset = 0
-                end
             end
             playClickSound()
             config.isActionDown = false
@@ -846,18 +839,8 @@ local function onControl(key, isDown, ignoreControlsState)
 
             if submenu.selectedOption < #submenu.options then
                 submenu.selectedOption = getClickableOption(submenu.selectedOption + 1)
-                if submenu.selectedOption > config.maxOptions then
-                    submenu.scrollOffset = submenu.selectedOption - config.maxOptions
-                else
-                    submenu.scrollOffset = 0
-                end
             else
                 submenu.selectedOption = getClickableOption(1)
-                if #submenu.options > config.maxOptions then
-                    submenu.scrollOffset = 0
-                else
-                    submenu.scrollOffset = 0
-                end
             end
             playClickSound()
             config.isActionDown = true
@@ -1036,7 +1019,7 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
     settings:add_num_option("UI offset [Y]", "Main_Settings_OffsetY", 0.0, draw.get_window_height(), 10, function (val)
         config.offset_y = val
     end):setValue(config.offset_y)
-    settings:add_bool_option("Smooth scroller [Beta]", "Main_Settings_SmoothScroller", function (state)
+    settings:add_bool_option("Smooth scroller", "Main_Settings_SmoothScroller", function (state)
         config.enabelSmoothScroller = state
     end):setValue(true)
     settings:add_num_option("Rendered options limit", "Main_Settings_Limit", 1, 25, 1, function (val)
@@ -1048,6 +1031,9 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
     settings:add_bool_option("Play menu sounds", "Main_Settings_PlayMenuSounds", function (state)
         config.isClickSoundEnabled = state
     end):setValue(false)
+    settings:add_bool_option("Render slider", "Main_Settings_Slider", function (state)
+        config.drawSlider = state
+    end):setValue(true)
     -- local keys = Submenu.add_static_submenu("Keys", "Main_Settings_Keys") do
     --     keys:add_text_input()
     -- end
@@ -1214,8 +1200,6 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             bg.rd.y + config.optionHeight
         )
 
-
-        config.footerArrowsSize = 28.0
         draw.texture( -- FOOTER ARROWS
             materials.footerArrows,
             bg.lu.x + config.width/2 - config.footerArrowsSize/2 - 2, 
@@ -1231,60 +1215,40 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             BSVERSION
         )
         
-        
-        if #submenu.options > 0 then -- SELECTED OPTION
+        if #submenu.options > 0 then
             local data = submenu.options[submenu.selectedOption]
-            local lu = {
-                x = bg.lu.x, 
-                y = bg.lu.y + config.optionHeight*(submenu.selectedOption - 1),
+            local scrollerSpeed = 3
+            
+            local scrollerEnd = {}
+            scrollerEnd.leftUpper = {
+                x = bg.lu.x,
+                y = bg.lu.y + config.optionHeight * (submenu.selectedOption < config.maxOptions and submenu.selectedOption - 1 or config.maxOptions - 1),
             }
-            local rd = {
-                x = bg.rd.x, 
-                y = bg.lu.y + config.optionHeight*submenu.selectedOption
+            scrollerEnd.rightDown = {
+                x = bg.rd.x,
+                y = scrollerEnd.leftUpper.y + config.optionHeight
             }
-            if (submenu.selectedOption > config.maxOptions) and (#submenu.options > config.maxOptions) then
-                lu = {
-                    x = bg.lu.x, 
-                    y = bg.lu.y + config.optionHeight*(config.maxOptions - 1),
-                }
-                rd = {
-                    x = bg.rd.x, 
-                    y = bg.lu.y + config.optionHeight*config.maxOptions
-                }
-            end
+            
+            if not submenu.scrollerPos then submenu.scrollerPos = scrollerEnd end
+            
             if config.enabelSmoothScroller then
-                if (submenu.selectedOption == #submenu.options and not config.isActionDown) 
-                or (submenu.selectedOption == 1 and config.isActionDown) 
-                or (submenu.selectedOption - submenu.scrollOffset == config.maxOptions)
-                then
-                    --config.test = config.optionHeight
-                else
-                    if config.test <= config.optionHeight and config.isActionDown then
-                        if math.abs(config.test - config.optionHeight) >= config.scrollerSmooth then
-                            config.test = config.test + config.scrollerSmooth
-                        else
-                            config.test = config.test + (config.optionHeight - config.test)
-                        end
-                        lu.y = lu.y - config.optionHeight + config.test
-                    elseif config.test <= config.optionHeight and not config.isActionDown then
-                        if math.abs(config.test - config.optionHeight) >= config.scrollerSmooth then
-                            config.test = config.test + config.scrollerSmooth
-                        else
-                            config.test = config.test + (config.optionHeight - config.test)
-                        end
-                        lu.y = lu.y + config.optionHeight - config.test
-                    else
-                        config.test = 0.0
-                    end
+                if submenu.scrollerPos.leftUpper.y < scrollerEnd.leftUpper.y then -- CREDITS TO 1tsPxel
+                    submenu.scrollerPos.leftUpper.y = math.min(scrollerEnd.leftUpper.y, submenu.scrollerPos.leftUpper.y + scrollerSpeed)
+                elseif submenu.scrollerPos.leftUpper.y > scrollerEnd.leftUpper.y then
+                    submenu.scrollerPos.leftUpper.y = math.max(scrollerEnd.leftUpper.y, submenu.scrollerPos.leftUpper.y - scrollerSpeed)
                 end
+            else
+                submenu.scrollerPos = scrollerEnd
             end
+
             draw.set_color(0, 34, 41, 47, 255)
-            draw.rect_filled(
-                lu.x,
-                lu.y,
-                rd.x,
-                lu.y + config.optionHeight
+            draw.rect_filled( -- SELECTED OPTION
+                scrollerEnd.leftUpper.x,
+                submenu.scrollerPos.leftUpper.y,
+                scrollerEnd.rightDown.x,
+                submenu.scrollerPos.leftUpper.y + config.optionHeight
             )
+
             if data.hint ~= "" then
                 draw.set_color(0, 255, 255, 255, 255)
                 local hint = tostring(submenu.options[submenu.selectedOption].hint)
@@ -1314,29 +1278,109 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             end
         end
 
-        for i, _ in ipairs(submenu.options) do -- RENDERING OPTIONS NAMES
-            local option = i + submenu.scrollOffset
-            if i > config.maxOptions then
-                break
+        -- SLIDER
+        if config.drawSlider then
+            local padding = 5
+            local sliderItemPadding = 2
+            local verticalPadding = 2
+            local width = 10
+            local sliderPosSpeed = 3
+            local sliderBox = {
+                leftUpper = {
+                    x = bg.rd.x + padding,
+                    y = bg.lu.y,
+                },
+                rightDown = {
+                    x = bg.rd.x + padding + width,
+                    y = bg.rd.y,
+                }
+            }
+            local sliderHeight = (sliderBox.rightDown.y - sliderBox.leftUpper.y - verticalPadding*2) / #submenu.options
+            -- print(sliderHeight)
+            sliderHeight = sliderHeight > 1.0 and sliderHeight or 0.0
+
+            local sliderItemEnd = {}
+            sliderItemEnd.leftUpper = {
+                x = sliderBox.leftUpper.x + sliderItemPadding,
+                y = sliderBox.leftUpper.y + verticalPadding + sliderHeight * (submenu.selectedOption - 1),
+            }
+            sliderItemEnd.rightDown = {
+                x = sliderBox.rightDown.x - sliderItemPadding,
+                y = sliderItemEnd.leftUpper.y + sliderHeight
+            }
+
+            if not submenu.sliderPos then submenu.sliderPos = sliderItemEnd end
+
+            if submenu.sliderPos.leftUpper.y < sliderItemEnd.leftUpper.y then -- CREDITS TO 1tsPxel
+                submenu.sliderPos.leftUpper.y = math.min(sliderItemEnd.leftUpper.y, submenu.sliderPos.leftUpper.y + sliderPosSpeed)
+            elseif submenu.sliderPos.leftUpper.y > sliderItemEnd.leftUpper.y then
+                submenu.sliderPos.leftUpper.y = math.max(sliderItemEnd.leftUpper.y, submenu.sliderPos.leftUpper.y - sliderPosSpeed)
             end
-            local data = submenu.options[option]
-            local lu = {
-                x = bg.lu.x, 
-                y = bg.lu.y + config.optionHeight*(i - 1),
-            }
-            local rd = {
-                x = bg.rd.x, 
-                y = bg.lu.y + config.optionHeight*i
-            }
-            if not data then return end
-            if data.type == OPTIONS.SEPARATOR then
-                local name = data.name
-                draw.set_color(0, 255, 255, 255, 255)
-                draw.text(
-                    (rd.x - (rd.x - lu.x)/2) - draw.get_text_size_x(name)/2,
-                    (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(name)/2,
-                    name
+
+            if sliderHeight > 0.0 then
+                draw.set_color(0, 14, 17, 19, 255)
+                draw.set_rounding(16)
+                
+                draw.rect_filled( -- SLIDER BOX
+                    sliderBox.leftUpper.x,
+                    sliderBox.leftUpper.y,
+                    sliderBox.rightDown.x,
+                    sliderBox.rightDown.y
                 )
+
+                draw.set_color(0, 83, 180, 223, 255)
+                draw.set_rounding(10)
+
+                local sliderItem = submenu.sliderPos
+                draw.rect_filled( -- SLIDER ITEM
+                    sliderItemEnd.leftUpper.x,
+                    sliderItem.leftUpper.y,
+                    sliderItemEnd.rightDown.x,
+                    sliderItem.leftUpper.y + sliderHeight
+                )
+
+                draw.set_rounding(0)
+            end
+        end
+        
+        local optionID = 0
+        local optionsStart = math.max(1, submenu.selectedOption - config.maxOptions + 1)
+        for i = optionsStart, optionsStart + math.min(config.maxOptions, #submenu.options) - 1 do -- RENDERING OPTIONS NAMES
+            optionID = optionID + 1
+            local data = submenu.options[i]
+            -- local lu = {
+            --     x = bg.lu.x, 
+            --     y = bg.lu.y + config.optionHeight*(optionID - 1),
+            -- }
+            -- local rd = {
+            --     x = bg.rd.x, 
+            --     y = bg.lu.y + config.optionHeight*optionID
+            -- }
+            
+            local textSpeed = 2
+            local textEnd = {}
+            textEnd.leftUpper = {
+                x = bg.lu.x,
+                y = bg.lu.y + config.optionHeight*(optionID - 1),
+            }
+            textEnd.rightDown = {
+                x = bg.rd.x, 
+                y = textEnd.leftUpper.y + config.optionHeight,
+            }            
+
+            submenu.textPos = textEnd
+
+            local name = tostring(data.name)
+
+            draw.set_color(0, 255, 255, 255, 255)
+            draw.text(
+                (data.type ~= OPTIONS.SEPARATOR) and (textEnd.leftUpper.x + 10) or ((textEnd.leftUpper.x + (config.width)/2) - draw.get_text_size_x(name)/2),
+                submenu.textPos.leftUpper.y + config.optionHeight/2 - draw.get_text_size_y(name)/2,
+                name
+            )
+            local lu, rd = textEnd.leftUpper, textEnd.rightDown
+
+            if data.type == OPTIONS.SEPARATOR then
                 draw.set_thickness(2)
                 draw.set_color(0, 100, 100, 100, 255)
                 draw.line(
@@ -1353,80 +1397,59 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
                 )
                 draw.set_thickness(0)
                 draw.set_color(0, 255, 255, 255, 255)
-            elseif data.type == OPTIONS.STATE_BAR then
-                local name = tostring(data.name)
-                local value = tostring(data.getter())
-                draw.set_color(0, 255, 255, 255, 255)
+            end
+            local offset = 5.0
+            for _, t in ipairs(data.tags) do                      
+                draw.set_color(0, t[2], t[3], t[4], 255)
                 draw.text(
-                    lu.x + 10,
-                    (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(name)/2,
-                    name
+                    lu.x + 10 + draw.get_text_size_x(name) + offset,
+                    (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(t[1])/2,
+                    t[1]
                 )
-                draw.text(
-                    rd.x - draw.get_text_size_x(value) - 10,
-                    (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(value)/2,
-                    value
-                )
-            else            
-                local name = tostring(data.name)
-                draw.set_color(0, 255, 255, 255, 255)
-                draw.text(
-                    lu.x + 10,
-                    (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(name)/2,
-                    name
-                )
-                if data.tags ~= {} then
-                    local offset = 5.0
-                    for _, t in ipairs(data.tags) do                      
-                        draw.set_color(0, t[2], t[3], t[4], 255)
-                        draw.text(
-                            lu.x + 10 + draw.get_text_size_x(name) + offset,
-                            (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(t[1])/2,
-                            t[1]
-                        )
-                        offset = offset + draw.get_text_size_x(t[1]) + 4
-                    end
-                end
-                draw.set_color(0, 255, 255, 255, 255)
-                config.iconsSize = 40.0
-                local symbol = nil
-                local material = nil
-                if data.type == OPTIONS.CLICK then
-                    -- do smth
-                elseif data.type == OPTIONS.BOOL then
-                    material = materials.toggleOff
-                    if data.value then material = materials.toggleOn end
-                elseif data.type == OPTIONS.NUM then
-                    symbol = string.format("<%i of %i>", data.value, data.maxValue)
-                elseif data.type == OPTIONS.FLOAT then
-                    symbol = string.format("<%s of %s>", data.value, data.maxValue)
-                elseif data.type == OPTIONS.CHOOSE then
-                    symbol = string.format("<%s (%i/%i)>", data.table[data.value], data.value, #data.table)
-                elseif data.type == OPTIONS.SUB then
-                    material = materials.sub
-                elseif data.type == OPTIONS.TEXT_INPUT then
-                    if data.value == "" then
-                        symbol = "[Empty]"
-                    else
-                        symbol = string.format("[%s]", data.value)
-                    end
-                end
+                offset = offset + draw.get_text_size_x(t[1]) + 4
+            end
 
-                if material then
-                    draw.texture(
-                        material,
-                        rd.x - config.iconsSize,
-                        (rd.y - (rd.y - lu.y)/2) -config.iconsSize/2,
-                        config.iconsSize,
-                        config.iconsSize
-                    )
-                elseif symbol then
-                    draw.text(
-                        rd.x - draw.get_text_size_x(symbol) - 10,
-                        (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(symbol)/2,
-                        symbol
-                    )
+            draw.set_color(0, 255, 255, 255, 255)
+            config.iconsSize = 40.0
+            local symbol = nil
+            local material = nil
+            if data.type == OPTIONS.CLICK then
+                -- do smth
+            elseif data.type == OPTIONS.BOOL then
+                material = materials.toggleOff
+                if data.value then material = materials.toggleOn end
+            elseif data.type == OPTIONS.NUM then
+                symbol = string.format("<%i of %i>", data.value, data.maxValue)
+            elseif data.type == OPTIONS.FLOAT then
+                symbol = string.format("<%s of %s>", data.value, data.maxValue)
+            elseif data.type == OPTIONS.CHOOSE then
+                symbol = string.format("<%s (%i/%i)>", data.table[data.value], data.value, #data.table)
+            elseif data.type == OPTIONS.SUB then
+                material = materials.sub
+            elseif data.type == OPTIONS.TEXT_INPUT then
+                if data.value == "" then
+                    symbol = "[Empty]"
+                else
+                    symbol = string.format("[%s]", data.value)
                 end
+            elseif data.type == OPTIONS.STATE_BAR then
+                symbol = tostring(data.getter())
+            end
+
+            if material then
+                draw.texture(
+                    material,
+                    rd.x - config.iconsSize,
+                    (rd.y - (rd.y - lu.y)/2) -config.iconsSize/2,
+                    config.iconsSize,
+                    config.iconsSize
+                )
+            elseif symbol then
+                draw.text(
+                    rd.x - draw.get_text_size_x(symbol) - 10,
+                    (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(symbol)/2,
+                    symbol
+                )
             end
         end
     end

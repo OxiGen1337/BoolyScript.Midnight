@@ -24,6 +24,8 @@ local events = {
     OnPlayerActive = 19,
     OnSpectating = 20,
     OnStopSpectating = 21,
+    OnFeatureStart = 22,
+    OnFeatureEnd = 23,
 }
 
 for _, ID in pairs(events) do
@@ -145,6 +147,36 @@ function OnFeatureTick()
         else 
             local out = callback_f()
             if out == false then listener.remove(hash_s, events.OnFeatureTick) end
+        end
+    end
+end
+
+function OnFeatureStart()
+    log.dbg("Feature is started.")
+    local event = onEventFunctions[events.OnFeatureStart]
+    for _, t in ipairs(event) do
+        local hash_s, callback_f = t["hash"], t["callback"]
+        if not callback_f then 
+            log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
+            listener.remove(hash_s, events.OnFeatureStart)
+        else 
+            local out = callback_f()
+            if out == false then listener.remove(hash_s, events.OnFeatureStart) end
+        end
+    end
+end
+
+function OnFeatureEnd()
+    log.dbg("Feature is stopped.")
+    local event = onEventFunctions[events.OnFeatureEnd]
+    for _, t in ipairs(event) do
+        local hash_s, callback_f = t["hash"], t["callback"]
+        if not callback_f then 
+            log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
+            listener.remove(hash_s, events.OnFeatureEnd)
+        else 
+            local out = callback_f()
+            if out == false then listener.remove(hash_s, events.OnFeatureEnd) end
         end
     end
 end

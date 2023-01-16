@@ -509,15 +509,6 @@ PlayerNeutral = Submenu.add_static_submenu("Neutral", "BS_Players_Neutral") do
         if not player.is_connected(pid) then return end
         player.off_the_radar(pid)
     end)
-    local optionNotifSpam
-    optionNotifSpam = PlayerNeutral:add_looped_option("Notification spam", "BS_Players_Neutral_NotifSpam", 1.0, function ()
-        local pid = selectedPlayer
-        if not player.is_connected(pid) then return end
-        scripts.events.sendRandomNotif(pid)
-        addActiveAction(pid, optionNotifSpam, true)
-    end, function()
-        addActiveAction(pid, optionNotifSpam, false)
-    end)
     PlayerInteractions:add_sub_option("Neutral", "BS_Players_Neutral", PlayerNeutral)
 end
 
@@ -560,6 +551,16 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         if not pid or not player.is_connected(pid) then return end
         addActiveAction(pid, option, value)
         script.send(pid, 1920583171, pid, 1 - value)
+    end):setConfigIgnore()
+    local optionNotifSpam
+    optionNotifSpam = PlayerGriefing:add_looped_option("Notification spam", "BS_Players_Neutral_NotifSpam", 1.0, function ()
+        local pid = selectedPlayer
+        if not player.is_connected(pid) then return end
+        scripts.events.sendRandomNotif(pid)
+        addActiveAction(pid, optionNotifSpam, true)
+    end, function()
+        local pid = selectedPlayer
+        addActiveAction(pid, optionNotifSpam, false)
     end):setConfigIgnore()
     do
         PlayerGriefing:add_separator("Attackers", "BS_PlayerList_Player_Griefing_Attackers")
