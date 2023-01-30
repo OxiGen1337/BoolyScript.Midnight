@@ -106,7 +106,7 @@ function OnInit()
         end
     end
     log.init(string.format("All modules were initialized in %f sec.", os.clock() - startTime))
-    notify.success("BoolyScript", "Script has been loaded successfuly.\nAuthor: @OxiGen#1337.\nIf you find a bug or have a suggestion\nDM me in Discord.", GET_NOTIFY_ICONS().scripts)
+    notify.success("BoolyScript", "Script has been loaded successfuly.")
 end
 
 function OnKeyPressed(key, isDown)

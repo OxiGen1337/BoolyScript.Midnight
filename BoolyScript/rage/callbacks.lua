@@ -30,7 +30,6 @@ end
 
 function callbacks.requestAnimDict(dict, onSuccess)
 	if not STREAMING.DOES_ANIM_DICT_EXIST(dict) then 
-		print(dict)
 		return 
 	end
 	local tries = 0

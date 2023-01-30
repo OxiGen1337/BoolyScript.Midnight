@@ -21,7 +21,6 @@ local config = {
     inputDelay = 0.3,
     test = 0.0,
     scrollerSmooth = 2.5,
-    isActionDown = false,
     enabelSmoothScroller = false,
     renderedNotifies = 0,
     notifyHeight = 60,
@@ -32,6 +31,9 @@ local config = {
     isClickSoundEnabled = true,
     footerArrowsSize = 28.0,
     drawSlider = true,
+    showPath = true,
+    drawKeysPanel = true,
+    shiftState = false
 }
 
 
@@ -84,44 +86,44 @@ Stuff.controlsState = {
     [controls.right] = {false, nil, nil},
 }
 
-local id_to_key = {
+local keyboardKeys = {
 -- key = {lower, upper}
-    [48] = {"0", ")"},
-    [49] = {"1", "!"},
-    [50] = {"2", "@"},
-    [51] = {"3", "#"},
-    [52] = {"4", "$"},
-    [53] = {"5", "%"},
-    [54] = {"6", "^"},
-    [55] = {"7", "&"},
-    [56] = {"8", "*"},
-    [57] = {"9", "("},
-    [65] = {"a", "A"},
-    [66] = {"b", "B"},
-    [67] = {"c", "C"},
-    [68] = {"d", "D"},
-    [69] = {"e", "E"},
-    [70] = {"f", "F"},
-    [71] = {"g", "G"},
-    [72] = {"h", "H"},
-    [73] = {"i", "I"},
-    [74] = {"j", "J"},
-    [75] = {"k", "K"},
-    [76] = {"l", "L"},
-    [77] = {"m", "M"},
-    [78] = {"n", "N"},
-    [79] = {"o", "O"},
-    [80] = {"p", "P"},
-    [81] = {"q", "Q"},
-    [82] = {"r", "R"},
-    [83] = {"s", "S"},
-    [84] = {"t", "T"},
-    [85] = {"u", "U"},
-    [86] = {"v", "V"},
-    [87] = {"w", "W"},
-    [88] = {"x", "X"},
-    [89] = {"y", "Y"},
-    [90] = {"z", "Z"},
+    [48] =  {"0", ")"},
+    [49] =  {"1", "!"},
+    [50] =  {"2", "@"},
+    [51] =  {"3", "#"},
+    [52] =  {"4", "$"},
+    [53] =  {"5", "%"},
+    [54] =  {"6", "^"},
+    [55] =  {"7", "&"},
+    [56] =  {"8", "*"},
+    [57] =  {"9", "("},
+    [65] =  {"a", "A"},
+    [66] =  {"b", "B"},
+    [67] =  {"c", "C"},
+    [68] =  {"d", "D"},
+    [69] =  {"e", "E"},
+    [70] =  {"f", "F"},
+    [71] =  {"g", "G"},
+    [72] =  {"h", "H"},
+    [73] =  {"i", "I"},
+    [74] =  {"j", "J"},
+    [75] =  {"k", "K"},
+    [76] =  {"l", "L"},
+    [77] =  {"m", "M"},
+    [78] =  {"n", "N"},
+    [79] =  {"o", "O"},
+    [80] =  {"p", "P"},
+    [81] =  {"q", "Q"},
+    [82] =  {"r", "R"},
+    [83] =  {"s", "S"},
+    [84] =  {"t", "T"},
+    [85] =  {"u", "U"},
+    [86] =  {"v", "V"},
+    [87] =  {"w", "W"},
+    [88] =  {"x", "X"},
+    [89] =  {"y", "Y"},
+    [90] =  {"z", "Z"},
     [96] =  {"0", "0"},
     [97] =  {"1", "1"},
     [98] =  {"2", "2"},
@@ -152,9 +154,9 @@ local id_to_key = {
 }
 
 function getKeyFromID(key, isShiftDown)
-    if id_to_key[key] then
-        if isShiftDown then return id_to_key[key][2] end
-        return id_to_key[key][1]
+    if keyboardKeys[key] then
+        if isShiftDown then return keyboardKeys[key][2] end
+        return keyboardKeys[key][1]
     end
     return ""
 end
@@ -170,6 +172,14 @@ materials.footerArrows = draw.create_texture_from_file(paths.files.imgs.footerAr
 materials.toggleOn = draw.create_texture_from_file(paths.files.imgs.toggleOn)
 materials.toggleOff = draw.create_texture_from_file(paths.files.imgs.toggleOff)
 materials.sub = draw.create_texture_from_file(paths.files.imgs.sub)
+materials.cursor = draw.create_texture_from_file(paths.files.imgs.cursor)
+
+-- materials.font = nil
+
+-- draw.create_font("Arial", 17.0, function(f)
+-- 	materials.font = f
+-- end)
+
 
 OPTIONS = {
     CLICK = 1,
@@ -199,6 +209,7 @@ Submenu = {
     isDynamic = false,
     options = {},
     selectedOption = 1,
+    prevOption = 1,
     --for dynamic submenus
     getter = function ()
         
@@ -209,7 +220,6 @@ Submenu = {
     translationIgnore = false,
     sliderPos = nil,
     scrollerPos = nil,
-    textPos = nil,
 }
 Submenu.__index = Submenu
 
@@ -233,6 +243,7 @@ Option = {
     configIgnore = false,
     translationIgnore = false,
     tags = {},
+    isHotkeyable = false,
 }
 Option.__index = Option
 
@@ -268,53 +279,43 @@ function NotifyService:notify(title_s, text_s, r, g, b)
     local notifyTime = os.clock() + config.notifyTime
     local notifyStep = 5
     local alphaStep = math.ceil(255 / (notifyWidth / notifyStep))
-    local state = 0
-    local function cropString(text_s, len_n)
-        if len_n <= 0 then return "" end
-        if string.len(text_s) == 0 then return "" end
-        if draw.get_text_size(text_s).x <= len_n then return text_s end
-        return cropString(text_s:sub(1, -2), len_n)
-    end
-    local value = 0
     local alpha = 0
-    local line = 0
+    local finalLeftPos = {
+        x = draw.get_window_width() - 20,
+        y = yOffset + 20 + notifyHeight
+    }
+    local finalRightPos = {
+        x = draw.get_window_width() + notifyWidth,
+        y = yOffset + 20 + notifyHeight
+    }
+    local currentPos = finalRightPos
+    local endPos = finalLeftPos
     listener.register(notifyHash, GET_EVENTS_LIST().OnFrame, function ()
         if os.clock() >= notifyTime then
-            state = 2
+            endPos = {
+                x = draw.get_window_width() + notifyWidth,
+                y = yOffset + 20 + notifyHeight
+            }
+            if currentPos.x == endPos.x then
+                listener.remove(notifyHash, GET_EVENTS_LIST().OnFrame)
+                config.renderedNotifies = config.renderedNotifies - 1
+                if config.renderedNotifies == 0 then
+                    config.notifies = {}
+                end
+            end
         end
-        if state == 0 then
-            if value + notifyStep < notifyWidth then
-                value = value + notifyStep
-            else
-                value = notifyWidth
-                state = 1
-            end
-            if alpha + alphaStep < 255 then
-                alpha = alpha + alphaStep
-            else
-                alpha = 255
-            end
-        elseif state == 2 then
-            if value - notifyStep > 0 then
-                value = value - notifyStep
-            else
-                value = 0
-                state = 3
-            end
-            if alpha - alphaStep > 0 then
-                alpha = alpha - alphaStep
-            else
-                alpha = 0
-            end
+        if currentPos.x < endPos.x then -- RIGHT
+            currentPos.x = math.min(endPos.x, currentPos.x + notifyStep)
+            alpha = math.max(0, alpha - alphaStep)
+        elseif currentPos.x > endPos.x then -- LEFT
+            currentPos.x = math.max(endPos.x, currentPos.x - notifyStep)
+            alpha = math.min(255, alpha + alphaStep)
         end
         local leftUpper = {
-            x = draw.get_window_width() - value - 20,
-            y = yOffset + 20
+            x = currentPos.x - notifyWidth,
+            y = currentPos.y - notifyHeight,
         }
-        local rightDown = {
-            x = draw.get_window_width() - 20,
-            y = leftUpper.y + notifyHeight
-        }
+        local rightDown = currentPos
         draw.set_color(0, 25, 25, 25, alpha)
         draw.set_rounding(5)
         draw.rect_filled(
@@ -325,6 +326,7 @@ function NotifyService:notify(title_s, text_s, r, g, b)
         )
         draw.set_color(0, r, g, b, alpha)
         draw.set_rounding(50)
+        draw.set_flags(5)
         draw.rect_filled(
             leftUpper.x,
             leftUpper.y,
@@ -332,11 +334,12 @@ function NotifyService:notify(title_s, text_s, r, g, b)
             rightDown.y
         )
         draw.set_rounding(0)
+        draw.set_flags(0)
         draw.set_color(0, r, g, b, alpha)
         draw.text(
             leftUpper.x + 10,
             leftUpper.y + 10,
-            cropString(title_s, math.abs(leftUpper.x - rightDown.x) - 10)
+            title_s
         )
         draw.set_color(0, r, g, b, alpha)
         draw.set_rounding(5)
@@ -344,18 +347,206 @@ function NotifyService:notify(title_s, text_s, r, g, b)
         draw.text(
             leftUpper.x + 10,
             leftUpper.y + titleTextSize.y + 10 + 5,
-            cropString(text_s, math.abs(leftUpper.x - rightDown.x) - 10)
+            text_s
         )
-        if state == 3 then
-            listener.remove(notifyHash, GET_EVENTS_LIST().OnFrame)
-            config.renderedNotifies = config.renderedNotifies - 1
-            if config.renderedNotifies == 0 then
-                config.notifies = {}
-            end
-        end
         draw.set_rounding(0)
     end)
 end
+
+InputService = {}
+InputService.__index = InputService
+
+function InputService:displayInputBox(name_s, type_s, callback_f)
+    if config.isInputBoxDisplayed then return end
+    local settings = {
+        height = 200,
+        width = 350,
+        textAreaHeight = 40,
+        buttonHeight = 35,
+    }
+    config.isInputBoxDisplayed = true
+    local title = ""
+    if type_s == "text" then
+        title = name_s or "Please, enter a new value."
+    elseif type_s == "hotkey" then
+        title = "Press any button to set a hotkey."
+    end
+    local mousePos = Vector2()
+    local enteredText = ""
+    local corners = {}
+        corners.background = {
+            leftUpper = {
+                x = draw.get_window_width()/2 - settings.width/2,
+                y = draw.get_window_height()/2 - settings.height/2,
+            },
+            rightDown = {
+                x = draw.get_window_width()/2 + settings.width/2,
+                y = draw.get_window_height()/2 + settings.height/2,
+            },
+        }
+        corners.textArea = {
+            leftUpper = {
+                x = corners.background.leftUpper.x + 30,
+                y = corners.background.leftUpper.y + settings.height/2 - settings.textAreaHeight/2,
+            },
+            rightDown = {
+                x = corners.background.rightDown.x - 30,
+                y = corners.background.rightDown.y - settings.height/2 + settings.textAreaHeight/2,
+            }       
+        }
+        corners.title = {
+            leftUpper = {
+                x = corners.background.leftUpper.x + settings.width/2 - draw.get_text_size_x(title)/2,
+                y = corners.background.leftUpper.y + (corners.textArea.leftUpper.y - corners.background.leftUpper.y)/2 - draw.get_text_size_y(title)/2,
+            },
+            rightDown = {
+                x = corners.background.rightDown.x - settings.width/2 + draw.get_text_size_x(title)/2,
+                y = corners.background.leftUpper.y + (corners.textArea.leftUpper.y - corners.background.leftUpper.y)/2 + draw.get_text_size_y(title)/2,
+            }
+        }
+        local buttonWidth = (corners.background.rightDown.x - corners.background.leftUpper.x - 30 - 20 - 30) / 2
+        corners.button1 = {
+            leftUpper = {
+                x = corners.background.leftUpper.x + 30,
+                y = corners.textArea.rightDown.y + (corners.background.rightDown.y - corners.textArea.rightDown.y)/2 - settings.buttonHeight/2,
+            },
+            rightDown = {
+                x = corners.background.leftUpper.x + 30 + buttonWidth,
+                y = corners.textArea.rightDown.y + (corners.background.rightDown.y - corners.textArea.rightDown.y)/2 + settings.buttonHeight/2,
+            }
+        }
+        corners.button2 = {
+            leftUpper = {
+                x = corners.background.rightDown.x - 30 - buttonWidth,
+                y = corners.textArea.rightDown.y + (corners.background.rightDown.y - corners.textArea.rightDown.y)/2 - settings.buttonHeight/2,
+            },
+            rightDown = {
+                x = corners.background.rightDown.x - 30,
+                y = corners.textArea.rightDown.y + (corners.background.rightDown.y - corners.textArea.rightDown.y)/2 + settings.buttonHeight/2,
+            }
+        }
+    listener.register("DrawUI_InputBox", GET_EVENTS_LIST().OnFrame, function ()  
+        utils.get_mouse_pos(mousePos)
+        draw.set_color(0, 14, 17, 19, 255)
+        draw.set_rounding(10)
+        draw.rect_filled(
+            corners.background.leftUpper.x,
+            corners.background.leftUpper.y,
+            corners.background.rightDown.x,
+            corners.background.rightDown.y
+        )
+        draw.set_rounding(0)
+
+        draw.set_color(0, 255, 255, 255, 255)
+        draw.text(
+            corners.title.leftUpper.x,
+            corners.title.leftUpper.y,
+            title
+        )
+
+        draw.set_color(0, 34, 41, 47, 255)
+        draw.set_rounding(10)
+        draw.rect_filled(
+            corners.textArea.leftUpper.x,
+            corners.textArea.leftUpper.y,
+            corners.textArea.rightDown.x,
+            corners.textArea.rightDown.y
+        )
+        draw.set_color(0, 255, 255, 255, 255)
+        local renderedText = ""
+        if type_s == "text" then
+            if enteredText ~= "" then
+                renderedText = enteredText
+            else
+                renderedText = "Start typing..."
+                draw.set_color(0, 150, 150, 150, 255)
+            end 
+        else
+            if enteredText ~= "" then
+                renderedText = "Hotkey -> [" .. enteredText .. "]"
+            else
+                renderedText = "Waiting for a key..."
+                draw.set_color(0, 150, 150, 150, 255)
+            end 
+        end
+        draw.text(
+            corners.textArea.leftUpper.x + 10,
+            corners.textArea.leftUpper.y + settings.textAreaHeight/2 - draw.get_text_size_y(renderedText)/2,
+            renderedText
+        )
+        draw.set_color(0, 34, 41, 47, 255)
+        if features.isPositionInArea(corners.button1.leftUpper, corners.button1.rightDown, mousePos) then
+            draw.set_color(0, 83, 180, 223, 255)
+        end
+        draw.rect_filled(
+            corners.button1.leftUpper.x,
+            corners.button1.leftUpper.y,
+            corners.button1.rightDown.x,
+            corners.button1.rightDown.y
+        )
+        draw.set_color(0, 34, 41, 47, 255)
+        if features.isPositionInArea(corners.button2.leftUpper, corners.button2.rightDown, mousePos) then
+            draw.set_color(0, 83, 180, 223, 255)
+        end
+        draw.rect_filled(
+            corners.button2.leftUpper.x,
+            corners.button2.leftUpper.y,
+            corners.button2.rightDown.x,
+            corners.button2.rightDown.y
+        )
+        draw.set_rounding(0)
+        draw.set_color(0, 255, 255, 255, 255)
+        draw.text(
+            corners.button1.leftUpper.x + buttonWidth/2 - draw.get_text_size_x("Cancel")/2,
+            corners.button1.leftUpper.y + settings.buttonHeight/2 - draw.get_text_size_y("Cancel")/2,
+            "Cancel"
+        )
+        draw.text(
+            corners.button2.leftUpper.x + buttonWidth/2 - draw.get_text_size_x("OK")/2,
+            corners.button2.leftUpper.y + settings.buttonHeight/2 - draw.get_text_size_y("OK")/2,
+            "OK"
+        )
+        draw.texture(
+            materials.cursor,
+            mousePos.x,
+            mousePos.y
+        )
+    end)
+    listener.register("DrawUI_InputBoxMouse", GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
+        if key ~= gui.mouseButtons.Left then return end
+        if isDown then return end
+        if not features.isPositionInArea(corners.button2.leftUpper, corners.button2.rightDown, mousePos) and not features.isPositionInArea(corners.button1.leftUpper, corners.button1.rightDown, mousePos) then return end
+        if features.isPositionInArea(corners.button2.leftUpper, corners.button2.rightDown, mousePos) and callback_f then
+            callback_f(enteredText)
+        end
+        listener.remove("DrawUI_InputBox", GET_EVENTS_LIST().OnFrame)
+        listener.remove("DrawUI_InputBoxMouse", GET_EVENTS_LIST().OnKeyPressed)
+        listener.remove("DrawUI_InputBoxKeyboard", GET_EVENTS_LIST().OnKeyPressed)
+        config.isInputBoxDisplayed = false
+    end)
+    local startTime = os.clock()
+    listener.register("DrawUI_InputBoxKeyboard", GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
+        if os.clock() - startTime < 0.1 then return end
+        if type_s == "text" then
+            if not isDown then return end
+            if key == gui.virualKeys.Backspace then enteredText = enteredText:sub(1, -2) return end
+            if draw.get_text_size_x(enteredText) >= corners.textArea.rightDown.x - corners.textArea.leftUpper.x - 10 - 10 then
+                return notify.warning("Input service", "Too much symbols!")
+            end
+            local value = getKeyFromID(key, config.shiftState)
+            if value == "" then return end
+            enteredText = enteredText .. value
+        else
+            if not isDown then return end
+            local value = features.getVirtualKeyViaID(key)
+            if not value then return end
+            enteredText = value
+        end
+    end)
+end
+
+HotkeySevice = {}
+HotkeySevice.__index = HotkeySevice
 
 function Submenu.add_static_submenu(name_s, hash_s)
     local submenu = setmetatable({}, Submenu)
@@ -447,11 +638,13 @@ end
 function Submenu:add_click_option(name_s, hash_s, callback_f)
     local option = Option.new(self, name_s, hash_s, OPTIONS.CLICK, nil, callback_f)
     option:setConfigIgnore()
+    option.isHotkeyable = true
     return option
 end
 
 function Submenu:add_bool_option(name_s, hash_s, callback_f)
     local option = Option.new(self, name_s, hash_s, OPTIONS.BOOL, false, callback_f)
+    option.isHotkeyable = true
     return option
 end
 
@@ -684,15 +877,21 @@ function Option:getHint()
 end
 
 function Option:remove()
-    if not self then return end
+    local status = false
+    if not self then return false end
+    local newOptions = {}
     for ID, opt in ipairs(self.submenu.options) do
-        if opt == self then
-            table.remove(self.submenu.options, ID)
-            self = nil
-            return nil
+        if opt ~= self then
+            table.insert(newOptions, opt)
+        else
+            status = true
         end
     end
-    log.error("Options", "Failed to remove option.")
+    self.submenu.options = newOptions
+    if not status then
+        return false, log.error("Options", "Failed to remove option.")
+    end
+    return true
 end
 
 function Option:addTag(tag_t)
@@ -704,6 +903,11 @@ end
 function Option:setTags(tags_t)
     if not (type(tags_t) == "table") then return end
     self.tags = tags_t
+    return self
+end
+
+function Option:setHotkeyable(state)
+    self.isHotkeyable = state
     return self
 end
 
@@ -754,37 +958,35 @@ task.createTask("DrawUI_ControlsCheck", 0.0, nil, function ()
     PAD.DISABLE_ALL_CONTROL_ACTIONS(2)
 end)
 
-local shiftState = false
-
 local function onControl(key, isDown, ignoreControlsState)
     if Stuff.controlsState[key] and not ignoreControlsState then
         Stuff.controlsState[key][1] = isDown
         Stuff.controlsState[key][2] = os.clock()
         Stuff.controlsState[key][3] = os.clock() + config.inputDelay
     end
-    if key == 160 or key == 161 then shiftState = isDown end
+    if key == 160 or key == 161 then config.shiftState = isDown end
     if isDown then
         if key == controls.open then
             config.isOpened = not config.isOpened
         end
-        if config.isInputBoxDisplayed then
-            if key == 13 then -- ENTER
-                if config.inputBoxCallback then config.inputBoxCallback(config.inputBoxText) end
-                config.inputBoxText = ""
-                config.isInputBoxDisplayed = false
-                playClickSound()
-                return
-            elseif key == 8 then -- BACKSPACE
-                config.inputBoxText = config.inputBoxText:sub(1, -2)
-                playClickSound()
-            elseif key == 27 then -- ESCAPE
-                config.inputBoxText = ""
-                config.isInputBoxDisplayed = false
-                playClickSound()
-            else
-                config.inputBoxText = config.inputBoxText .. getKeyFromID(key, shiftState)
-            end
-        end
+        -- if config.isInputBoxDisplayed then
+        --     if key == 13 then -- ENTER
+        --         if config.inputBoxCallback then config.inputBoxCallback(config.inputBoxText) end
+        --         config.inputBoxText = ""
+        --         config.isInputBoxDisplayed = false
+        --         playClickSound()
+        --         return
+        --     elseif key == 8 then -- BACKSPACE
+        --         config.inputBoxText = config.inputBoxText:sub(1, -2)
+        --         playClickSound()
+        --     elseif key == 27 then -- ESCAPE
+        --         config.inputBoxText = ""
+        --         config.isInputBoxDisplayed = false
+        --         playClickSound()
+        --     else
+        --         config.inputBoxText = config.inputBoxText .. getKeyFromID(key, shiftState)
+        --     end
+        -- end
     end
     if not config.isOpened or config.isInputBoxDisplayed then return end
     if isDown then
@@ -799,52 +1001,14 @@ local function onControl(key, isDown, ignoreControlsState)
         if key == controls.up then -- UP
             local submenu = config.path[#config.path]
             
-            local function getClickableOption(selectedOption)
-                if #submenu.options < 2 then return 1 end
-                if submenu.isDynamic then return selectedOption end
-                if selectedOption < 1 then 
-                    return getClickableOption(#submenu.options)
-                end
-                if submenu.options[selectedOption].type ~= OPTIONS.SEPARATOR and submenu.options[selectedOption].type ~= OPTIONS.STATE_BAR then
-                    return selectedOption
-                else
-                    return getClickableOption(selectedOption - 1)
-                end
-            end
-
-            if submenu.selectedOption > 1 then
-                submenu.selectedOption = getClickableOption(submenu.selectedOption - 1)
-            else
-                submenu.selectedOption = getClickableOption(#submenu.options)
-            end
+            submenu.selectedOption = submenu.selectedOption - 1
             playClickSound()
-            config.isActionDown = false
-            config.test = 0
         end
         if key == controls.down then -- DOWN
             local submenu = config.path[#config.path]
 
-            local function getClickableOption(selectedOption)
-                if #submenu.options < 2 then return 1 end
-                if submenu.isDynamic then return selectedOption end
-                if selectedOption > #submenu.options then 
-                    return getClickableOption(1)
-                end
-                if (submenu.options[selectedOption].type ~= OPTIONS.SEPARATOR) and (submenu.options[selectedOption].type ~= OPTIONS.STATE_BAR) then
-                    return selectedOption
-                else
-                    return getClickableOption(selectedOption + 1)
-                end
-            end
-
-            if submenu.selectedOption < #submenu.options then
-                submenu.selectedOption = getClickableOption(submenu.selectedOption + 1)
-            else
-                submenu.selectedOption = getClickableOption(1)
-            end
+            submenu.selectedOption = submenu.selectedOption + 1
             playClickSound()
-            config.isActionDown = true
-            config.test = 0.0
         end
         if key == controls.enter then -- ENTER
             local submenu = config.path[#config.path]
@@ -862,11 +1026,10 @@ local function onControl(key, isDown, ignoreControlsState)
                 elseif selected.type == OPTIONS.SUB then
                     if selected.callback then selected.callback(selected) end
                 elseif selected.type == OPTIONS.TEXT_INPUT then
-                    config.isInputBoxDisplayed = true
-                    config.inputBoxCallback = function (text)
+                    InputService:displayInputBox(nil, "text", function (text)
                         selected:setValue(text)
                         if selected.callback then selected.callback(selected.value, selected) end
-                    end
+                    end)
                 end
                 playClickSound()
             end
@@ -949,7 +1112,7 @@ listener.register("DrawUI_controlsStateCheck", GET_EVENTS_LIST().OnFrame, functi
     end
 end)
 
-listener.register("DrawUI_disableControls", GET_EVENTS_LIST().OnFeatureTick, function ()
+task.createTask("DrawUI_disableControls", 0.0, nil, function ()
     do -- DEBUG BLOCK
         if math.ceil(os.clock()) == DrawUI.dbg.lastSec then
             DrawUI.dbg.frameCount = DrawUI.dbg.frameCount + 1
@@ -1034,6 +1197,12 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
     settings:add_bool_option("Render slider", "Main_Settings_Slider", function (state)
         config.drawSlider = state
     end):setValue(true)
+    settings:add_bool_option("Render submenu path", "Main_Settings_SubmenuPath", function (state)
+        config.showPath = state
+    end):setValue(true)
+    settings:add_bool_option("Render navigation bar", "Main_Settings_KeysPanel", function (state)
+        config.drawKeysPanel = state
+    end):setValue(true)
     -- local keys = Submenu.add_static_submenu("Keys", "Main_Settings_Keys") do
     --     keys:add_text_input()
     -- end
@@ -1043,414 +1212,447 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
 end
 
 listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
+    draw.set_rounding(0)
+
+    if not config.isOpened then return end
+
+    local submenu = config.path[#config.path]
+
+    local function getClickableOption(selectedOption)
+        if #submenu.options < 2 then return 1 end
+        if selectedOption < 1 then 
+            return getClickableOption(#submenu.options)
+        end
+        if selectedOption > #submenu.options then
+            return getClickableOption(1)
+        end
+        local option = submenu.options[selectedOption] or {}
+        if option.type ~= OPTIONS.SEPARATOR and option.type ~= OPTIONS.STATE_BAR then
+            return selectedOption
+        else
+            if submenu.prevOption < submenu.selectedOption then
+                return getClickableOption(selectedOption + 1)
+            elseif submenu.prevOption > submenu.selectedOption then
+                return getClickableOption(selectedOption - 1)
+            end
+        end
+    end
+
+    submenu.selectedOption = getClickableOption(submenu.selectedOption)
+    submenu.prevOption = submenu.selectedOption
+
+    if submenu.isDynamic then
+        for ID, option in ipairs(submenu.options) do
+            Option.remove(option)
+        end
+        submenu.getter(submenu)
+    end
+
+    if #submenu.options == 0 then
+        submenu:setActive(false)
+        submenu = config.path[#config.path]
+        notify.default("DrawUI", "There is nothing to see yet.")
+    end
+
+    local bg = {}
+    bg.lu = {
+        x = config.offset_x, 
+        y = config.offset_y
+    }
+    bg.rd = {
+        x = bg.lu.x + config.width, 
+        y = bg.lu.y + #submenu.options*config.optionHeight
+    }
+    if #submenu.options > config.maxOptions then
+        bg.rd.y = bg.lu.y + config.maxOptions*config.optionHeight
+    end
+    draw.set_color(0, 14, 17, 19, 255) -- BACKGROUND
+    draw.rect_filled(
+        bg.lu.x, 
+        bg.lu.y, 
+        bg.rd.x, 
+        bg.rd.y)
+        -- draw.texture(
+        --     materials.bg,
+        --     bg.lu.x, 
+        --     bg.lu.y - config.optionHeight,
+        --     config.width,
+        --     bg.rd.y - bg.lu.y + config.optionHeight
+        -- )
+    
+    draw.set_color(0, 19, 22, 25, 255) -- SUBMENU NAME BG
+    draw.rect_filled(
+        bg.lu.x,
+        bg.lu.y - config.optionHeight,
+        bg.rd.x,
+        bg.lu.y
+    )
+    
+    local pos = string.format("%i/%i", submenu.selectedOption, #submenu.options)
+    draw.set_color(0, 255, 255, 255, 255) -- OPTIONS x/y
+    draw.text(
+        bg.rd.x - draw.get_text_size_x(pos) - 10,
+        -- (bg.rd.y + 30 - config.optionHeight - (bg.rd.y - config.optionHeight - bg.rd.y)/2) - draw.get_text_size_y(pos)/2,
+        (bg.lu.y - config.optionHeight) + config.optionHeight/2 - draw.get_text_size_y(pos)/2,
+        pos
+    )
+
+    local path = ""
+    if config.showPath then
+        for _, submenu in ipairs(config.path) do
+            path = path .. submenu.name .. "/"
+        end
+    else
+        path = tostring(config.path[#config.path].name)
+    end
+
     do
-        draw.set_rounding(0)
-        if config.isInputBoxDisplayed then
-            local lu = {
-                x = draw.get_window_width()/2 - config.inputBoxWidth, 
-                y = draw.get_window_height()/2 - config.inputBoxHeight, 
-            }
-            local rd = {
-                x = draw.get_window_width()/2 + config.inputBoxWidth, 
-                y = draw.get_window_height()/2 + config.inputBoxHeight, 
-            }
-            draw.set_rounding(5)
-            draw.set_color(0, 0, 0, 0, 255)
-            draw.rect_filled(
-                lu.x, lu.y, rd.x, rd.y
-            )
-            local ttl = "Type your text [English]..."
+        local function cropString(text_s, len_n)
+            if len_n <= 0 then return "" end
+            if string.len(text_s) == 0 then return "" end
+            if draw.get_text_size(text_s).x <= len_n then return text_s end
+            return cropString(text_s:sub(2, text_s:len()), len_n)
+        end
+        local maxLen = bg.rd.x - draw.get_text_size_x(pos) - 30 - bg.lu.x
+        if draw.get_text_size_x(path) > maxLen then
+            path = "..." .. cropString(path, maxLen - draw.get_text_size_x("..."))
+        end
+    end
+
+    draw.set_color(0, 255, 255, 255, 255) -- SUBMENU NAME TEXT
+    draw.text(
+        bg.lu.x + 10,
+        (bg.lu.y - config.optionHeight - (bg.lu.y - config.optionHeight - bg.lu.y)/2) - draw.get_text_size_y(path)/2,
+        path
+    )
+    
+    draw.texture( -- HEADER
+    materials.header,
+    bg.lu.x,
+    -- bg.lu.y - config.optionHeight - 90,
+    bg.lu.y - 90 - config.optionHeight,
+    config.width,
+    90
+    )
+
+    draw.set_color(0, 34, 41, 47, 255) -- FOOTER
+    draw.rect_filled(
+        bg.lu.x,
+        bg.rd.y,
+        bg.rd.x,
+        bg.rd.y + config.optionHeight
+    )
+
+    draw.texture( -- FOOTER ARROWS
+        materials.footerArrows,
+        bg.lu.x + config.width/2 - config.footerArrowsSize/2 - 2, 
+        bg.rd.y + config.optionHeight/2 - config.footerArrowsSize/2, 
+        config.footerArrowsSize + 2,
+        config.footerArrowsSize
+    )
+
+    draw.set_color(0, 255, 255, 255, 255)
+    draw.text( -- VERSION
+        bg.lu.x + 10,
+        bg.rd.y + config.optionHeight/2 - draw.get_text_size_y(BSVERSION)/2,
+        BSVERSION
+    )
+    
+    if submenu.options[submenu.selectedOption] then
+        local data = submenu.options[submenu.selectedOption]
+        local scrollerSpeed = 3
+        
+        local scrollerEnd = {}
+        scrollerEnd.leftUpper = {
+            x = bg.lu.x,
+            y = bg.lu.y + config.optionHeight * (submenu.selectedOption < config.maxOptions and submenu.selectedOption - 1 or config.maxOptions - 1),
+        }
+        scrollerEnd.rightDown = {
+            x = bg.rd.x,
+            y = scrollerEnd.leftUpper.y + config.optionHeight
+        }
+        
+        if not submenu.scrollerPos then submenu.scrollerPos = scrollerEnd end
+        
+        if config.enabelSmoothScroller then
+            if submenu.scrollerPos.leftUpper.y < scrollerEnd.leftUpper.y then -- CREDITS TO 1tsPxel
+                submenu.scrollerPos.leftUpper.y = math.min(scrollerEnd.leftUpper.y, submenu.scrollerPos.leftUpper.y + scrollerSpeed)
+            elseif submenu.scrollerPos.leftUpper.y > scrollerEnd.leftUpper.y then
+                submenu.scrollerPos.leftUpper.y = math.max(scrollerEnd.leftUpper.y, submenu.scrollerPos.leftUpper.y - scrollerSpeed)
+            end
+        else
+            submenu.scrollerPos = scrollerEnd
+        end
+
+        draw.set_color(0, 34, 41, 47, 255)
+        draw.rect_filled( -- SELECTED OPTION
+            scrollerEnd.leftUpper.x,
+            submenu.scrollerPos.leftUpper.y,
+            scrollerEnd.rightDown.x,
+            submenu.scrollerPos.leftUpper.y + config.optionHeight
+        )
+
+        if data.hint ~= "" then
             draw.set_color(0, 255, 255, 255, 255)
-            draw.text(
-                (rd.x - (rd.x - lu.x)/2) - draw.get_text_size_x(ttl)/2,
-                lu.y + 15,
-                ttl
-            )
-            lu = { -- input box text area
-                x = lu.x + 20,
-                y = lu.y + draw.get_text_size_y(ttl) + 15 + 15,
+            local hint = tostring(submenu.options[submenu.selectedOption].hint)
+            if hint ~= "" then
+                local y = bg.rd.y + config.optionHeight + 10
+                draw.set_color(0, 34, 41, 47, 255)
+                draw.rect_filled(
+                    bg.lu.x,
+                    y, 
+                    bg.rd.x,
+                    y + 5 + draw.get_text_size_y(hint) + 5
+                )
+                -- draw.texture(
+                --     materials.hintBox,
+                --     bg.lu.x,
+                --     y,
+                --     config.width,
+                --     config.optionHeight
+                -- )
+                draw.set_color(0, 255, 255, 255, 255)
+                draw.text(
+                    bg.lu.x + 10,
+                    (y + 5 + draw.get_text_size_y(hint) + 5 - (y + 5 + draw.get_text_size_y(hint) + 5 - y)/2) - draw.get_text_size_y(hint)/2,
+                    hint
+                )
+            end
+        end
+    end
+
+    -- SLIDER
+    if config.drawSlider then
+        local padding = 5
+        local sliderItemPadding = 2
+        local verticalPadding = 2
+        local width = 10
+        local sliderPosSpeed = 3
+        local sliderBox = {
+            leftUpper = {
+                x = bg.rd.x + padding,
+                y = bg.lu.y,
+            },
+            rightDown = {
+                x = bg.rd.x + padding + width,
+                y = bg.rd.y,
             }
-            rd = {
-                x = rd.x - 20,
-                y = lu.y + 40,
-            }
-            draw.set_color(0, 50, 50, 50, 255)
-            draw.rect_filled(
-                lu.x, 
-                lu.y,
-                rd.x, 
-                rd.y
+        }
+        local sliderHeight = (sliderBox.rightDown.y - sliderBox.leftUpper.y - verticalPadding*2) / #submenu.options
+        sliderHeight = sliderHeight > 1.0 and sliderHeight or 0.0
+
+        local sliderItemEnd = {}
+        sliderItemEnd.leftUpper = {
+            x = sliderBox.leftUpper.x + sliderItemPadding,
+            y = sliderBox.leftUpper.y + verticalPadding + sliderHeight * (submenu.selectedOption - 1),
+        }
+        sliderItemEnd.rightDown = {
+            x = sliderBox.rightDown.x - sliderItemPadding,
+            y = sliderItemEnd.leftUpper.y + sliderHeight
+        }
+
+        if not submenu.sliderPos then submenu.sliderPos = sliderItemEnd end
+
+        if submenu.sliderPos.leftUpper.y < sliderItemEnd.leftUpper.y then -- CREDITS TO 1tsPxel
+            submenu.sliderPos.leftUpper.y = math.min(sliderItemEnd.leftUpper.y, submenu.sliderPos.leftUpper.y + sliderPosSpeed)
+        elseif submenu.sliderPos.leftUpper.y > sliderItemEnd.leftUpper.y then
+            submenu.sliderPos.leftUpper.y = math.max(sliderItemEnd.leftUpper.y, submenu.sliderPos.leftUpper.y - sliderPosSpeed)
+        end
+
+        if sliderHeight > 0.0 then
+            draw.set_color(0, 14, 17, 19, 255)
+            draw.set_rounding(16)
+            
+            draw.rect_filled( -- SLIDER BOX
+                sliderBox.leftUpper.x,
+                sliderBox.leftUpper.y,
+                sliderBox.rightDown.x,
+                sliderBox.rightDown.y
             )
 
-            draw.set_color(0, 255, 255, 255, 255)
-            draw.text(
+            draw.set_color(0, 83, 180, 223, 255)
+            draw.set_rounding(10)
+
+            local sliderItem = submenu.sliderPos
+            draw.rect_filled( -- SLIDER ITEM
+                sliderItemEnd.leftUpper.x,
+                sliderItem.leftUpper.y,
+                sliderItemEnd.rightDown.x,
+                sliderItem.leftUpper.y + sliderHeight
+            )
+
+            draw.set_rounding(0)
+        end
+    end
+    
+    local optionID = 0
+    local firstOption = math.max(0, submenu.selectedOption - config.maxOptions) + 1
+    local lastOption = firstOption + math.min(config.maxOptions, #submenu.options) - 1
+
+    for i = firstOption, lastOption do -- RENDERING OPTIONS NAMES
+        optionID = optionID + 1
+        local data = submenu.options[i]
+
+        local textEnd = {}
+        textEnd.leftUpper = {
+            x = bg.lu.x,
+            y = bg.lu.y + config.optionHeight*(optionID - 1),
+        }
+        textEnd.rightDown = {
+            x = bg.rd.x, 
+            y = textEnd.leftUpper.y + config.optionHeight,
+        }
+
+        config.iconsSize = 40
+        local symbol = nil
+        local material = nil
+        if data.type == OPTIONS.CLICK then
+            -- do smth
+        elseif data.type == OPTIONS.BOOL then
+            material = materials.toggleOff
+            if data.value then material = materials.toggleOn end
+        elseif data.type == OPTIONS.NUM then
+            symbol = string.format("<%i of %i>", data.value, data.maxValue)
+        elseif data.type == OPTIONS.FLOAT then
+            symbol = string.format("<%s of %s>", data.value, data.maxValue)
+        elseif data.type == OPTIONS.CHOOSE then
+            symbol = string.format("<%s (%i/%i)>", data.table[data.value], data.value, #data.table)
+        elseif data.type == OPTIONS.SUB then
+            material = materials.sub
+        elseif data.type == OPTIONS.TEXT_INPUT then
+            if data.value == "" then
+                symbol = "[Empty]"
+            else
+                symbol = string.format("[%s]", data.value)
+            end
+        elseif data.type == OPTIONS.STATE_BAR then
+            symbol = tostring(data.getter())
+        end
+
+        local name = tostring(data.name)
+        local maxNameLen = bg.rd.x - (symbol and draw.get_text_size_x(symbol) or config.iconsSize) - 30 - bg.lu.x
+        if draw.get_text_size_x(name) > maxNameLen then
+            name = draw.crop_text(name, maxNameLen - draw.get_text_size_x("...")) .. "..."
+        end
+
+        draw.set_color(0, 255, 255, 255, 255)
+        -- draw.set_font(font)
+        draw.text(
+            (data.type ~= OPTIONS.SEPARATOR) and (textEnd.leftUpper.x + 10) or ((textEnd.leftUpper.x + (config.width)/2) - draw.get_text_size_x(name)/2),
+            textEnd.leftUpper.y + config.optionHeight/2 - draw.get_text_size_y(name)/2,
+            name
+        )
+
+        local lu, rd = textEnd.leftUpper, textEnd.rightDown
+
+        if data.type == OPTIONS.SEPARATOR then
+            draw.set_thickness(2)
+            draw.set_color(0, 100, 100, 100, 255)
+            draw.line(
                 lu.x + 10,
-                (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(config.inputBoxText)/2,
-                config.inputBoxText
+                lu.y + (rd.y - lu.y)/2,
+                (rd.x - (rd.x - lu.x)/2) - draw.get_text_size_x(name)/2 - 10,
+                lu.y + (rd.y - lu.y)/2
             )
-
-            local footer = "Press Enter to close. ESC to cancel."
+            draw.line(
+                (rd.x - (rd.x - lu.x)/2) + draw.get_text_size_x(name)/2 + 10,
+                lu.y + (rd.y - lu.y)/2,
+                rd.x - 10,
+                lu.y + (rd.y - lu.y)/2
+            )
+            draw.set_thickness(0)
             draw.set_color(0, 255, 255, 255, 255)
+        end
+        local offset = 5.0
+        for _, t in ipairs(data.tags) do                      
+            draw.set_color(0, t[2], t[3], t[4], 255)
             draw.text(
-                (rd.x - (rd.x - lu.x)/2) - draw.get_text_size_x(footer)/2,
-                rd.y + 15,
-                footer
+                lu.x + 10 + draw.get_text_size_x(name) + offset,
+                (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(t[1])/2,
+                t[1]
+            )
+            offset = offset + draw.get_text_size_x(t[1]) + 4
+        end
+
+        draw.set_color(0, 255, 255, 255, 255)
+
+        if material then
+            draw.texture(
+                material,
+                rd.x - config.iconsSize,
+                (rd.y - (rd.y - lu.y)/2) -config.iconsSize/2,
+                config.iconsSize,
+                config.iconsSize
+            )
+        elseif symbol then
+            draw.text(
+                rd.x - draw.get_text_size_x(symbol) - 10,
+                (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(symbol)/2,
+                symbol
+            )
+        end
+    end
+
+    if config.drawKeysPanel then -- KEYS PANEL
+        local coords = {
+            leftUpper = {
+                x = draw.get_window_width() - 10 - 10,
+                y = draw.get_window_height() - 10 - config.optionHeight,
+            },
+            rightDown = {
+                x = draw.get_window_width() - 10,
+                y = draw.get_window_height() - 10,
+            },
+        }
+        local keys = {
+            {key = "F8", note = "Open/Hide UI"},
+        }
+        if submenu.options[submenu.selectedOption].isHotkeyable then
+            table.insert(keys, {key = "F11", note = "Set a hotkey"})
+        end
+        do
+            local boxCoords = {
+                leftUpper = {
+                    x = coords.rightDown.x - 10
+                },
+            }
+            for _, key_t in ipairs(keys) do
+                boxCoords.leftUpper.x = boxCoords.leftUpper.x - 10 - draw.get_text_size_x(key_t.key) - 10 - draw.get_text_size_x(key_t.note)
+            end
+            draw.set_color(0, 34, 41, 47, 255)
+            draw.set_rounding(5)
+            draw.rect_filled(
+                boxCoords.leftUpper.x,
+                coords.leftUpper.y,
+                coords.rightDown.x,
+                coords.rightDown.y
             )
             draw.set_rounding(0)
         end
-        
-        if not config.isOpened then return end
-
-        local submenu = config.path[#config.path]
-
-        if submenu.isDynamic then
-            local options = {}
-            for _, option in ipairs(submenu.options) do
-                option:remove()
-            end
-            submenu.options = options
-            submenu.getter(submenu)
-            local function getClickableOption(selectedOption)
-                if #submenu.options == 0 then submenu:setActive(false) return end
-                if #submenu.options == 1 then return 1 end
-                if selectedOption > #submenu.options then 
-                    return getClickableOption(1)
-                end
-                if submenu.options[selectedOption] then return selectedOption end
-                return getClickableOption(selectedOption - 1)
-            end
-            submenu.selectedOption = getClickableOption(submenu.selectedOption)
-        end
-
-        if #submenu.options == 0 then
-            submenu:setActive(false)
-            notify.default("DrawUI", "There is nothing to see yet.")
-        end
-        submenu = config.path[#config.path]
-
-        local bg = {}
-        bg.lu = {
-            x = config.offset_x, 
-            y = config.offset_y
-        }
-        bg.rd = {
-            x = bg.lu.x + config.width, 
-            y = bg.lu.y + #submenu.options*config.optionHeight
-        }
-        if #submenu.options > config.maxOptions then
-            bg.rd.y = bg.lu.y + config.maxOptions*config.optionHeight
-        end
-        draw.set_color(0, 14, 17, 19, 255) -- BACKGROUND
-        draw.rect_filled(
-            bg.lu.x, 
-            bg.lu.y, 
-            bg.rd.x, 
-            bg.rd.y)
-            -- draw.texture(
-            --     materials.bg,
-            --     bg.lu.x, 
-            --     bg.lu.y - config.optionHeight,
-            --     config.width,
-            --     bg.rd.y - bg.lu.y + config.optionHeight
-            -- )
-        
-        draw.set_color(0, 19, 22, 25, 255) -- SUBMENU NAME BG
-        draw.rect_filled(
-            bg.lu.x,
-            bg.lu.y - config.optionHeight,
-            bg.rd.x,
-            bg.lu.y
-        )
-        local path = ""
-        -- for _, submenu in ipairs(config.path) do
-        --     path = path .. submenu.name .. "/"
-        -- end
-        path = tostring(config.path[#config.path].name)
-        draw.set_color(0, 255, 255, 255, 255) -- SUBMENU NAME TEXT
-        draw.text(
-            bg.lu.x + 10,
-            (bg.lu.y - config.optionHeight - (bg.lu.y - config.optionHeight - bg.lu.y)/2) - draw.get_text_size_y(path)/2,
-            path
-        )
-
-        
-        local pos = string.format("%i/%i", submenu.selectedOption, #submenu.options)
-        draw.set_color(0, 255, 255, 255, 255) -- OPTIONS x/y
-        draw.text(
-            bg.rd.x - draw.get_text_size_x(pos) - 10,
-            -- (bg.rd.y + 30 - config.optionHeight - (bg.rd.y - config.optionHeight - bg.rd.y)/2) - draw.get_text_size_y(pos)/2,
-            (bg.lu.y - config.optionHeight) + config.optionHeight/2 - draw.get_text_size_y(pos)/2,
-            pos
-        )
-        
-        draw.texture( -- HEADER
-        materials.header,
-        bg.lu.x,
-        -- bg.lu.y - config.optionHeight - 90,
-        bg.lu.y - 90 - config.optionHeight,
-        config.width,
-        90
-        )
-
-        draw.set_color(0, 34, 41, 47, 255) -- FOOTER
-        draw.rect_filled(
-            bg.lu.x,
-            bg.rd.y,
-            bg.rd.x,
-            bg.rd.y + config.optionHeight
-        )
-
-        draw.texture( -- FOOTER ARROWS
-            materials.footerArrows,
-            bg.lu.x + config.width/2 - config.footerArrowsSize/2 - 2, 
-            bg.rd.y + config.optionHeight/2 - config.footerArrowsSize/2, 
-            config.footerArrowsSize + 2,
-            config.footerArrowsSize
-        )
-
-        draw.set_color(0, 255, 255, 255, 255)
-        draw.text( -- VERSION
-            bg.lu.x + 10,
-            bg.rd.y + config.optionHeight/2 - draw.get_text_size_y(BSVERSION)/2,
-            BSVERSION
-        )
-        
-        if #submenu.options > 0 then
-            local data = submenu.options[submenu.selectedOption]
-            local scrollerSpeed = 3
-            
-            local scrollerEnd = {}
-            scrollerEnd.leftUpper = {
-                x = bg.lu.x,
-                y = bg.lu.y + config.optionHeight * (submenu.selectedOption < config.maxOptions and submenu.selectedOption - 1 or config.maxOptions - 1),
-            }
-            scrollerEnd.rightDown = {
-                x = bg.rd.x,
-                y = scrollerEnd.leftUpper.y + config.optionHeight
-            }
-            
-            if not submenu.scrollerPos then submenu.scrollerPos = scrollerEnd end
-            
-            if config.enabelSmoothScroller then
-                if submenu.scrollerPos.leftUpper.y < scrollerEnd.leftUpper.y then -- CREDITS TO 1tsPxel
-                    submenu.scrollerPos.leftUpper.y = math.min(scrollerEnd.leftUpper.y, submenu.scrollerPos.leftUpper.y + scrollerSpeed)
-                elseif submenu.scrollerPos.leftUpper.y > scrollerEnd.leftUpper.y then
-                    submenu.scrollerPos.leftUpper.y = math.max(scrollerEnd.leftUpper.y, submenu.scrollerPos.leftUpper.y - scrollerSpeed)
-                end
-            else
-                submenu.scrollerPos = scrollerEnd
-            end
-
-            draw.set_color(0, 34, 41, 47, 255)
-            draw.rect_filled( -- SELECTED OPTION
-                scrollerEnd.leftUpper.x,
-                submenu.scrollerPos.leftUpper.y,
-                scrollerEnd.rightDown.x,
-                submenu.scrollerPos.leftUpper.y + config.optionHeight
-            )
-
-            if data.hint ~= "" then
-                draw.set_color(0, 255, 255, 255, 255)
-                local hint = tostring(submenu.options[submenu.selectedOption].hint)
-                if hint ~= "" then
-                    local y = bg.rd.y + config.optionHeight + 10
-                    draw.set_color(0, 34, 41, 47, 255)
-                    draw.rect_filled(
-                        bg.lu.x,
-                        y, 
-                        bg.rd.x,
-                        y + 5 + draw.get_text_size_y(hint) + 5
-                    )
-                    -- draw.texture(
-                    --     materials.hintBox,
-                    --     bg.lu.x,
-                    --     y,
-                    --     config.width,
-                    --     config.optionHeight
-                    -- )
-                    draw.set_color(0, 255, 255, 255, 255)
-                    draw.text(
-                        bg.lu.x + 10,
-                        (y + 5 + draw.get_text_size_y(hint) + 5 - (y + 5 + draw.get_text_size_y(hint) + 5 - y)/2) - draw.get_text_size_y(hint)/2,
-                        hint
-                    )
-                end
-            end
-        end
-
-        -- SLIDER
-        if config.drawSlider then
-            local padding = 5
-            local sliderItemPadding = 2
-            local verticalPadding = 2
-            local width = 10
-            local sliderPosSpeed = 3
-            local sliderBox = {
-                leftUpper = {
-                    x = bg.rd.x + padding,
-                    y = bg.lu.y,
-                },
-                rightDown = {
-                    x = bg.rd.x + padding + width,
-                    y = bg.rd.y,
-                }
-            }
-            local sliderHeight = (sliderBox.rightDown.y - sliderBox.leftUpper.y - verticalPadding*2) / #submenu.options
-            -- print(sliderHeight)
-            sliderHeight = sliderHeight > 1.0 and sliderHeight or 0.0
-
-            local sliderItemEnd = {}
-            sliderItemEnd.leftUpper = {
-                x = sliderBox.leftUpper.x + sliderItemPadding,
-                y = sliderBox.leftUpper.y + verticalPadding + sliderHeight * (submenu.selectedOption - 1),
-            }
-            sliderItemEnd.rightDown = {
-                x = sliderBox.rightDown.x - sliderItemPadding,
-                y = sliderItemEnd.leftUpper.y + sliderHeight
-            }
-
-            if not submenu.sliderPos then submenu.sliderPos = sliderItemEnd end
-
-            if submenu.sliderPos.leftUpper.y < sliderItemEnd.leftUpper.y then -- CREDITS TO 1tsPxel
-                submenu.sliderPos.leftUpper.y = math.min(sliderItemEnd.leftUpper.y, submenu.sliderPos.leftUpper.y + sliderPosSpeed)
-            elseif submenu.sliderPos.leftUpper.y > sliderItemEnd.leftUpper.y then
-                submenu.sliderPos.leftUpper.y = math.max(sliderItemEnd.leftUpper.y, submenu.sliderPos.leftUpper.y - sliderPosSpeed)
-            end
-
-            if sliderHeight > 0.0 then
-                draw.set_color(0, 14, 17, 19, 255)
-                draw.set_rounding(16)
-                
-                draw.rect_filled( -- SLIDER BOX
-                    sliderBox.leftUpper.x,
-                    sliderBox.leftUpper.y,
-                    sliderBox.rightDown.x,
-                    sliderBox.rightDown.y
-                )
-
-                draw.set_color(0, 83, 180, 223, 255)
-                draw.set_rounding(10)
-
-                local sliderItem = submenu.sliderPos
-                draw.rect_filled( -- SLIDER ITEM
-                    sliderItemEnd.leftUpper.x,
-                    sliderItem.leftUpper.y,
-                    sliderItemEnd.rightDown.x,
-                    sliderItem.leftUpper.y + sliderHeight
-                )
-
-                draw.set_rounding(0)
-            end
-        end
-        
-        local optionID = 0
-        local optionsStart = math.max(1, submenu.selectedOption - config.maxOptions + 1)
-        for i = optionsStart, optionsStart + math.min(config.maxOptions, #submenu.options) - 1 do -- RENDERING OPTIONS NAMES
-            optionID = optionID + 1
-            local data = submenu.options[i]
-            -- local lu = {
-            --     x = bg.lu.x, 
-            --     y = bg.lu.y + config.optionHeight*(optionID - 1),
-            -- }
-            -- local rd = {
-            --     x = bg.rd.x, 
-            --     y = bg.lu.y + config.optionHeight*optionID
-            -- }
-            
-            local textSpeed = 2
-            local textEnd = {}
-            textEnd.leftUpper = {
-                x = bg.lu.x,
-                y = bg.lu.y + config.optionHeight*(optionID - 1),
-            }
-            textEnd.rightDown = {
-                x = bg.rd.x, 
-                y = textEnd.leftUpper.y + config.optionHeight,
-            }            
-
-            submenu.textPos = textEnd
-
-            local name = tostring(data.name)
-
+        for _, key_t in ipairs(keys) do
             draw.set_color(0, 255, 255, 255, 255)
             draw.text(
-                (data.type ~= OPTIONS.SEPARATOR) and (textEnd.leftUpper.x + 10) or ((textEnd.leftUpper.x + (config.width)/2) - draw.get_text_size_x(name)/2),
-                submenu.textPos.leftUpper.y + config.optionHeight/2 - draw.get_text_size_y(name)/2,
-                name
+                coords.leftUpper.x - draw.get_text_size_x(key_t.note),
+                (coords.rightDown.y - (coords.rightDown.y - coords.leftUpper.y)/2) - draw.get_text_size_y(key_t.note)/2,
+                key_t.note
             )
-            local lu, rd = textEnd.leftUpper, textEnd.rightDown
-
-            if data.type == OPTIONS.SEPARATOR then
-                draw.set_thickness(2)
-                draw.set_color(0, 100, 100, 100, 255)
-                draw.line(
-                    lu.x + 10,
-                    lu.y + (rd.y - lu.y)/2,
-                    (rd.x - (rd.x - lu.x)/2) - draw.get_text_size_x(name)/2 - 10,
-                    lu.y + (rd.y - lu.y)/2
-                )
-                draw.line(
-                    (rd.x - (rd.x - lu.x)/2) + draw.get_text_size_x(name)/2 + 10,
-                    lu.y + (rd.y - lu.y)/2,
-                    rd.x - 10,
-                    lu.y + (rd.y - lu.y)/2
-                )
-                draw.set_thickness(0)
-                draw.set_color(0, 255, 255, 255, 255)
-            end
-            local offset = 5.0
-            for _, t in ipairs(data.tags) do                      
-                draw.set_color(0, t[2], t[3], t[4], 255)
-                draw.text(
-                    lu.x + 10 + draw.get_text_size_x(name) + offset,
-                    (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(t[1])/2,
-                    t[1]
-                )
-                offset = offset + draw.get_text_size_x(t[1]) + 4
-            end
-
-            draw.set_color(0, 255, 255, 255, 255)
-            config.iconsSize = 40.0
-            local symbol = nil
-            local material = nil
-            if data.type == OPTIONS.CLICK then
-                -- do smth
-            elseif data.type == OPTIONS.BOOL then
-                material = materials.toggleOff
-                if data.value then material = materials.toggleOn end
-            elseif data.type == OPTIONS.NUM then
-                symbol = string.format("<%i of %i>", data.value, data.maxValue)
-            elseif data.type == OPTIONS.FLOAT then
-                symbol = string.format("<%s of %s>", data.value, data.maxValue)
-            elseif data.type == OPTIONS.CHOOSE then
-                symbol = string.format("<%s (%i/%i)>", data.table[data.value], data.value, #data.table)
-            elseif data.type == OPTIONS.SUB then
-                material = materials.sub
-            elseif data.type == OPTIONS.TEXT_INPUT then
-                if data.value == "" then
-                    symbol = "[Empty]"
-                else
-                    symbol = string.format("[%s]", data.value)
-                end
-            elseif data.type == OPTIONS.STATE_BAR then
-                symbol = tostring(data.getter())
-            end
-
-            if material then
-                draw.texture(
-                    material,
-                    rd.x - config.iconsSize,
-                    (rd.y - (rd.y - lu.y)/2) -config.iconsSize/2,
-                    config.iconsSize,
-                    config.iconsSize
-                )
-            elseif symbol then
-                draw.text(
-                    rd.x - draw.get_text_size_x(symbol) - 10,
-                    (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(symbol)/2,
-                    symbol
-                )
-            end
+            coords.leftUpper.x = coords.leftUpper.x - 10 - draw.get_text_size_x(key_t.note)
+            draw.set_color(0, 83, 180, 223, 255)
+            draw.set_rounding(3)
+            draw.rect_filled(
+                coords.leftUpper.x - draw.get_text_size_x(key_t.key) - 2,
+                (coords.rightDown.y - (coords.rightDown.y - coords.leftUpper.y)/2) - draw.get_text_size_y(key_t.key)/2,
+                coords.leftUpper.x + 2,
+                (coords.rightDown.y - (coords.rightDown.y - coords.leftUpper.y)/2) + draw.get_text_size_y(key_t.key)/2
+            )
+            draw.set_rounding(0)
+            draw.set_color(0, 0, 0, 0, 255)
+            draw.text(
+                coords.leftUpper.x - draw.get_text_size_x(key_t.key),
+                (coords.rightDown.y - (coords.rightDown.y - coords.leftUpper.y)/2) - draw.get_text_size_y(key_t.key)/2,
+                key_t.key
+            )
+            coords.leftUpper.x = coords.leftUpper.x - 10 - draw.get_text_size_x(key_t.key)
         end
     end
 end)

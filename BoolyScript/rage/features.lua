@@ -101,4 +101,17 @@ function features.getFPS()
 	return DrawUI.dbg.fps
 end
 
+function features.isPositionInArea(corner_leftUpper_v2, corner_rightDown_v2, position_v2)
+	local axis_x_b = (position_v2.x >= corner_leftUpper_v2.x) and (corner_rightDown_v2.x >= position_v2.x)
+	local axis_y_b = (position_v2.y >= corner_leftUpper_v2.y) and (corner_rightDown_v2.y >= position_v2.y)
+	return axis_x_b and axis_y_b
+end
+
+function features.getVirtualKeyViaID(id)
+	for name, keyID in pairs(gui.virualKeys) do
+		if keyID == id then return name end
+	end
+	return nil
+end
+
 return features

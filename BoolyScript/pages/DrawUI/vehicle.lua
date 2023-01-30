@@ -185,6 +185,19 @@ end, function ()
     ENTITY.SET_ENTITY_COLLISION(vehicle, true, true)
 end)
 
+local brakeForceStep = Vehicle:add_float_option("Brake force intensivity", "BS_Vehicle_Movement_BrakeForceStep", 0.0, 5.0, 0.1):setValue(0.2)
+
+Vehicle:add_looped_option("Enable brake force", "BS_Vehicle_Movement_brakeForceEnable", 0.0, function ()    
+    if not PAD.IS_CONTROL_PRESSED(2, 72) then return end
+    local step = brakeForceStep:getValue()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
+    local currentSpeed = ENTITY.GET_ENTITY_SPEED_VECTOR(vehicle, true)
+    if currentSpeed.y <= 1 then return end
+    local speed = math.max(0, currentSpeed.y - step) + .0
+    VEHICLE.SET_VEHICLE_FORWARD_SPEED(vehicle, speed)
+end)
+
 Stuff.superDrivePower = 5.0
 
 Vehicle:add_looped_option("Super drive [W]", "BS_Vehicle_Movement_SuperDrive", 0.0, function ()

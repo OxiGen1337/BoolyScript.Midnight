@@ -62,6 +62,7 @@ local function loadWepLoadout(path)
         return
     end
     local parsedTable = parse.json(path)
+    if not parsedTable then return end
     WEAPON.REMOVE_ALL_PED_WEAPONS(PLAYER.PLAYER_PED_ID(), false)
     for _, wepInfo in ipairs(parsedTable) do
         local hash = wepInfo.hash

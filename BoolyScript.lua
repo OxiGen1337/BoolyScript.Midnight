@@ -41,7 +41,7 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         for _, path in ipairs(t) do
             if not fs.directory_exists(path) then 
                 if not filesys.createDir(path) then
-		            log.error("File system", "Failed to create directory with path:\n\t" .. path .. "\n\tPossible reason: Cyrillic symbols in the path.\n\tTo solve it, create that folder by yourself.")
+		            log.error("File system", "Failed to create directory with path:\n\t" .. path .. "\n\tPlease, create that folder by yourself.")
                 end
             end
         end
@@ -61,6 +61,10 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
             ParsedFiles['objects'] = content
         end)
     end
+    -- do
+    --     local out = memory.search("GTA5.exe", "41 80 78 28 ? 0F 85 ? ? ? ? 49 8B 80")
+    --     print(memory.is_valid_addr(out))
+    -- end
     do -- Loading all pages added in 'pages' folder; it only loads init.lua so that file has to require everything that's in the page
         local path = filesys.getInitScriptPath() .. '\\BoolyScript\\pages'
         path = path:gsub("\\\\lua", "\\lua")

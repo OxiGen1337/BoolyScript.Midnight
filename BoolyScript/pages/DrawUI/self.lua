@@ -144,10 +144,10 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe") do
             local ped = PLAYER.PLAYER_PED_ID()
             local drawableVariations = PED.GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(ped, ID)
             Option.setLimits(variations, 0, drawableVariations > 0 and drawableVariations - 1 or 0, 1)
-            Option.setValue(variations, PED.GET_PED_DRAWABLE_VARIATION(ped, ID), true)
+            Option.setValue(variations, PED.GET_PED_PROP_INDEX(ped, ID), true)
             local textureVariations = PED.GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(ped, ID, 0)
             Option.setLimits(textures, 0, textureVariations > 0 and textureVariations - 1 or 0, 1)
-            Option.setValue(textures, PED.GET_PED_TEXTURE_VARIATION(ped, ID), true)
+            Option.setValue(textures, PED.GET_PED_PROP_TEXTURE_INDEX(ped, ID), true)
         end)
     end
     wardrobe:add_separator("Components", "BS_Self_Wardrobe_Components")
