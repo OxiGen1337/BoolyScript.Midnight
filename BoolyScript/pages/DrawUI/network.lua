@@ -1,6 +1,25 @@
 Network = Submenu.add_static_submenu("Network", "BS_Network")
 Main:add_sub_option("Network", "BS_Network", Network)
 
+local sessionTypes = {
+    "Public",
+    "New Public",
+    "Closed Crew",
+    "Open Crew",
+    "Friends Only",
+    "Join Friends",
+    "Solo",
+    "Invite Only"
+}
+
+Network:add_choose_option("Join session", "BS_Network_JoinSession", false, sessionTypes, function (pos, option)
+    if pos <= 4 then
+        lobby.change_session(pos - 1)
+    elseif pos == 5 then lobby.change_session(pos + 1)
+    elseif pos >= 6 then lobby.change_session(pos + 3)
+    end
+end)
+
 Network:add_separator("Kosatka missiles", "BS_Network_Kosatka")
 
 Network:add_looped_option("Disable cooldown", "BS_Network_Kosatka_DisableCooldown", 0.0, function ()
