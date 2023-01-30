@@ -524,7 +524,7 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
         if type_s == "text" then
             if not isDown then return end
             if key == gui.virualKeys.Backspace then enteredText = enteredText:sub(1, -2) return end
-            if draw.get_text_size_x(enteredText) >= corners.textArea.rightDown.x - corners.textArea.leftUpper.x - 10 - 10 then
+            if draw.get_text_size_x(enteredText) >= corners.textArea.rightDown.x - corners.textArea.leftUpper.x - 10 - 10 and getKeyFromID(key, config.shiftState) ~= "" then
                 return notify.warning("Input service", "Too much symbols!")
             end
             local value = getKeyFromID(key, config.shiftState)
