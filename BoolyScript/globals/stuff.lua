@@ -3,6 +3,7 @@ Stuff = {
     bodyguards = {},
     ufos = {},
     attackers = {},
+    isTextChatActive = false,
 }
 
 ParsedFiles = {

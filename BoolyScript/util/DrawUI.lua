@@ -421,6 +421,13 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
         }
     listener.register("DrawUI_InputBox", GET_EVENTS_LIST().OnFrame, function ()  
         utils.get_mouse_pos(mousePos)
+        -- draw.set_color(0, 150, 150, 150, 150)
+        -- draw.rect_filled(
+        --     0,
+        --     0,
+        --     draw.get_window_width(),
+        --     draw.get_window_height()
+        -- )
         draw.set_color(0, 14, 17, 19, 255)
         draw.set_rounding(10)
         draw.rect_filled(
@@ -525,7 +532,7 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
             if not isDown then return end
             if key == gui.virualKeys.Backspace then enteredText = enteredText:sub(1, -2) return end
             if draw.get_text_size_x(enteredText) >= corners.textArea.rightDown.x - corners.textArea.leftUpper.x - 10 - 10 and getKeyFromID(key, config.shiftState) ~= "" then
-                return notify.warning("Input service", "Too much symbols!")
+                return notify.warning("Input service", "Too many symbols!")
             end
             local value = getKeyFromID(key, config.shiftState)
             if value == "" then return end
@@ -621,7 +628,6 @@ function HotkeyService.removeHotkey(optionHash_s)
     notify.success("Hotkey service", "Successfully removed a hotkey.")
 end
 
-
 listener.register("DrawUI_Hotkeys", GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
     if not isDown then return end
     if config.isOpened then
@@ -637,6 +643,8 @@ listener.register("DrawUI_Hotkeys", GET_EVENTS_LIST().OnKeyPressed, function (ke
             end
         end
     end
+    if Stuff.isTextChatActive then return end
+    if config.isInputBoxDisplayed then return end
     local keyName = features.getVirtualKeyViaID(key)
     if not HotkeyService.runtimeHotkeys[keyName] then return end
     for _, option in ipairs(HotkeyService.runtimeHotkeys[keyName]) do
@@ -1201,6 +1209,9 @@ listener.register("DrawUI_controlsStateCheck", GET_EVENTS_LIST().OnFrame, functi
 end)
 
 task.createTask("DrawUI_disableControls", 0.0, nil, function ()
+    do
+        Stuff.isTextChatActive = HUD._IS_MULTIPLAYER_CHAT_ACTIVE()
+    end
     do -- DEBUG BLOCK
         if math.ceil(os.clock()) == DrawUI.dbg.lastSec then
             DrawUI.dbg.frameCount = DrawUI.dbg.frameCount + 1
