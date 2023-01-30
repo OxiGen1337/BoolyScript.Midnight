@@ -21,7 +21,7 @@ end
 
 local submenus = {}
 
-local selectedPlayer = nil
+local selectedPlayer = 0
 
 PlayerInteractions = Submenu.add_static_submenu("Player", "BS_PlayerList_Player") do 
     PlayerInteractions:add_state_bar("Name:", "BS_PlayerList_Interactions_NameBar", function ()
