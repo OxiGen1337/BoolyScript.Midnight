@@ -28,6 +28,7 @@ paths.files.objects = paths.folders.dumps .. '\\' .. 'ObjectList.ini'
 paths.files.weaponHashes = paths.folders.dumps .. '\\' .. 'WeaponList.json'
 
 paths.files.config = paths.folders.user .. '\\config.json'
+paths.files.hotkeys = paths.folders.user .. '\\hotkeys.json'
 
 paths.files.imgs = {}
 paths.files.imgs.header = paths.folders.imgs .. "\\header.png"

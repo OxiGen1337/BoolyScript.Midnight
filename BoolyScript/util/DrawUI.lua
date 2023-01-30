@@ -244,19 +244,12 @@ Option = {
     translationIgnore = false,
     tags = {},
     isHotkeyable = false,
+    hotkey = nil,
 }
 Option.__index = Option
 
 NotifyService = {}
 NotifyService.__index = NotifyService
-
-function string.split(string_s)
-    local words = {}
-    for word in string_s:gmatch("%w+") do 
-        table.insert(words, word) 
-    end
-    return words
-end
 
 function NotifyService:notify(title_s, text_s, r, g, b)
     title_s, text_s = tostring(title_s), tostring(text_s)
@@ -545,8 +538,115 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
     end)
 end
 
-HotkeySevice = {}
-HotkeySevice.__index = HotkeySevice
+HotkeyService = {}
+HotkeyService.runtimeHotkeys = {}
+
+function HotkeyService.loadHotkeys()
+    HotkeyService.runtimeHotkeys = {}
+    if not filesys.doesFileExist(paths.files.hotkeys) then return end
+    parse.json(paths.files.hotkeys, function (content)
+        for _, option in ipairs(options) do
+            option.hotkey = nil
+            for key, hashes in pairs(content) do
+                for _, hash in ipairs(hashes) do
+                    if hash == option.hash then
+                        if not HotkeyService.runtimeHotkeys[key] then HotkeyService.runtimeHotkeys[key] = {} end
+                        table.insert(HotkeyService.runtimeHotkeys[key], option)
+                        option.hotkey = key
+                    end
+                end
+            end
+        end
+    end)
+    log.default("Hotkey service", "Hotkeys have been reloaded.")
+end
+
+function HotkeyService.registerHotkey(key_n, optionHash_s)
+    local hotkeys = {}
+    local keyName = features.getVirtualKeyViaID(key_n)
+    if filesys.doesFileExist(paths.files.hotkeys) then
+        parse.json(paths.files.hotkeys, function (content)
+            local out = content
+            if not out[keyName] then
+                out[keyName] = {}
+            else
+                for key, hashes in pairs(out) do
+                    for index, hash in ipairs(hashes) do
+                        if optionHash_s == hash then
+                            table.remove(out[features.getVirtualKeyViaID(key)], index)
+                            log.default("Hotkey service", "Hotkey has been overwritten.")
+                        end
+                    end
+                end
+            end
+            hotkeys = out
+        end)
+    end
+
+    if not hotkeys[keyName] then hotkeys[keyName] = {} end
+    table.insert(hotkeys[keyName], optionHash_s)
+    local file = io.open(paths.files.hotkeys, "w+")
+    local content = json:encode_pretty(hotkeys)
+    file:write(content)
+    file:close()
+
+    HotkeyService.loadHotkeys()
+
+    notify.success("Hotkey service", "Successfully registered the hotkey.")
+end
+
+function HotkeyService.removeHotkey(optionHash_s)
+    local hotkeys = {}
+    if filesys.doesFileExist(paths.files.hotkeys) then 
+        parse.json(paths.files.hotkeys, function (content)
+            for key, hashes in pairs(content) do
+                if not hotkeys[key] then hotkeys[key] = {} end
+                for _, hash in ipairs(hashes) do
+                    if optionHash_s ~= hash then
+                        table.insert(hotkeys[key], hash)
+                    end
+                end
+            end
+        end)
+    end
+
+    local file = io.open(paths.files.hotkeys, "w+")
+    local content = json:encode_pretty(hotkeys)
+    file:write(content)
+    file:close()
+
+    HotkeyService.loadHotkeys()
+
+    notify.success("Hotkey service", "Successfully removed the hotkey.")
+end
+
+
+listener.register("DrawUI_Hotkeys", GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
+    if not isDown then return end
+    if key == gui.virualKeys.F11 then        
+        local submenu = config.path[#config.path]
+        local option = submenu.options[submenu.selectedOption]
+        if not option.hotkey then
+            InputService:displayInputBox(nil, "hotkey", function (key_s)
+                HotkeyService.registerHotkey(gui.virualKeys[key_s], option.hash)
+            end)
+        else
+            HotkeyService.removeHotkey(option.hash)
+        end
+    end
+    local keyName = features.getVirtualKeyViaID(key)
+    if not HotkeyService.runtimeHotkeys[keyName] then return end
+    for _, option in ipairs(HotkeyService.runtimeHotkeys[keyName]) do
+        if option.type == OPTIONS.BOOL then
+            option:setValue(not option.value)
+            local strState = option:getValue() and "Enabled" or "Disabled"
+            notify.default("Hotkeys", string.format("%s \'%s\' option.", strState, option:getName()))
+        elseif option.type == OPTIONS.CLICK then
+            option:setValue(1)
+            notify.default("Hotkeys", string.format("Executed \'%s\' option.", option:getName()))
+        end
+    end
+end)
 
 function Submenu.add_static_submenu(name_s, hash_s)
     local submenu = setmetatable({}, Submenu)
@@ -969,24 +1069,6 @@ local function onControl(key, isDown, ignoreControlsState)
         if key == controls.open then
             config.isOpened = not config.isOpened
         end
-        -- if config.isInputBoxDisplayed then
-        --     if key == 13 then -- ENTER
-        --         if config.inputBoxCallback then config.inputBoxCallback(config.inputBoxText) end
-        --         config.inputBoxText = ""
-        --         config.isInputBoxDisplayed = false
-        --         playClickSound()
-        --         return
-        --     elseif key == 8 then -- BACKSPACE
-        --         config.inputBoxText = config.inputBoxText:sub(1, -2)
-        --         playClickSound()
-        --     elseif key == 27 then -- ESCAPE
-        --         config.inputBoxText = ""
-        --         config.isInputBoxDisplayed = false
-        --         playClickSound()
-        --     else
-        --         config.inputBoxText = config.inputBoxText .. getKeyFromID(key, shiftState)
-        --     end
-        -- end
     end
     if not config.isOpened or config.isInputBoxDisplayed then return end
     if isDown then
@@ -1607,7 +1689,11 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         local keys = {
             {key = "F8", note = "Open/Hide UI"},
         }
-        if submenu.options[submenu.selectedOption].isHotkeyable then
+        local option = submenu.options[submenu.selectedOption]
+        if option.hotkey then
+            table.insert(keys, {key = option.hotkey, note = "Hotkey"})
+            table.insert(keys, {key = "F11", note = "Remove a hotkey"})
+        elseif option.isHotkeyable then
             table.insert(keys, {key = "F11", note = "Set a hotkey"})
         end
         do

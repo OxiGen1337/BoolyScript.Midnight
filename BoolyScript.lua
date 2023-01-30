@@ -77,5 +77,6 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
     end
     task.executeAsScript("Load_Config", function ()
         Configs.loadConfig()
+        HotkeyService.loadHotkeys()
     end)
 end)
