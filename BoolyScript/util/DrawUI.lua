@@ -593,7 +593,7 @@ function HotkeyService.registerHotkey(key_n, optionHash_s)
 
     HotkeyService.loadHotkeys()
 
-    notify.success("Hotkey service", "Successfully registered the hotkey.")
+    notify.success("Hotkey service", "Successfully registered a hotkey.")
 end
 
 function HotkeyService.removeHotkey(optionHash_s)
@@ -618,21 +618,23 @@ function HotkeyService.removeHotkey(optionHash_s)
 
     HotkeyService.loadHotkeys()
 
-    notify.success("Hotkey service", "Successfully removed the hotkey.")
+    notify.success("Hotkey service", "Successfully removed a hotkey.")
 end
 
 
 listener.register("DrawUI_Hotkeys", GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
     if not isDown then return end
-    if key == gui.virualKeys.F11 then        
-        local submenu = config.path[#config.path]
-        local option = submenu.options[submenu.selectedOption]
-        if not option.hotkey then
-            InputService:displayInputBox(nil, "hotkey", function (key_s)
-                HotkeyService.registerHotkey(gui.virualKeys[key_s], option.hash)
-            end)
-        else
-            HotkeyService.removeHotkey(option.hash)
+    if config.isOpened then
+        if key == gui.virualKeys.F11 then        
+            local submenu = config.path[#config.path]
+            local option = submenu.options[submenu.selectedOption]
+            if not option.hotkey then
+                InputService:displayInputBox(nil, "hotkey", function (key_s)
+                    HotkeyService.registerHotkey(gui.virualKeys[key_s], option.hash)
+                end)
+            else
+                HotkeyService.removeHotkey(option.hash)
+            end
         end
     end
     local keyName = features.getVirtualKeyViaID(key)
@@ -642,8 +644,8 @@ listener.register("DrawUI_Hotkeys", GET_EVENTS_LIST().OnKeyPressed, function (ke
             option:setValue(not option.value)
             local strState = option:getValue() and "Enabled" or "Disabled"
             notify.default("Hotkeys", string.format("%s \'%s\' option.", strState, option:getName()))
-        elseif option.type == OPTIONS.CLICK then
-            option:setValue(1)
+        else
+            option:setValue(option.value)
             notify.default("Hotkeys", string.format("Executed \'%s\' option.", option:getName()))
         end
     end
@@ -739,13 +741,13 @@ end
 function Submenu:add_click_option(name_s, hash_s, callback_f)
     local option = Option.new(self, name_s, hash_s, OPTIONS.CLICK, nil, callback_f)
     option:setConfigIgnore()
-    option.isHotkeyable = true
+    option:setHotkeyable(true)
     return option
 end
 
 function Submenu:add_bool_option(name_s, hash_s, callback_f)
     local option = Option.new(self, name_s, hash_s, OPTIONS.BOOL, false, callback_f)
-    option.isHotkeyable = true
+    option:setHotkeyable(true)
     return option
 end
 
@@ -766,6 +768,7 @@ function Submenu:add_num_option(name_s, hash_s, min_n, max_n, step_n, callback_f
     option.minValue = min_n
     option.maxValue = max_n
     option.step = step_n
+    option:setHotkeyable(true)
     return option
 end
 
@@ -774,6 +777,7 @@ function Submenu:add_float_option(name_s, hash_s, min_n, max_n, step_n, callback
     option.minValue = min_n
     option.maxValue = max_n
     option.step = step_n
+    option:setHotkeyable(true)
     return option
 end
 
@@ -781,6 +785,7 @@ function Submenu:add_choose_option(name_s, hash_s, execOnSelection_b, table_t, c
     local option = Option.new(self, name_s, hash_s, OPTIONS.CHOOSE, 1, callback_f)
     option.execOnSelection = execOnSelection_b
     option.table = table_t
+    option:setHotkeyable(true)
     return option
 end
 
