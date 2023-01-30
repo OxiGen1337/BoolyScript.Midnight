@@ -55,6 +55,7 @@ DrawUI.dbg = {
     frameCount = 0,
 }
 
+
 local arrowsControls = {
     open = 119,
     down = 40,
@@ -1687,7 +1688,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             },
         }
         local keys = {
-            {key = "F8", note = "Open/Hide UI"},
+            {key = features.getVirtualKeyViaID(controls.open), note = "Open/Hide UI"},
         }
         local option = submenu.options[submenu.selectedOption]
         if option.hotkey then
