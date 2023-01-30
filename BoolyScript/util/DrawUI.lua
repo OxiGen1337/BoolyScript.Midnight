@@ -600,9 +600,9 @@ function HotkeyService.removeHotkey(optionHash_s)
     if filesys.doesFileExist(paths.files.hotkeys) then 
         parse.json(paths.files.hotkeys, function (content)
             for key, hashes in pairs(content) do
-                if not hotkeys[key] then hotkeys[key] = {} end
                 for _, hash in ipairs(hashes) do
                     if optionHash_s ~= hash then
+                        if not hotkeys[key] then hotkeys[key] = {} end
                         table.insert(hotkeys[key], hash)
                     end
                 end
