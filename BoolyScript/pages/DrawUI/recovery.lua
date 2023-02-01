@@ -14,7 +14,7 @@ end)
 -- Recovery:add_click_option("TP to safe", "BS_Recovery_Nightclub_TpToSafe", function()
 --     local coords = Vector3(-1615.6827392578, -3015.6813964844, -75.205070495605)
 --     if not coords then return end
---     utils.teleport(coords)
+--     features.teleport(coords)
 -- end)
 
 Recovery:add_bool_option("Nightclub money loop", "BS_Recovery_Nightclub_Enable", function(state)

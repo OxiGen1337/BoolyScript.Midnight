@@ -311,7 +311,7 @@ end):setHint("Most of peds nearby will ignore you.")
 Self:add_click_option("Sky dive", "BS_Self_SkyDive", function ()
     local ped = PLAYER.PLAYER_PED_ID()
     local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 0.0, 150.0)
-    utils.teleport(coords)
+    features.teleport(coords)
     TASK.TASK_SKY_DIVE(ped, true)
 end)
 

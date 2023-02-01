@@ -114,4 +114,35 @@ function features.getVirtualKeyViaID(id)
 	return nil
 end
 
+function features.teleport(...)
+	local args = {...}
+	local entity = nil
+	local coords = nil
+	if type(args[1]) == "number" and (#args == 4 or #args == 2) then
+		if (#args == 2) then
+			if not (type(args[2]) == "userdata") then log.error("Features", "Wrong arg #2 in teleport function.") return false end
+			coords = args[2]
+		elseif #args == 4 then
+			if not ((type(args[2]) == "number") and (type(args[3]) == "number") and (type(args[4]) == "number")) then log.error("Features", "Wrong arg #2, 3, 4 in teleport function.") return false end
+			coords = Vector3(args[2], args[3], args[4])
+		end
+		entity = args[1]
+	elseif type(args[1]) == "userdata" and (#args == 1) then
+		coords = args[1]
+		entity = player.id()
+	elseif (#args == 3) and (type(args[1]) == "number" and type(args[2]) == "number" and type(args[3]) == "number") then
+		coords = Vector3(args[1], args[2], args[3])
+		entity = player.id()
+	end
+	if entity and coords then
+		local out = false
+		callbacks.requestControl(entity, function ()
+			ENTITY.SET_ENTITY_COORDS_NO_OFFSET(entity, coords.x, coords.y, coords.z)
+			out = true
+		end)
+		return out
+	end
+	return false
+end
+
 return features

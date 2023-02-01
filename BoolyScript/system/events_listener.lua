@@ -105,7 +105,7 @@ function OnInit()
             if out == false then listener.remove(hash_s, events.OnInit) end
         end
     end
-    log.init(string.format("All modules were initialized in %f sec.", os.clock() - startTime))
+    log.init(string.format("Initialization finished in %s sec.", tostring(os.clock() - startTime):sub(0, 3)))
     notify.success("BoolyScript", "Script has been loaded successfuly.")
 end
 

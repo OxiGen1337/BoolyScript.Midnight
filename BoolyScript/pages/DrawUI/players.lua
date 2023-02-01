@@ -46,7 +46,7 @@ PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Te
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         local coords = ENTITY.GET_ENTITY_COORDS(player.get_entity_handle(pid), false)
-        utils.teleport(coords)
+        features.teleport(coords)
     end):setConfigIgnore()
     PlayerTeleport:add_click_option("Teleport in vehicle", "BS_PlayerList_Player_Teleport_InVehicle", function ()
         local pid = selectedPlayer
@@ -55,7 +55,7 @@ PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Te
         local coords = ENTITY.GET_ENTITY_COORDS(vehicle, false)
         for seat = -1, VEHICLE.GET_VEHICLE_MODEL_NUMBER_OF_SEATS(ENTITY.GET_ENTITY_MODEL(vehicle)) - 1 do
             if VEHICLE.IS_VEHICLE_SEAT_FREE(vehicle, seat, false) then
-                utils.teleport(coords)
+                features.teleport(coords)
                 PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), vehicle, seat)
                 return
             end
@@ -67,13 +67,13 @@ PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Te
         if not PED.IS_PED_IN_ANY_VEHICLE(player.get_entity_handle(pid), false) then return end
         local vehicle = player.get_vehicle_handle(pid)
         local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.PLAYER_PED_ID(), 0.0, 5.0, 0.0)
-        utils.teleport(vehicle, coords)
+        features.teleport(vehicle, coords)
     end):setConfigIgnore()
     PlayerTeleport:add_click_option("Parachute to", "BS_PlayerList_Player_Teleport_Parachute", function ()
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(player.get_entity_handle(pid), 0.0, 0.0, 150.0)
-        utils.teleport(coords)
+        features.teleport(coords)
     end):setConfigIgnore()
     PlayerTeleport:add_click_option("Enter player's interior", "BS_PlayerList_Player_Teleport_Interior", function ()
         local pid = selectedPlayer
@@ -413,16 +413,18 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         if value == 2 and player.get_vehicle_handle(pid) == 0 then return end
+        local ped = player.get_entity_handle(pid)
         addActiveAction(pid, option, value)
         pussy_func(pid, 30, "Manual | Crash [" .. crashvalues[value] .. "]")
-        if value == 1 then return scripts.events.crash(pid) end
-        if value == 2 then
+        if value == 1 then 
+            scripts.events.crash(pid) 
+        elseif value == 2 then
             local vehicle = player.get_vehicle_handle(pid)
-            for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(player.get_entity_handle(pid), vehicle, val, 1488) end
-        end
-        if value == 3 then
-            local pos = ENTITY.GET_ENTITY_COORDS(player.get_entity_handle(pid), true)
-            TASK.TASK_SWEEP_AIM_POSITION(player.get_entity_handle(pid), "NIGGER", "HOHOL", "GAY", "FAGGOT", 10, pos.x, pos.y, pos.z, 1.0, 1.0)
+            for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(ped, vehicle, val, 1488) end
+        elseif value == 3 then
+            local pos = ENTITY.GET_ENTITY_COORDS(ped, true)
+            TASK.TASK_SWEEP_AIM_POSITION(ped, "NIGGER", "HOHOL", "GAY", "FAGGOT", 10, pos.x, pos.y, pos.z, 1.0, 1.0)
+            TASK.UPDATE_TASK_SWEEP_AIM_POSITION(ped, pos.x, pos.y, pos.z)
         end
     end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Removals", "BS_PlayerList_Player_Removals", PlayerRemovals)

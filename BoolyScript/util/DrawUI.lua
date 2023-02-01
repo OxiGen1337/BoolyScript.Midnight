@@ -357,6 +357,7 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
         width = 350,
         textAreaHeight = 40,
         buttonHeight = 35,
+        focusedMargin = 2,
     }
     config.isInputBoxDisplayed = true
     local title = ""
@@ -421,13 +422,10 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
         }
     listener.register("DrawUI_InputBox", GET_EVENTS_LIST().OnFrame, function ()  
         utils.get_mouse_pos(mousePos)
-        -- draw.set_color(0, 150, 150, 150, 150)
-        -- draw.rect_filled(
-        --     0,
-        --     0,
-        --     draw.get_window_width(),
-        --     draw.get_window_height()
-        -- )
+        local isFocusedOn = {
+            button1 = features.isPositionInArea(corners.button1.leftUpper, corners.button1.rightDown, mousePos),
+            button2 = features.isPositionInArea(corners.button2.leftUpper, corners.button2.rightDown, mousePos),
+        }
         draw.set_color(0, 14, 17, 19, 255)
         draw.set_rounding(10)
         draw.rect_filled(
@@ -476,32 +474,39 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
             renderedText
         )
         draw.set_color(0, 34, 41, 47, 255)
-        if features.isPositionInArea(corners.button1.leftUpper, corners.button1.rightDown, mousePos) then
+        if isFocusedOn.button1 then
             draw.set_color(0, 83, 180, 223, 255)
         end
         draw.rect_filled(
             corners.button1.leftUpper.x,
-            corners.button1.leftUpper.y,
+            corners.button1.leftUpper.y - (isFocusedOn.button1 and settings.focusedMargin or 0),
             corners.button1.rightDown.x,
-            corners.button1.rightDown.y
+            corners.button1.rightDown.y + (isFocusedOn.button1 and settings.focusedMargin or 0)
         )
         draw.set_color(0, 34, 41, 47, 255)
-        if features.isPositionInArea(corners.button2.leftUpper, corners.button2.rightDown, mousePos) then
+        if isFocusedOn.button2 then
             draw.set_color(0, 83, 180, 223, 255)
         end
         draw.rect_filled(
             corners.button2.leftUpper.x,
-            corners.button2.leftUpper.y,
+            corners.button2.leftUpper.y - (isFocusedOn.button2 and settings.focusedMargin or 0),
             corners.button2.rightDown.x,
-            corners.button2.rightDown.y
+            corners.button2.rightDown.y + (isFocusedOn.button2 and settings.focusedMargin or 0)
         )
         draw.set_rounding(0)
         draw.set_color(0, 255, 255, 255, 255)
+        if isFocusedOn.button1 then
+            draw.set_color(0, 0, 0, 0, 255)
+        end
         draw.text(
             corners.button1.leftUpper.x + buttonWidth/2 - draw.get_text_size_x("Cancel")/2,
             corners.button1.leftUpper.y + settings.buttonHeight/2 - draw.get_text_size_y("Cancel")/2,
             "Cancel"
         )
+        draw.set_color(0, 255, 255, 255, 255)
+        if isFocusedOn.button2 then
+            draw.set_color(0, 0, 0, 0, 255)
+        end
         draw.text(
             corners.button2.leftUpper.x + buttonWidth/2 - draw.get_text_size_x("OK")/2,
             corners.button2.leftUpper.y + settings.buttonHeight/2 - draw.get_text_size_y("OK")/2,
