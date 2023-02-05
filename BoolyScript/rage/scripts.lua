@@ -8,10 +8,10 @@ local raw = {
     },
     events = {
         forcePlayerIntoVeh = {
-            event = 879177392
+            event = 891653640
         },
         massiveWhileCrash = {
-            event = -904555865,
+            event = -992162568,
             args = {math.random(2000000000, 2147483647)}
         },
         notificationsFull = {

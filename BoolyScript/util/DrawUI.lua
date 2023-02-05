@@ -33,7 +33,8 @@ local config = {
     drawSlider = true,
     showPath = true,
     drawKeysPanel = true,
-    shiftState = false
+    shiftState = false,
+    headerHeight = 90,
 }
 
 
@@ -246,6 +247,7 @@ Option = {
     tags = {},
     isHotkeyable = false,
     hotkey = nil,
+    onDelete = nil,
 }
 Option.__index = Option
 
@@ -1030,6 +1032,11 @@ function Option:setHotkeyable(state)
     return self
 end
 
+function Option:setDeletable(callback_f)
+    self.onDelete = callback_f or function () end
+    return self
+end
+
 Configs = {}
 Configs.saveConfig = function ()
     local out = {}
@@ -1052,7 +1059,7 @@ Configs.loadConfig = function ()
             for _, option in ipairs(options) do
                 if not option.configIgnore then
                     local value = config[option.hash]
-                    if value then
+                    if value and value ~= option.value then
                         Option.setValue(option, value)
                     end
                 end
@@ -1201,6 +1208,14 @@ local function onControl(key, isDown, ignoreControlsState)
                 end
             end
         end
+        if key == gui.virualKeys.Delete then --Delete
+            local submenu = config.path[#config.path]
+            local selected = submenu.options[submenu.selectedOption]
+            if selected.onDelete then
+                selected.onDelete()
+                selected:remove()
+            end
+        end
     end
 end
 
@@ -1280,6 +1295,9 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
     settings:add_float_option("Option height", "Main_Settings_Height", 5.0, 40.0, 1.0, function (val)
         config.optionHeight = val
     end):setValue(config.optionHeight)
+    settings:add_float_option("Header height", "Main_Settings_headerHeight", 0.0, 120.0, 1.0, function (val)
+        config.headerHeight = val
+    end):setValue(config.headerHeight + .0)
     settings:add_num_option("UI offset [X]", "Main_Settings_OffsetX", 0.0, draw.get_window_width(), 10, function (val)
         config.offset_x = val
     end):setValue(config.offset_x)
@@ -1434,9 +1452,9 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
     materials.header,
     bg.lu.x,
     -- bg.lu.y - config.optionHeight - 90,
-    bg.lu.y - 90 - config.optionHeight,
+    bg.lu.y - config.headerHeight - config.optionHeight,
     config.width,
-    90
+    config.headerHeight
     )
 
     draw.set_color(0, 34, 41, 47, 255) -- FOOTER
@@ -1592,6 +1610,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
     local optionID = 0
     local firstOption = math.max(0, submenu.selectedOption - config.maxOptions) + 1
     local lastOption = firstOption + math.min(config.maxOptions, #submenu.options) - 1
+    
 
     for i = firstOption, lastOption do -- RENDERING OPTIONS NAMES
         optionID = optionID + 1
@@ -1711,12 +1730,15 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         local keys = {
             {key = features.getVirtualKeyViaID(controls.open), note = "Open/Hide UI"},
         }
-        local option = submenu.options[submenu.selectedOption]
+        local option = submenu.options[submenu.selectedOption] or {}
         if option.hotkey then
             table.insert(keys, {key = option.hotkey, note = "Hotkey"})
             table.insert(keys, {key = "F11", note = "Remove a hotkey"})
         elseif option.isHotkeyable then
             table.insert(keys, {key = "F11", note = "Set a hotkey"})
+        end
+        if option.onDelete then
+            table.insert(keys, {key = "Del", note = "Delete"})
         end
         do
             local boxCoords = {

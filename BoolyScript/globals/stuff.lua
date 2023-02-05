@@ -4,6 +4,8 @@ Stuff = {
     ufos = {},
     attackers = {},
     isTextChatActive = false,
+    blacklistedVehicles = {},
+    onBlacklistedVehicle = function () end
 }
 
 ParsedFiles = {
@@ -11,6 +13,7 @@ ParsedFiles = {
     weaponHashes = {},
     peds = {},
     objects = {},
+    vehicles = {},
 }
 
 draw.crop_text = function (text_s, len_n)

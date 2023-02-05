@@ -14,6 +14,7 @@ paths.folders.translations = paths.folders.user .. '\\translations'
 paths.folders.outfits = paths.folders.user .. '\\outfits'
 paths.folders.chat_spammer = paths.folders.user.. '\\chat_spammer'
 paths.folders.logs = paths.folders.user .. '\\logs'
+paths.folders.misc = paths.folders.user .. '\\misc'
 paths.folders.imgs = paths.folders.main .. '\\img'
 
 paths.logs.chat = paths.folders.logs .. '\\' .. 'Chat.log'
@@ -26,9 +27,11 @@ paths.files.weapons = paths.folders.dumps .. '\\' .. 'weapons.json'
 paths.files.peds = paths.folders.dumps .. '\\' .. 'peds.json'
 paths.files.objects = paths.folders.dumps .. '\\' .. 'ObjectList.ini'
 paths.files.weaponHashes = paths.folders.dumps .. '\\' .. 'WeaponList.json'
+paths.files.vehicles = paths.folders.dumps .. '\\' .. 'VehicleList.json'
 
 paths.files.config = paths.folders.user .. '\\config.json'
 paths.files.hotkeys = paths.folders.user .. '\\hotkeys.json'
+paths.files.vehicleBlacklist = paths.folders.misc .. '\\blacklisted_vehicles.json'
 
 paths.files.imgs = {}
 paths.files.imgs.header = paths.folders.imgs .. "\\header.png"

@@ -37,6 +37,7 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
             -- paths.folders.chat_spammer,
             paths.folders.loadouts,
             paths.folders.logs,
+            paths.folders.misc,
         }
         for _, path in ipairs(t) do
             if not fs.directory_exists(path) then 
@@ -56,6 +57,9 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         end)
         parse.json(paths.files.peds, function (content)
             ParsedFiles['peds'] = content
+        end)
+        parse.json(paths.files.vehicles, function (content)
+            ParsedFiles['vehicles'] = content
         end)
         parse.txt(paths.files.objects, function (content)
             ParsedFiles['objects'] = content

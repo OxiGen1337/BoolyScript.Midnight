@@ -20,6 +20,129 @@ Network:add_choose_option("Join session", "BS_Network_JoinSession", false, sessi
     end
 end)
 
+local vehicleBlacklist = Submenu.add_static_submenu("Vehicle blacklist", "BS_Network_VehicleBlacklist") do
+    local addedVehicles = {}
+    local search = Submenu.add_static_submenu("Search", "BS_Network_VehicleBlacklist_Search") do
+        local options = {}
+        local name = search:add_text_input("Name/Hash", "BS_Network_VehicleBlacklist_Search_Name"):setConfigIgnore()
+        search:add_click_option("Find", "BS_Network_VehicleBlacklist_Search_Find", function ()
+            if name:getValue() == "" then return notify.warning("Vehicle blacklist", "Enter vehicle name/hash before.") end
+            notify.important("Vehicle blacklist", "Searching for the results...")
+            local request = tostring(name:getValue())
+            for _, option in ipairs(options) do
+                option:remove()
+            end
+            options = {}
+            for name, hash in pairs(ParsedFiles.vehicles) do
+                local label = HUD._GET_LABEL_TEXT(name)
+                label = label ~= "NULL" and label or name
+                if string.find(string.lower(name), string.lower(request)) or hash == tonumber(request) then
+                    table.insert(options, search:add_click_option(label, "BS_Network_VehicleBlacklist_SearchResults_" .. name, function ()
+                        local content = parse.json(paths.files.vehicleBlacklist) or {}
+                        if not content[name] then
+                            content[name] = hash
+                            local file = io.open(paths.files.vehicleBlacklist, "w+")
+                            file:write(json:encode_pretty(content))
+                            file:close()
+                            table.insert(addedVehicles, vehicleBlacklist:add_bool_option(label, "BS_Network_VehicleBlacklist_" .. name, function (state)
+                                if state then
+                                    table.insert(Stuff.blacklistedVehicles, hash)
+                                else
+                                    for ID, hash_n in ipairs(Stuff.blacklistedVehicles) do
+                                        if hash_n == hash then
+                                            table.remove(Stuff.blacklistedVehicles, ID)
+                                            break
+                                        end
+                                    end
+                                end
+                            end):setTranslationIgnore():setHint("Toggles blocking for that vehicle."):setDeletable(function ()
+                                local content = parse.json(paths.files.vehicleBlacklist) or {}
+                                if content[name] then
+                                    content[name] = nil
+                                    local file = io.open(paths.files.vehicleBlacklist, "w+")
+                                    file:write(json:encode_pretty(content))
+                                    file:close()
+                                    notify.success("Vehicle blacklist", string.format("\'%s\' has been successfully removed from the blacklist.", label))
+                                end
+                            end))
+                            notify.success("Vehicle blacklist", string.format("\'%s\' has been successfully added in the blacklist.", label))
+                        else
+                            notify.fatal("Vehicle blacklist", "That vehicle already exists in your blacklist.")
+                        end
+                    end):setTranslationIgnore():setHint("Click to add it in blacklist."))
+                end
+            end
+            if #options > 0 then
+                notify.success("Vehicle blacklist", string.format("Found %i results.", #options))
+            else
+                notify.fatal("Vehicle blacklist", "Unfortunately, nothing was found..")
+            end
+        end)
+        search:add_separator("Results", "BS_Network_VehicleBlacklist_Search_Results")
+        vehicleBlacklist:add_sub_option("Search", "BS_Network_VehicleBlacklist_Search", search)
+    end
+    local playersReactions = {}
+    vehicleBlacklist:add_looped_option("Enable blacklist", "BS_Network_VehicleBlacklist_Enable", 2.0, function ()
+        for pid = 0, 32 do
+            if player.is_connected(pid) and pid ~= player.index() then
+                local vehicle = player.get_vehicle_handle(pid)
+                local hash = ENTITY.GET_ENTITY_MODEL(vehicle)
+                for _, vehicleHash in ipairs(Stuff.blacklistedVehicles) do
+                    if vehicleHash == hash then
+                        log.default("Vehicle blacklist", string.format("Player %s is using a blacklisted vehicle. Applying reaction...", player.get_name(pid)))
+                        Stuff.onBlacklistedVehicle(pid)
+                        break
+                    end
+                end
+            end
+        end
+    end)
+    vehicleBlacklist:add_choose_option("Reaction", "BS_Network_VehicleBlacklist_Reaction", true, {"Destroy vehicle", "Kick from vehicle", "Kick from server", "Crash"}, function (pos)
+        if pos == 1 then
+            Stuff.onBlacklistedVehicle = player.vehicle_destroy
+        elseif pos == 2 then
+            Stuff.onBlacklistedVehicle = player.vehicle_kick
+        elseif pos == 3 then
+            Stuff.onBlacklistedVehicle = player.kick_idm
+        elseif pos == 4 then
+            Stuff.onBlacklistedVehicle = scripts.events.crash
+        end
+    end):setValue(1)
+    vehicleBlacklist:add_separator("Blacklisted", "BS_Network_VehicleBlacklist_Search_Blacklisted")
+    parse.json(paths.files.vehicleBlacklist, function (content)
+        for _, option in ipairs(addedVehicles) do
+            option:remove()
+        end
+        addedVehicles = {}
+        for name, hash in pairs(content) do
+            local label = HUD._GET_LABEL_TEXT(name)
+            label = label ~= "NULL" and label or name
+            table.insert(addedVehicles, vehicleBlacklist:add_bool_option(label, "BS_Network_VehicleBlacklist_" .. name, function (state)
+                if state then
+                    table.insert(Stuff.blacklistedVehicles, hash)
+                else
+                    for ID, hash_n in ipairs(Stuff.blacklistedVehicles) do
+                        if hash_n == hash then
+                            table.remove(Stuff.blacklistedVehicles, ID)
+                            break
+                        end
+                    end
+                end
+            end):setTranslationIgnore():setHint("Toggles blocking for that vehicle."):setDeletable(function ()
+                local content = parse.json(paths.files.vehicleBlacklist) or {}
+                if content[name] then
+                    content[name] = nil
+                    local file = io.open(paths.files.vehicleBlacklist, "w+")
+                    file:write(json:encode_pretty(content))
+                    file:close()
+                    notify.success("Vehicle blacklist", string.format("\'%s\' has been successfully removed from the blacklist.", label))
+                end
+            end))
+        end
+    end)
+    Network:add_sub_option("Vehicle blacklist", "BS_Network_VehicleBlacklist", vehicleBlacklist):setHint("Prevents players to use vehicles you've\nblacklisted.")
+end
+
 Network:add_separator("Kosatka missiles", "BS_Network_Kosatka")
 
 Network:add_looped_option("Disable cooldown", "BS_Network_Kosatka_DisableCooldown", 0.0, function ()

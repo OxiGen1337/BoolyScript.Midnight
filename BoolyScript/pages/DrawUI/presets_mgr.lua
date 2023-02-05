@@ -175,7 +175,7 @@ local function loadOutfit(path)
         notify.fatal("Saved outfits", "Failed to load outfit | File doesnt exist.", GET_NOTIFY_ICONS().self)
         return
     end
-    local content = parse.json(path)
+    local content = parse.json(path) or {}
     for ID_s, value_t in pairs(content.components) do
         local componentID = tonumber(ID_s)
         local drawableID = value_t['drawable']
