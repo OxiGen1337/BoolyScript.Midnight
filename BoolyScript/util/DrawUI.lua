@@ -35,6 +35,7 @@ local config = {
     drawKeysPanel = true,
     shiftState = false,
     headerHeight = 90,
+    localization = nil,
 }
 
 
@@ -178,7 +179,7 @@ materials.cursor = draw.create_texture_from_file(paths.files.imgs.cursor)
 
 -- materials.font = nil
 
--- draw.create_font("Arial", 17.0, function(f)
+-- draw.create_font("Tahoma", 17.0, function(f)
 -- 	materials.font = f
 -- end)
 
@@ -199,6 +200,7 @@ OPTIONS = {
 
 local submenus = {}
 local options = {}
+local searchOptions = {}
 
 GET_OPTIONS =  function ()
     return options
@@ -360,6 +362,9 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
         textAreaHeight = 40,
         buttonHeight = 35,
         focusedMargin = 2,
+        cursorAlphaTarget = 0,
+        cursorTime = os.clock(),
+        cursorCurAlpha = 255,
     }
     config.isInputBoxDisplayed = true
     local title = ""
@@ -453,15 +458,33 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
             corners.textArea.rightDown.x,
             corners.textArea.rightDown.y
         )
-        draw.set_color(0, 255, 255, 255, 255)
+        local textColor = {0, 255, 255, 255, 255}
         local renderedText = ""
         if type_s == "text" then
             if enteredText ~= "" then
                 renderedText = enteredText
             else
                 renderedText = "Start typing..."
-                draw.set_color(0, 150, 150, 150, 255)
+                textColor = {0, 150, 150, 150, 255}
             end 
+            if os.clock() - settings.cursorTime >= 0.5 then
+                settings.cursorAlphaTarget = settings.cursorAlphaTarget == 255 and 0 or 255
+                settings.cursorTime = os.clock()
+            end
+            if settings.cursorCurAlpha < settings.cursorAlphaTarget then 
+                settings.cursorCurAlpha = math.min(255, settings.cursorCurAlpha + 20)
+            elseif settings.cursorCurAlpha > settings.cursorAlphaTarget then
+                settings.cursorCurAlpha = math.max(0, settings.cursorCurAlpha - 20)
+            end
+            draw.set_color(0, 200, 200, 200, settings.cursorCurAlpha)
+            draw.set_thickness(2)
+            draw.line(
+                corners.textArea.leftUpper.x + 10 + draw.get_text_size_x(renderedText) + 2,
+                corners.textArea.leftUpper.y + settings.textAreaHeight/2 - draw.get_text_size_y(renderedText)/2,
+                corners.textArea.leftUpper.x + 10 + draw.get_text_size_x(renderedText) + 2,
+                corners.textArea.rightDown.y - settings.textAreaHeight/2 + draw.get_text_size_y(renderedText)/2
+            )
+            draw.set_thickness(1)
         else
             if enteredText ~= "" then
                 renderedText = "Hotkey -> [" .. enteredText .. "]"
@@ -470,6 +493,7 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
                 draw.set_color(0, 150, 150, 150, 255)
             end 
         end
+        draw.set_color(table.unpack(textColor))
         draw.text(
             corners.textArea.leftUpper.x + 10,
             corners.textArea.leftUpper.y + settings.textAreaHeight/2 - draw.get_text_size_y(renderedText)/2,
@@ -520,23 +544,37 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
             mousePos.y
         )
     end)
+    local function finishInput(doReturnValue_b)
+        if callback_f and doReturnValue_b then callback_f(enteredText) end
+        listener.remove("DrawUI_InputBox", GET_EVENTS_LIST().OnFrame)
+        listener.remove("DrawUI_InputBoxMouse", GET_EVENTS_LIST().OnKeyPressed)
+        listener.remove("DrawUI_InputBoxKeyboard", GET_EVENTS_LIST().OnKeyPressed)
+        task.createTask("DrawUI_InputBox_DisableControlsFinish", 0.2, 2, function (cnt)
+            if cnt ~= 2 then return end
+            config.isInputBoxDisplayed = false
+        end)
+    end
     listener.register("DrawUI_InputBoxMouse", GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
         if key ~= gui.mouseButtons.Left then return end
         if isDown then return end
         if not features.isPositionInArea(corners.button2.leftUpper, corners.button2.rightDown, mousePos) and not features.isPositionInArea(corners.button1.leftUpper, corners.button1.rightDown, mousePos) then return end
-        if features.isPositionInArea(corners.button2.leftUpper, corners.button2.rightDown, mousePos) and callback_f then
-            callback_f(enteredText)
+        if features.isPositionInArea(corners.button2.leftUpper, corners.button2.rightDown, mousePos) then
+            finishInput(true)
+            return
         end
-        listener.remove("DrawUI_InputBox", GET_EVENTS_LIST().OnFrame)
-        listener.remove("DrawUI_InputBoxMouse", GET_EVENTS_LIST().OnKeyPressed)
-        listener.remove("DrawUI_InputBoxKeyboard", GET_EVENTS_LIST().OnKeyPressed)
-        config.isInputBoxDisplayed = false
+        finishInput(false)
     end)
     local startTime = os.clock()
     listener.register("DrawUI_InputBoxKeyboard", GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
         if os.clock() - startTime < 0.1 then return end
+        if not isDown then return end
+        if key == gui.virualKeys["Enter"] then
+            return finishInput(true)
+        end
+        if key == gui.virualKeys["Esc"] then
+            return finishInput(false)
+        end
         if type_s == "text" then
-            if not isDown then return end
             if key == gui.virualKeys.Backspace then enteredText = enteredText:sub(1, -2) return end
             if draw.get_text_size_x(enteredText) >= corners.textArea.rightDown.x - corners.textArea.leftUpper.x - 10 - 10 and getKeyFromID(key, config.shiftState) ~= "" then
                 return notify.warning("Input service", "Too many symbols!")
@@ -545,7 +583,6 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
             if value == "" then return end
             enteredText = enteredText .. value
         else
-            if not isDown then return end
             local value = features.getVirtualKeyViaID(key)
             if not value then return end
             enteredText = value
@@ -712,6 +749,7 @@ function Option.new(submenu_mt, name_s, hash_s, type_n, value_n, callback_f)
     option.submenu = submenu_mt
     table.insert(submenu_mt.options, option)
     table.insert(options, option)
+    searchOptions[hash_s] = option
     return option
 end
 
@@ -862,10 +900,8 @@ function Submenu:remove()
     for ID, sub in ipairs(submenus) do
         if sub == self then
             table.remove(submenus, ID)
+            break
         end
-    end
-    for i = self.ID, #submenus do
-        submenus[i].ID = submenus[i].ID - 1
     end
     self = nil
     return nil
@@ -903,26 +939,26 @@ function Option:setValue(value, ignoreCallback_b)
         if self.callback and not ignoreCallback_b then self.callback(self.value, self) end
         return self
     end
-    log.error("DrawUI", "Wrong option type or value for Option:setValue() function.")
+    self.value = value
     return self
 end
 
 function Option:reset(ignoreCallback_b)
     if self.type == OPTIONS.NUM or self.type == OPTIONS.FLOAT then
         self.value = self.minValue
-        if self.callback and not ignoreCallback_b then self.callback(self.value) end
+        if self.callback and not ignoreCallback_b then self.callback(self.value, self) end
         return self
     elseif self.type == OPTIONS.CHOOSE then
         self.value = 1
-        if self.callback and not ignoreCallback_b then self.callback(self.value) end
+        if self.callback and not ignoreCallback_b then self.callback(self.value, self) end
         return self
     elseif self.type == OPTIONS.BOOL then
         self.value = false
-        if self.callback and not ignoreCallback_b then self.callback(self.value) end
+        if self.callback and not ignoreCallback_b then self.callback(self.value, self) end
         return self
     elseif self.type == OPTIONS.TEXT_INPUT then
         self.value = ""
-        if self.callback and not ignoreCallback_b then self.callback(self.value) end
+        if self.callback and not ignoreCallback_b then self.callback(self.value, self) end
         return self
     end
     return self
@@ -1135,7 +1171,7 @@ local function onControl(key, isDown, ignoreControlsState)
                     if selected.callback then selected.callback(selected) end
                 elseif selected.type == OPTIONS.TEXT_INPUT then
                     InputService:displayInputBox(nil, "text", function (text)
-                        selected:setValue(text)
+                        selected:setValue(text, true)
                         if selected.callback then selected.callback(selected.value, selected) end
                     end)
                 end
@@ -1264,6 +1300,17 @@ HOME_SUBMENU = Submenu.add_main_submenu("Home", "home_sub")
 
 local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
     HOME_SUBMENU:add_sub_option("Settings", "Main_Settings", settings)
+    settings:add_choose_option("Localization", "Main_Settings_localization", false, {"English", "Russian", "Chinese", "Custom"}, function (pos, option) 
+        if pos == 1 then
+            config.localization = nil
+        elseif pos == 2 then
+            config.localization = Localizations.russian
+        elseif pos == 3 then
+            config.localization = Localizations.chinese        
+        elseif pos == 2 then
+            config.localization = Localizations.custom
+        end
+    end)
     settings:add_choose_option("Controls", "Main_Settings_Controls", true, {"Arrows", "Numpad"}, function (pos, option)
         if pos == 1 then
             controls = arrowsControls
@@ -1331,10 +1378,23 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
     settings:add_separator("Config", "Main_Settings_Config")
     settings:add_click_option("Save config", "Main_Settings_SaveConfig", Configs.saveConfig)
     settings:add_click_option("Load config", "Main_Settings_LoadConfig", Configs.loadConfig)
+    -- local sub = Submenu.add_static_submenu("Search", "") do
+    --     local name = sub:add_text_input("Name", "", function (txt)
+    --         for hash, option in pairs(searchOptions) do
+    --             if string.find(string.lower(option.name), string.lower(txt)) then
+    --                 table.insert(sub.options, option)
+    --                 print(option.name)
+    --             end
+    --         end
+    --     end)
+    --     settings:add_sub_option("Search", "", sub)
+    -- end
 end
 
 listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
     draw.set_rounding(0)
+
+    -- draw.set_font(materials.font)
 
     if not config.isOpened then return end
 
@@ -1482,7 +1542,6 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
     
     if submenu.options[submenu.selectedOption] then
         local data = submenu.options[submenu.selectedOption]
-        local scrollerSpeed = 3
         
         local scrollerEnd = {}
         scrollerEnd.leftUpper = {
@@ -1497,6 +1556,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         if not submenu.scrollerPos then submenu.scrollerPos = scrollerEnd end
         
         if config.enabelSmoothScroller then
+            local scrollerSpeed = 3
             if submenu.scrollerPos.leftUpper.y < scrollerEnd.leftUpper.y then -- CREDITS TO 1tsPxel
                 submenu.scrollerPos.leftUpper.y = math.min(scrollerEnd.leftUpper.y, submenu.scrollerPos.leftUpper.y + scrollerSpeed)
             elseif submenu.scrollerPos.leftUpper.y > scrollerEnd.leftUpper.y then
@@ -1549,7 +1609,6 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         local sliderItemPadding = 2
         local verticalPadding = 2
         local width = 10
-        local sliderPosSpeed = 3
         local sliderBox = {
             leftUpper = {
                 x = bg.rd.x + padding,
@@ -1572,8 +1631,10 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             x = sliderBox.rightDown.x - sliderItemPadding,
             y = sliderItemEnd.leftUpper.y + sliderHeight
         }
-
+        
         if not submenu.sliderPos then submenu.sliderPos = sliderItemEnd end
+
+        local sliderPosSpeed = 3
 
         if submenu.sliderPos.leftUpper.y < sliderItemEnd.leftUpper.y then -- CREDITS TO 1tsPxel
             submenu.sliderPos.leftUpper.y = math.min(sliderItemEnd.leftUpper.y, submenu.sliderPos.leftUpper.y + sliderPosSpeed)
@@ -1653,15 +1714,40 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         end
 
         local name = tostring(data.name)
+        if config.localization then
+            name = config.localization[data.hash] or data.hash
+        end
         local maxNameLen = bg.rd.x - (symbol and draw.get_text_size_x(symbol) or config.iconsSize) - 30 - bg.lu.x
         if draw.get_text_size_x(name) > maxNameLen then
             name = draw.crop_text(name, maxNameLen - draw.get_text_size_x("...")) .. "..."
         end
 
+        local textLeftPagging = 10
+
+        -- if data.hotkey then
+        --     local key = data.hotkey
+        --     local textSize = draw.get_text_size(key)
+        --     draw.set_rounding(3)
+        --     draw.set_color(0, 83, 180, 223, 255)
+        --     draw.rect_filled(
+        --         textEnd.leftUpper.x + textLeftPagging,   
+        --         textEnd.leftUpper.y + config.optionHeight/2 - textSize.y/2,
+        --         textEnd.leftUpper.x + textLeftPagging + textSize.x + 4*2,
+        --         textEnd.leftUpper.y + config.optionHeight/2 + textSize.y/2
+        --     )
+        --     draw.set_rounding(0)
+        --     draw.set_color(0, 0, 0, 0, 255)
+        --     draw.text(
+        --         textEnd.leftUpper.x + textLeftPagging + 4,
+        --         textEnd.leftUpper.y + config.optionHeight/2 - textSize.y/2,
+        --         key
+        --     )
+        --     textLeftPagging = textLeftPagging + textSize.x + 4 + 8
+        -- end
+
         draw.set_color(0, 255, 255, 255, 255)
-        -- draw.set_font(font)
         draw.text(
-            (data.type ~= OPTIONS.SEPARATOR) and (textEnd.leftUpper.x + 10) or ((textEnd.leftUpper.x + (config.width)/2) - draw.get_text_size_x(name)/2),
+            (data.type ~= OPTIONS.SEPARATOR) and (textEnd.leftUpper.x + textLeftPagging) or ((textEnd.leftUpper.x + (config.width)/2) - draw.get_text_size_x(name)/2),
             textEnd.leftUpper.y + config.optionHeight/2 - draw.get_text_size_y(name)/2,
             name
         )
@@ -1739,6 +1825,12 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         end
         if option.onDelete then
             table.insert(keys, {key = "Del", note = "Delete"})
+        end
+        if config.isInputBoxDisplayed then
+            keys = {
+                {key = "Enter", note = "Ok"},
+                {key = "ESC", note = "Cancel"},
+            }
         end
         do
             local boxCoords = {

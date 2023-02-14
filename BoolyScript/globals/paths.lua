@@ -10,7 +10,7 @@ paths.folders.main = filesys.getInitScriptPath() .. "\\BoolyScript"
 paths.folders.user = paths.folders.main .. '\\user'
 paths.folders.dumps = paths.folders.main .. '\\dumps'
 paths.folders.loadouts = paths.folders.user .. '\\loadouts'
-paths.folders.translations = paths.folders.user .. '\\translations'
+paths.folders.localization = paths.folders.main .. '\\localization'
 paths.folders.outfits = paths.folders.user .. '\\outfits'
 paths.folders.chat_spammer = paths.folders.user.. '\\chat_spammer'
 paths.folders.logs = paths.folders.user .. '\\logs'
@@ -32,6 +32,8 @@ paths.files.vehicles = paths.folders.dumps .. '\\' .. 'VehicleList.json'
 paths.files.config = paths.folders.user .. '\\config.json'
 paths.files.hotkeys = paths.folders.user .. '\\hotkeys.json'
 paths.files.vehicleBlacklist = paths.folders.misc .. '\\blacklisted_vehicles.json'
+paths.files.playerHistory = paths.folders.misc .. '\\player_history.json'
+paths.files.playerManager = paths.folders.misc .. '\\player_manager.json'
 
 paths.files.imgs = {}
 paths.files.imgs.header = paths.folders.imgs .. "\\header.png"
@@ -44,6 +46,5 @@ paths.files.imgs.toggleOn = paths.folders.imgs .. "\\toggle_on.png"
 paths.files.imgs.toggleOff = paths.folders.imgs .. "\\toggle_off.png"
 paths.files.imgs.sub = paths.folders.imgs .. "\\sub.png"
 paths.files.imgs.cursor = paths.folders.imgs .. "\\cursor.png"
-
 
 return paths

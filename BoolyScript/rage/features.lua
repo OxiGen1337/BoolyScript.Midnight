@@ -7,7 +7,7 @@ function features.getWaypointCoords()
 end
 
 function features.getDistance(coords1, coords2, useZ)
-    return MISC.GET_DISTANCE_BETWEEN_COORDS(coords1.x, coords1.y, coords1.z, coords2.x, coords2.y, coords2.z, useZ)
+    return math.sqrt((coords1.x - coords2.x)^2 + (coords1.y - coords2.y)^2 + (useZ and (coords1.z - coords2.z)^2 or 0))
 end
 
 function features.setVehiclePreset(vehicle, preset)

@@ -1,5 +1,3 @@
-require("BoolyScript/util/DrawUI")
-
 Main = Submenu.add_static_submenu("BoolyScript", "BS_Main")
 HOME_SUBMENU:add_sub_option("BoolyScript", "BS_Main", Main)
 
@@ -15,17 +13,3 @@ task.executeAsScript("Load_DrawUI", function ()
     require("BoolyScript/pages/DrawUI/misc")
     require("BoolyScript/pages/DrawUI/recovery")
 end)
-
--- local t = {}
-
--- HOME_SUBMENU:add_click_option("Notify spam", "", function ()
--- --     -- for _, option in ipairs(GET_OPTIONS()) do
--- --     --     if not option.translationIgnore and not t[option.hash] then
--- --     --         log.dbg(string.format("[\"%s\"] = \"%s\",", option.hash, option.name))
--- --     --         t[tostring(option.hash)] = true
--- --     --     end
--- --     -- end
---     for i = 1, 10000 do
---         notify.default("Notify " .. i, "Some text")
---     end
--- end)

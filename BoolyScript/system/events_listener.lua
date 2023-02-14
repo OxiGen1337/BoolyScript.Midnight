@@ -195,7 +195,7 @@ function OnDone()
     end
 end
 
-function OnPlayerJoin(pid)
+function OnPlayerJoin(pid, name, rid)
     local event = onEventFunctions[events.OnPlayerJoin]
     for _, t in ipairs(event) do
         local hash_s, callback_f = t["hash"], t["callback"]
@@ -203,7 +203,7 @@ function OnPlayerJoin(pid)
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
             listener.remove(hash_s, events.OnPlayerJoin)
         else 
-            local out = callback_f(pid) 
+            local out = callback_f(pid, name, rid) 
             if out == false then listener.remove(hash_s, events.OnPlayerJoin) end
         end
     end

@@ -143,6 +143,287 @@ local vehicleBlacklist = Submenu.add_static_submenu("Vehicle blacklist", "BS_Net
     Network:add_sub_option("Vehicle blacklist", "BS_Network_VehicleBlacklist", vehicleBlacklist):setHint("Prevents players to use vehicles you've\nblacklisted.")
 end
 
+local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_PlayerHistory") do
+    local addedPlayers = {}
+    local historySize = 90
+    local addedOptions = {}
+    local selectedPlayer = nil
+    local playerInteractions = Submenu.add_static_submenu("Interactions", "BS_Network_PlayerHistory_PlayerInteractions") do
+        playerInteractions:add_state_bar("Name:", "BS_Network_PlayerHistory_PlayerInteractions_Name", function ()
+            if not selectedPlayer then return "None" end
+            return selectedPlayer.name
+        end)
+        playerInteractions:add_state_bar("RID:", "BS_Network_PlayerHistory_PlayerInteractions_RID", function ()
+            if not selectedPlayer then return "None" end
+            return selectedPlayer.rid
+        end)
+        playerInteractions:add_state_bar("Last seen:", "BS_Network_PlayerHistory_PlayerInteractions_LastSeen", function ()
+            if not selectedPlayer then return "None" end
+            return selectedPlayer.last_seen
+        end)
+        playerInteractions:add_click_option("Check for online", "BS_Network_PlayerHistory_PlayerInteractions_CheckOnline", function ()
+            social.is_player_online(selectedPlayer.rid, function (rid, result)
+                if result then
+                    notify.success("Player history", string.format("Player %s is online.", selectedPlayer.name))
+                else
+                    notify.fatal("Player history", string.format("Player %s is offline.", selectedPlayer.name))
+                end
+            end)
+        end)
+        playerInteractions:add_choose_option("Join", "BS_Network_PlayerHistory_PlayerInteractions_Join", false, {"Default method", "Friend method"}, function (pos)
+            lobby.join_by_rid(selectedPlayer.rid, pos == 2)
+        end)
+    end
+    local loadPlayers = function ()
+        parse.json(paths.files.playerHistory, function (content)
+            addedPlayers = content
+            for _, option in ipairs(addedOptions) do
+                option:remove()
+            end
+            addedOptions = {}
+            for _, player in ipairs(content) do
+                table.insert(addedOptions, playerHistory:add_sub_option(player.name, "", playerInteractions, function ()
+                    selectedPlayer = player
+                end):setConfigIgnore():setTranslationIgnore())
+            end
+        end)
+    end
+    local addPlayer = function (rid, name)
+        local player = 
+        {
+            name = name,
+            rid = rid,
+            last_seen = os.date("%x at %X")
+        }
+        
+        local playerExists = false
+        for index, data in ipairs(addedPlayers) do
+            if data.rid == rid then
+                data = player
+                playerExists = true
+                break
+            end
+        end
+
+        if not playerExists then
+            table.insert(addedPlayers, 1, player)
+        end
+
+        local out = addedPlayers
+        if #addedPlayers > historySize then 
+            out = {}
+            for i = 1, historySize do
+                table.insert(out, addedPlayers[i])
+            end
+        end
+
+        local file = io.open(paths.files.playerHistory, "w+")
+        file:write(json:encode_pretty(out))
+        file:close()
+        loadPlayers()
+    end
+    
+    playerHistory:add_bool_option("Enable", "BS_Network_PlayerHistory_Enable", function (state)
+        if state then
+            listener.register("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerJoin, function (pid, name, rid)
+                if player.is_local(pid) then return end
+                addPlayer(rid, name)
+            end)
+        elseif listener.exists("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerJoin) then
+            listener.remove("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerJoin)
+        end
+    end)
+    playerHistory:add_num_option("Max. size", "BS_Network_PlayerHistory_Size", 10, 1500, 10, function (val)
+        historySize = val
+    end):setValue(90, true)
+    local search = Submenu.add_static_submenu("Search", "BS_Network_PlayerHistory_Search") do
+        local options = {}
+        local name = search:add_text_input("Name/RID", "BS_World_PlayerHistory_Search_Name"):setConfigIgnore()
+        search:add_click_option("Find", "BS_World_PlayerHistory_Search_Find", function ()
+            if name:getValue() == "" then return notify.warning("Player history", "Enter player's RID or name first.") end
+            notify.important("Player history", "Searching for the results...")
+            local request = tostring(name:getValue())
+            for _, option in ipairs(options) do
+                option:remove()
+            end
+            options = {}
+            for _, t in ipairs(addedPlayers) do
+                if string.find(string.lower(t.name), string.lower(request)) or t.rid == tonumber(request) then
+                    table.insert(options, search:add_sub_option(t.name, "", playerInteractions, function ()
+                        selectedPlayer = t
+                    end):setConfigIgnore():setTranslationIgnore())
+                end
+            end
+            if #options > 0 then
+                notify.success("Player history", string.format("Found %i results.", #options))
+            else
+                notify.fatal("Player history", "Unfortunately, nothing was found..")
+            end
+        end)
+        search:add_separator("Results", "BS_Network_PlayerHistory_Results")
+        playerHistory:add_sub_option("Search", "BS_Network_PlayerHistory_Search", search)
+    end
+    playerHistory:add_separator("History", "BS_Network_PlayerHistory_Players")
+    loadPlayers()
+    Network:add_sub_option("Player history", "BS_Network_PlayerHistory", playerHistory)
+end
+
+local playerManager = Submenu.add_static_submenu("Player manager", "BS_Network_PlayerManager") do
+    local Player = function (rid, name, checkOnline, notify, autoJoin, notifyOnJoin, kickOnJoin, syncOnJoin)        
+        return {
+            name = name,
+            rid = rid,
+            last_seen = os.date("%x at %X"),
+            check_online = checkOnline,
+            notify = notify,
+            auto_join = autoJoin,
+            on_join = {
+                notify = notifyOnJoin,
+                kick = kickOnJoin,
+                block_sync = syncOnJoin,
+            }
+        }
+    end
+
+    local addedPlayers = {}
+    local addedOptions = {}
+    local selectedPlayer = nil
+
+    local Folder = {
+        registered = {},
+        name = nil,
+        submenu = nil,
+    }
+    Folder.__index = Folder
+
+    function Folder.new(name)
+        local out = setmetatable({}, Folder)
+        out.name = name
+        out.submenu = Submenu.add_static_submenu(name, "")
+        table.insert(Folder.registered, out)
+        return out
+    end
+
+    function Folder.savePlayers()
+        local out = {}
+        for _, folder in ipairs(Folder.registered) do
+            local players = {}
+            for _, option in ipairs(folder.submenu.options) do
+                table.insert(players, option:getValue())
+            end
+            table.insert(out, {name = folder.name, registered = players})
+        end
+        local file = io.open(paths.files.playerManager, "w+")
+        file:write(json:encode_pretty(out))
+        file:close()
+    end
+
+    function Folder:addPlayer(player_t)
+        for _, data in ipairs(self.submenu) do
+            if data.rid == player_t.rid then
+                return notify.fatal("Player manager", "Player already exists.")
+            end
+        end
+        local playerInteractions = Submenu.add_static_submenu(player_t.name, "") do
+            playerInteractions:add_state_bar("Name:", "BS_Network_PlayerHistory_PlayerInteractions_Name", function ()
+                if not selectedPlayer then return "None" end
+                return selectedPlayer.name
+            end)
+            playerInteractions:add_state_bar("RID:", "BS_Network_PlayerHistory_PlayerInteractions_RID", function ()
+                if not selectedPlayer then return "None" end
+                return selectedPlayer.rid
+            end)
+            playerInteractions:add_state_bar("Last seen:", "BS_Network_PlayerHistory_PlayerInteractions_LastSeen", function ()
+                if not selectedPlayer then return "None" end
+                return selectedPlayer.last_seen
+            end)
+            playerInteractions:add_click_option("Check for online", "BS_Network_PlayerHistory_PlayerInteractions_CheckOnline", function ()
+                social.is_player_online(selectedPlayer.rid, function (rid, result)
+                    if result then
+                        notify.success("Player history", string.format("Player %s is online.", selectedPlayer.name))
+                    else
+                        notify.fatal("Player history", string.format("Player %s is offline.", selectedPlayer.name))
+                    end
+                end)
+            end)
+            playerInteractions:add_choose_option("Join", "BS_Network_PlayerHistory_PlayerInteractions_Join", false, {"Default method", "Friend method"}, function (pos)
+                lobby.join_by_rid(selectedPlayer.rid, pos == 2)
+            end)
+            self.submenu:add_sub_option(player_t.name, "", playerInteractions):setTranslationIgnore():setValue(player_t)
+        end
+        return self
+    end
+
+    function Folder:removePlayer(player_t)
+        local out = {}
+        for _, option in ipairs(self.submenu) do
+            if option:getValue() ~= player_t then
+                table.insert(out, option)
+                option:remove()
+            end
+        end
+        self.submenu = out
+        return self
+    end
+
+    function Folder:getSubmenu()
+        return self.submenu
+    end
+
+    local loadPlayers = function ()
+        parse.json(paths.files.playerManager, function (content)
+            for _, folder in ipairs(content) do
+                local handle = Folder.new(folder.name)
+                print(folder.name)
+                for _, player in ipairs(folder.registered) do
+                    handle:addPlayer(player)
+                    print(player.name)
+                end
+            end
+        end)
+    end
+    
+    playerManager:add_bool_option("Enable", "BS_Network_PlayerHistory_Enable", function (state)
+
+    end)
+    local mainFolder = Folder.new("Main")
+    task.executeAsScript("PlayerManager_Load", function ()        
+        PlayerInteractions:add_click_option("Add", "", function ()
+            mainFolder:addPlayer(Player(player.get_rid(GetSelectedPlayer()), "OxiGen", true, false, true, false, true, false))
+        end)
+    end)
+    -- local search = Submenu.add_static_submenu("Search", "BS_Network_PlayerHistory_Search") do
+    --     local options = {}
+    --     local name = search:add_text_input("Name/RID", "BS_World_PlayerHistory_Search_Name"):setConfigIgnore()
+    --     search:add_click_option("Find", "BS_World_PlayerHistory_Search_Find", function ()
+    --         if name:getValue() == "" then return notify.warning("Player history", "Enter player's RID or name first.") end
+    --         notify.important("Player history", "Searching for the results...")
+    --         local request = tostring(name:getValue())
+    --         for _, option in ipairs(options) do
+    --             option:remove()
+    --         end
+    --         options = {}
+    --         for _, t in ipairs(addedPlayers) do
+    --             if string.find(string.lower(t.name), string.lower(request)) or t.rid == tonumber(request) then
+    --                 table.insert(options, search:add_sub_option(t.name, "", playerInteractions, function ()
+    --                     selectedPlayer = t
+    --                 end):setConfigIgnore():setTranslationIgnore())
+    --             end
+    --         end
+    --         if #options > 0 then
+    --             notify.success("Player history", string.format("Found %i results.", #options))
+    --         else
+    --             notify.fatal("Player history", "Unfortunately, nothing was found..")
+    --         end
+    --     end)
+    --     search:add_separator("Results", "BS_Network_PlayerHistory_Results")
+    --     playerManager:add_sub_option("Search", "BS_Network_PlayerHistory_Search", search)
+    -- end
+    playerManager:add_separator("Folders", "BS_Network_PlayerManager_Folders")
+    loadPlayers()
+    Network:add_sub_option("Player manager", "BS_Network_PlayerManager", playerManager)
+end
+
 Network:add_separator("Kosatka missiles", "BS_Network_Kosatka")
 
 Network:add_looped_option("Disable cooldown", "BS_Network_Kosatka_DisableCooldown", 0.0, function ()

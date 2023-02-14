@@ -32,7 +32,6 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
     do
         local t = {
             paths.folders.user,
-            -- paths.folders.translations,
             paths.folders.outfits,
             -- paths.folders.chat_spammer,
             paths.folders.loadouts,
@@ -65,10 +64,12 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
             ParsedFiles['objects'] = content
         end)
     end
-    -- do
-    --     local out = memory.search("GTA5.exe", "41 80 78 28 ? 0F 85 ? ? ? ? 49 8B 80")
-    --     print(memory.is_valid_addr(out))
-    -- end
+    log.init("Loading localizations...")
+    do
+        Localizations.russian = require("BoolyScript/localization/russian")
+        Localizations.chinese = require("BoolyScript/localization/chinese")
+        Localizations.custom = require("BoolyScript/localization/custom")
+    end
     do -- Loading all pages added in 'pages' folder; it only loads init.lua so that file has to require everything that's in the page
         local path = filesys.getInitScriptPath() .. '\\BoolyScript\\pages'
         path = path:gsub("\\\\lua", "\\lua")

@@ -16,6 +16,14 @@ ParsedFiles = {
     vehicles = {},
 }
 
+Localizations = {
+    russian = {},
+    chinese = {},
+    custom = {},
+}
+
+GetSelectedPlayer = function () end
+
 draw.crop_text = function (text_s, len_n)
     if len_n <= 0 then return "" end
     if string.len(text_s) == 0 then return "" end

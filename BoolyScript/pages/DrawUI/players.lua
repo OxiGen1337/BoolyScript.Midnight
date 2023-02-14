@@ -23,6 +23,10 @@ local submenus = {}
 
 local selectedPlayer = 0
 
+function GetSelectedPlayer()
+    return selectedPlayer
+end
+
 PlayerInteractions = Submenu.add_static_submenu("Player", "BS_PlayerList_Player") do 
     PlayerInteractions:add_state_bar("Name:", "BS_PlayerList_Interactions_NameBar", function ()
         if not selectedPlayer or not player.is_connected(selectedPlayer) then return "None" end
