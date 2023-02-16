@@ -157,10 +157,6 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
             if not selectedPlayer then return "None" end
             return selectedPlayer.rid
         end)
-        playerInteractions:add_state_bar("IP:", "BS_Network_PlayerHistory_PlayerInteractions_IP", function ()
-            if not selectedPlayer then return "None" end
-            return selectedPlayer.ip
-        end)
         playerInteractions:add_state_bar("Last seen:", "BS_Network_PlayerHistory_PlayerInteractions_LastSeen", function ()
             if not selectedPlayer then return "None" end
             return selectedPlayer.last_seen
@@ -192,12 +188,11 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
             end
         end)
     end
-    local addPlayer = function (rid, name, ip)
+    local addPlayer = function (rid, name)
         local player = 
         {
             name = name,
             rid = rid,
-            ip = ip,
             last_seen = os.date("%x at %X")
         }
         
@@ -230,14 +225,12 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
     
     playerHistory:add_bool_option("Enable", "BS_Network_PlayerHistory_Enable", function (state)
         if state then
-            listener.register("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerJoin, function (pid, name, rid)
+            listener.register("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerActive, function (pid)
                 if player.is_local(pid) then return end
-                local res_ip = player.get_resolved_ip_string(pid)
-                if res_ip == "0.0.0.0" or res_ip == "255.255.255.255" then res_ip = "N/A" end
-                addPlayer(rid, name, res_ip)
+                addPlayer(player.get_rid(pid), player.get_name(pid))
             end)
-        elseif listener.exists("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerJoin) then
-            listener.remove("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerJoin)
+        elseif listener.exists("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerActive) then
+            listener.remove("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerActive)
         end
     end)
     playerHistory:add_num_option("Max size", "BS_Network_PlayerHistory_Size", 10, 1500, 10, function (val)
@@ -347,9 +340,9 @@ local playerManager = Submenu.add_static_submenu("Player manager", "BS_Network_P
             playerInteractions:add_click_option("Check for online", "BS_Network_PlayerHistory_PlayerInteractions_CheckOnline", function ()
                 social.is_player_online(selectedPlayer.rid, function (rid, result)
                     if result then
-                        notify.success("Player history", string.format("Player %s is online.", selectedPlayer.name))
+                        notify.success("Player manager", string.format("Player %s is online.", selectedPlayer.name))
                     else
-                        notify.fatal("Player history", string.format("Player %s is offline.", selectedPlayer.name))
+                        notify.fatal("Player manager", string.format("Player %s is offline.", selectedPlayer.name))
                     end
                 end)
             end)
