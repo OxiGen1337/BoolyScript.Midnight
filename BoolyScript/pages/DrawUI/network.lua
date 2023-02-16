@@ -237,7 +237,7 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
         settings:add_num_option("Max size", "BS_Network_PlayerHistory_Size", 10, 1500, 10, function (val)
             historySize = val
         end):setValue(90, true)
-        settings:add_separator("Danger Zone", "BS_Network_PlayerHistory_Results")
+        settings:add_separator("Danger Zone", "BS_Network_PlayerHistory_DangerZone")
         settings:add_click_option("Clear", "BS_World_PlayerHistory_Clear", function ()
             local file = io.open(paths.files.playerHistory, "w")
             file:write("")
