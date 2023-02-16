@@ -233,9 +233,21 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
             listener.remove("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerActive)
         end
     end)
-    playerHistory:add_num_option("Max size", "BS_Network_PlayerHistory_Size", 10, 1500, 10, function (val)
-        historySize = val
-    end):setValue(90, true)
+    local settings = Submenu.add_static_submenu("Settings", "BS_Network_PlayerHistory_Settings") do
+        settings:add_num_option("Max size", "BS_Network_PlayerHistory_Size", 10, 1500, 10, function (val)
+            historySize = val
+        end):setValue(90, true)
+        settings:add_separator("Danger Zone", "BS_Network_PlayerHistory_Results")
+        settings:add_click_option("Clear", "BS_World_PlayerHistory_Clear", function ()
+            local file = io.open(paths.files.playerHistory, "w")
+            file:write("")
+            file:close()
+            for _, option in ipairs(addedOptions) do
+                option:remove()
+             end         
+        end)
+        playerHistory:add_sub_option("Settings", "BS_Network_PlayerHistory_Settings", settings)
+    end
     local search = Submenu.add_static_submenu("Search", "BS_Network_PlayerHistory_Search") do
         local options = {}
         local name = search:add_text_input("Name/RID", "BS_World_PlayerHistory_Search_Name"):setConfigIgnore()
