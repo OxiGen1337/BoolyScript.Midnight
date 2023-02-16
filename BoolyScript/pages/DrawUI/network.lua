@@ -157,6 +157,10 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
             if not selectedPlayer then return "None" end
             return selectedPlayer.rid
         end)
+        playerInteractions:add_state_bar("IP:", "BS_Network_PlayerHistory_PlayerInteractions_IP", function ()
+            if not selectedPlayer then return "None" end
+            return selectedPlayer.ip
+        end)
         playerInteractions:add_state_bar("Last seen:", "BS_Network_PlayerHistory_PlayerInteractions_LastSeen", function ()
             if not selectedPlayer then return "None" end
             return selectedPlayer.last_seen
@@ -188,11 +192,12 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
             end
         end)
     end
-    local addPlayer = function (rid, name)
+    local addPlayer = function (rid, name, ip)
         local player = 
         {
             name = name,
             rid = rid,
+            ip = ip,
             last_seen = os.date("%x at %X")
         }
         
@@ -227,13 +232,15 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
         if state then
             listener.register("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerJoin, function (pid, name, rid)
                 if player.is_local(pid) then return end
-                addPlayer(rid, name)
+                local res_ip = player.get_resolved_ip_string(pid)
+                if res_ip == "0.0.0.0" or res_ip == "255.255.255.255" then res_ip = "N/A" end
+                addPlayer(rid, name, res_ip)
             end)
         elseif listener.exists("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerJoin) then
             listener.remove("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerJoin)
         end
     end)
-    playerHistory:add_num_option("Max. size", "BS_Network_PlayerHistory_Size", 10, 1500, 10, function (val)
+    playerHistory:add_num_option("Max size", "BS_Network_PlayerHistory_Size", 10, 1500, 10, function (val)
         historySize = val
     end):setValue(90, true)
     local search = Submenu.add_static_submenu("Search", "BS_Network_PlayerHistory_Search") do
