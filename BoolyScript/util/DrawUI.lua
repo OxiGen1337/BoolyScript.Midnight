@@ -1307,7 +1307,7 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
             config.localization = Localizations.russian
         elseif pos == 3 then
             config.localization = Localizations.chinese        
-        elseif pos == 2 then
+        elseif pos == 4 then
             config.localization = Localizations.custom
         end
     end)
