@@ -1,7 +1,7 @@
-Self = Submenu.add_static_submenu("Self", "BS_Self_Submenu")
-Main:add_sub_option("Self", "BS_Self_SubOption", Self)
+Self = Submenu.add_static_submenu("Self", "BS_Self")
+Main:add_sub_option("Self", "BS_Self", Self)
 
-local godmode = Submenu.add_static_submenu("Invincibility", "BS_Self_Godmode_Submenu") do
+local godmode = Submenu.add_static_submenu("Invincibility", "BS_Self_Godmode") do
     godmode:add_bool_option("Godmode", "BS_Self_Godmode_Enable", function (state)
         ENTITY.SET_ENTITY_INVINCIBLE(PLAYER.PLAYER_PED_ID(), state)
     end)
@@ -28,13 +28,13 @@ local godmode = Submenu.add_static_submenu("Invincibility", "BS_Self_Godmode_Sub
             proofs[name] = state
         end)
     end
-    Self:add_sub_option("Invincibility", "BS_Self_Godmode_SubOption", godmode)
+    Self:add_sub_option("Invincibility", "BS_Self_Godmode", godmode)
 end
 
-local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe_Submenu") do
+local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe") do
     wardrobe:add_sub_option("Save & load outfit presets", "BS_Self_Wardrobe_SaveLoad", PresetsMgr):addTag({"[Link]", 107, 223, 227})
     wardrobe:add_separator("Face", "BS_Self_Wardrobe_Face")
-    local headBlendEditor = Submenu.add_static_submenu("Face editor", "BS_Self_Wardrobe_HeadBlend_Submenu") do
+    local headBlendEditor = Submenu.add_static_submenu("Face editor", "BS_Self_Wardrobe_HeadBlend") do
         headBlendEditor:add_separator("Head blend", "BS_Self_Wardrobe_HeadBlend")
         local motherShape, motherSkin, fatherShape, fatherSkin, shapeMix, skinMix
         motherShape = headBlendEditor:add_choose_option("Shape [Mother]", "BS_Self_Wardrobe_HeadBlend_MotherShape", true,
@@ -88,64 +88,66 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe_Submen
             {"Add Body Blemishes", 1, 0},
         }
         for ID, overlay in ipairs(overlayIDs) do
-            local submenu = Submenu.add_static_submenu(overlay[1], "BS_Self_Wardrobe_Face_" .. overlay[1] .. "_Submenu") do
-                local value = submenu:add_num_option("Texture", "BS_Self_Wardrobe_Face_" .. overlay[1], 0, overlay[2], 1, function (val)
+            local submenu = Submenu.add_static_submenu(overlay[1], "BS_Self_Wardrobe_Face_" .. overlay[1] .. "") do
+                local value = submenu:add_num_option("Texture", "BS_Self_Wardrobe_Face_Texture", 0, overlay[2], 1, function (val)
                     PED.SET_PED_HEAD_OVERLAY(player.id(), ID - 1, val, 1.0)
                 end):setConfigIgnore()
-                local opacity = submenu:add_float_option("Opacity", "BS_Self_Wardrobe_Face_Opacity_" .. overlay[1], 0.0, 1.0, 0.1, function (val)
+                local opacity = submenu:add_float_option("Opacity", "BS_Self_Wardrobe_Face_Opacity", 0.0, 1.0, 0.1, function (val)
                     PED.SET_PED_HEAD_OVERLAY(player.id(), ID - 1, value:getValue(), val)
                 end):setValue(1.0, true):setConfigIgnore()
                 local primColor, secColor
-                primColor = submenu:add_num_option("Primary color",  "BS_Self_Wardrobe_Face_PrimColor_" .. overlay[1], 0, 255, 1, function (val)
+                primColor = submenu:add_num_option("Primary color",  "BS_Self_Wardrobe_Face_PrimColor", 0, 255, 1, function (val)
                     PED.SET_PED_HEAD_OVERLAY(player.id(), ID - 1, value:getValue(), opacity:getValue())
                     PED._SET_PED_HEAD_OVERLAY_COLOR(player.id(), ID-1, overlay[3], val, secColor:getValue())                
                 end):setConfigIgnore()
-                secColor = submenu:add_num_option("Secondary color",  "BS_Self_Wardrobe_Face_SecColor_" .. overlay[1], 0, 255, 1, function (val)
+                secColor = submenu:add_num_option("Secondary color",  "BS_Self_Wardrobe_Face_SecColor", 0, 255, 1, function (val)
                     PED.SET_PED_HEAD_OVERLAY(player.id(), ID - 1, value:getValue(), opacity:getValue())
                     PED._SET_PED_HEAD_OVERLAY_COLOR(player.id(), ID-1, overlay[3], primColor:getValue(), val)                
                 end):setConfigIgnore()
-                submenu:add_click_option("Remove", "BS_Self_Wardrobe_Face_Remove_" .. overlay[1], function ()
+                submenu:add_click_option("Remove", "BS_Self_Wardrobe_Face_Remove", function ()
                     PED.SET_PED_HEAD_OVERLAY(player.id(), ID - 1, 255, 1.0)
                 end)
-                headBlendEditor:add_sub_option(overlay[1], "BS_Self_Wardrobe_Face_" .. overlay[1] .. "_SubOption", submenu)
+                headBlendEditor:add_sub_option(overlay[1], "BS_Self_Wardrobe_Face_" .. overlay[1] .. "", submenu)
             end
         end
-        wardrobe:add_sub_option("Face", "BS_Self_Wardrobe_HeadBlend_SubOption", headBlendEditor)
+        wardrobe:add_sub_option("Face", "BS_Self_Wardrobe_HeadBlend", headBlendEditor)
     end
     wardrobe:add_separator("Accessories", "BS_Self_Wardrobe_Accessories")
     local props = {
         ["Hats"] = 0,
         ["Glasses"] = 1,
         ["Ears"] = 2,
+        ["Left hand accessories"] = 6,
+        ["Right hand accessories"] = 7,
     }
     for name, ID in pairs(props) do
         local ped = PLAYER.PLAYER_PED_ID()
-        local submenu = Submenu.add_static_submenu(name, "BS_Self_Wardrobe_" .. name .."_Submenu")
+        local submenu = Submenu.add_static_submenu(name, "BS_Self_Wardrobe_" .. name .."")
         local drawableVariations = PED.GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(ped, ID)
         local textures
-        local variations = submenu:add_num_option("Variation", "BS_Self_Wardrobe_" .. name .."_Variation", 0, drawableVariations - 1, 1, function (val)
+        local variations = submenu:add_num_option("Variation", "BS_Self_Wardrobe_Variation", 0, drawableVariations - 1, 1, function (val)
             local ped = PLAYER.PLAYER_PED_ID()
             PED.SET_PED_PROP_INDEX(ped, ID, val, 0, true, false)
             local textureVariations = PED.GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(ped, ID, val)
-            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setLimits(textures, 0, textureVariations > 0 and textureVariations - 1 or 0, 1)
             Option.setValue(textures, 0, true)
         end):setConfigIgnore()
-        textures = submenu:add_num_option("Texture", "BS_Self_Wardrobe_" .. name .."_Texture", 0, 0, 1, function (val)
+        textures = submenu:add_num_option("Texture", "BS_Self_Wardrobe_Texture", 0, 0, 1, function (val)
             if PED.GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(ped, ID, variations:getValue()) == 0 then return end
             local ped = PLAYER.PLAYER_PED_ID()
             PED.SET_PED_PROP_INDEX(ped, ID, variations:getValue(), val, true, false)
         end):setConfigIgnore()
-        submenu:add_click_option("Remove component", "BS_Self_Wardrobe_" .. name .."_Remove", function ()
+        submenu:add_click_option("Remove component", "BS_Self_Wardrobe_Remove", function ()
             PED.CLEAR_PED_PROP(PLAYER.PLAYER_PED_ID(), ID, false)
         end):setConfigIgnore()
-        wardrobe:add_sub_option(name, "BS_Self_Wardrobe_" .. name, submenu, function ()
+        wardrobe:add_sub_option(name, "BS_Self_Wardrobe_" .. name .. "", submenu, function ()
             local ped = PLAYER.PLAYER_PED_ID()
             local drawableVariations = PED.GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(ped, ID)
-            Option.setLimits(variations, 0, drawableVariations - 1, 1)
-            Option.setValue(variations, PED.GET_PED_DRAWABLE_VARIATION(ped, ID), true)
+            Option.setLimits(variations, 0, drawableVariations > 0 and drawableVariations - 1 or 0, 1)
+            Option.setValue(variations, PED.GET_PED_PROP_INDEX(ped, ID), true)
             local textureVariations = PED.GET_NUMBER_OF_PED_PROP_TEXTURE_VARIATIONS(ped, ID, 0)
-            Option.setLimits(textures, 0, textureVariations - 1, 1)
-            Option.setValue(textures, PED.GET_PED_TEXTURE_VARIATION(ped, ID), true)
+            Option.setLimits(textures, 0, textureVariations > 0 and textureVariations - 1 or 0, 1)
+            Option.setValue(textures, PED.GET_PED_PROP_TEXTURE_INDEX(ped, ID), true)
         end)
     end
     wardrobe:add_separator("Components", "BS_Self_Wardrobe_Components")
@@ -153,49 +155,49 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe_Submen
         ["Head"] = 0,
         ["Beard"] = 1,
         ["Hair"] = 2,
-        ["Torso"] = 3,
+        ["Hands"] = 3,
         ["Legs"] = 4,
-        ["Hands"] = 5,
+        ["Bags"] = 5,
         ["Foot"] = 6,
         ["Misc"] = 7,
-        ["Accessories"] = 8,
-        ["Bags"] = 9,
+        ["Torso"] = 8,
+        ["Accessories"] = 9,
         ["Decals & masks"] = 10,
         ["Auxiliary torso parts"] = 11,
     }
     for name, ID in pairs(components) do
         local ped = PLAYER.PLAYER_PED_ID()
-        local submenu = Submenu.add_static_submenu(name, "BS_Self_Wardrobe_" .. name .."_Submenu")
+        local submenu = Submenu.add_static_submenu(name, "BS_Self_Wardrobe_" .. name .."")
         local drawableVariations = PED.GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS(ped, ID)
         local textures
-        local variations = submenu:add_num_option("Variation", "BS_Self_Wardrobe_" .. name .."_Variation", 0, drawableVariations - 1, 1, function (val)
+        local variations = submenu:add_num_option("Variation", "BS_Self_Wardrobe_Variation", 0, drawableVariations - 1, 1, function (val)
             local ped = PLAYER.PLAYER_PED_ID()
             PED.SET_PED_COMPONENT_VARIATION(ped, ID, val, 0, 0)
             local textureVariations = PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, val)
-            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setLimits(textures, 0, textureVariations > 0 and textureVariations - 1 or 0, 1)
             Option.setValue(textures, 0, true)
         end):setConfigIgnore()
-        textures = submenu:add_num_option("Texture", "BS_Self_Wardrobe_" .. name .."_Texture", 0, 0, 1, function (val)
+        textures = submenu:add_num_option("Texture", "BS_Self_Wardrobe_Texture", 0, 0, 1, function (val)
             if PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, variations:getValue()) == 0 then return end
             local ped = PLAYER.PLAYER_PED_ID()
             PED.SET_PED_COMPONENT_VARIATION(ped, ID, variations:getValue(), val, 0)
         end):setConfigIgnore()
-        wardrobe:add_sub_option(name, "BS_Self_Wardrobe_" .. name, submenu, function ()
+        wardrobe:add_sub_option(name, "BS_Self_Wardrobe_" .. name .. "", submenu, function ()
             local ped = PLAYER.PLAYER_PED_ID()
             local drawableVariations = PED.GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS(ped, ID)
-            Option.setLimits(variations, 0, drawableVariations - 1, 1)
+            Option.setLimits(variations, 0, drawableVariations > 0 and drawableVariations - 1 or 0, 1)
             Option.setValue(variations, PED.GET_PED_DRAWABLE_VARIATION(ped, ID), true)
             local textureVariations = PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, 0)
-            Option.setLimits(textures, 0, textureVariations - 1, 1)
+            Option.setLimits(textures, 0, textureVariations > 0 and textureVariations - 1 or 0, 1)
             Option.setValue(textures, PED.GET_PED_TEXTURE_VARIATION(ped, ID), true)
         end)
     end
-    Self:add_sub_option("Wardrobe", "BS_Self_Wardrobe_SubOption", wardrobe, function ()
+    Self:add_sub_option("Wardrobe", "BS_Self_Wardrobe", wardrobe, function ()
         notify.default("Wardrobe", "You can edit your outfits here.\nAlso you can save your outfit in 'Presets' submenu.")
     end)
 end
 
-local wanted = Submenu.add_static_submenu("Wanted options", "BS_Self_Wanted_Submenu") do
+local wanted = Submenu.add_static_submenu("Wanted options", "BS_Self_Wanted") do
     local lvl = wanted:add_num_option("Wanted level", "BS_Self_Wanted_Level", 0, 5, 1, function (val)
         PLAYER.SET_PLAYER_WANTED_LEVEL(PLAYER.PLAYER_ID(), val, false)
         PLAYER.SET_PLAYER_WANTED_LEVEL_NOW(PLAYER.PLAYER_ID(), false)
@@ -220,7 +222,7 @@ local wanted = Submenu.add_static_submenu("Wanted options", "BS_Self_Wanted_Subm
     wanted:add_looped_option("Suppress witnesses", "BS_Self_Wanted_SupressWitnesses", 0.0, function ()
         PLAYER._0x36F1B38855F2A8DF(PLAYER.PLAYER_ID())
     end):setHint("No one will call police to report you.")
-    Self:add_sub_option("Wanted options", "BS_Self_Wanted_SubOption", wanted)
+    Self:add_sub_option("Wanted options", "BS_Self_Wanted", wanted)
 end
 
 Self:add_separator("Movement", "BS_Self_Movement")
@@ -309,7 +311,7 @@ end):setHint("Most of peds nearby will ignore you.")
 Self:add_click_option("Sky dive", "BS_Self_SkyDive", function ()
     local ped = PLAYER.PLAYER_PED_ID()
     local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 0.0, 150.0)
-    utils.teleport(coords)
+    features.teleport(coords)
     TASK.TASK_SKY_DIVE(ped, true)
 end)
 

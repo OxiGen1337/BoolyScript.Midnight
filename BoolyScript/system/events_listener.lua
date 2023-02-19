@@ -22,6 +22,10 @@ local events = {
     OnModderDetected = 17,
     OnGameState = 18,
     OnPlayerActive = 19,
+    OnSpectating = 20,
+    OnStopSpectating = 21,
+    OnFeatureStart = 22,
+    OnFeatureEnd = 23,
 }
 
 for _, ID in pairs(events) do
@@ -101,8 +105,8 @@ function OnInit()
             if out == false then listener.remove(hash_s, events.OnInit) end
         end
     end
-    log.init(string.format("All modules were initialized in %f sec.", os.clock() - startTime))
-    notify.success("BoolyScript", "Script has been loaded successfuly.\nAuthor: @OxiGen#1337.\nIf you find a bug or have a suggestion\nDM me in Discord.", GET_NOTIFY_ICONS().scripts)
+    log.init(string.format("Initialization finished in %s sec.", tostring(os.clock() - startTime):sub(0, 3)))
+    notify.success("BoolyScript", "Script has been loaded successfuly.")
 end
 
 function OnKeyPressed(key, isDown)
@@ -147,6 +151,36 @@ function OnFeatureTick()
     end
 end
 
+function OnFeatureStart()
+    log.dbg("Feature is started.")
+    local event = onEventFunctions[events.OnFeatureStart]
+    for _, t in ipairs(event) do
+        local hash_s, callback_f = t["hash"], t["callback"]
+        if not callback_f then 
+            log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
+            listener.remove(hash_s, events.OnFeatureStart)
+        else 
+            local out = callback_f()
+            if out == false then listener.remove(hash_s, events.OnFeatureStart) end
+        end
+    end
+end
+
+function OnFeatureEnd()
+    log.dbg("Feature is stopped.")
+    local event = onEventFunctions[events.OnFeatureEnd]
+    for _, t in ipairs(event) do
+        local hash_s, callback_f = t["hash"], t["callback"]
+        if not callback_f then 
+            log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
+            listener.remove(hash_s, events.OnFeatureEnd)
+        else 
+            local out = callback_f()
+            if out == false then listener.remove(hash_s, events.OnFeatureEnd) end
+        end
+    end
+end
+
 function OnDone()
     local event = onEventFunctions[events.OnDone]
     for _, t in ipairs(event) do
@@ -161,7 +195,7 @@ function OnDone()
     end
 end
 
-function OnPlayerJoin(pid)
+function OnPlayerJoin(pid, name, rid)
     local event = onEventFunctions[events.OnPlayerJoin]
     for _, t in ipairs(event) do
         local hash_s, callback_f = t["hash"], t["callback"]
@@ -169,7 +203,7 @@ function OnPlayerJoin(pid)
             log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
             listener.remove(hash_s, events.OnPlayerJoin)
         else 
-            local out = callback_f(pid) 
+            local out = callback_f(pid, name, rid) 
             if out == false then listener.remove(hash_s, events.OnPlayerJoin) end
         end
     end
@@ -353,6 +387,34 @@ function OnPlayerActive(pid)
         else 
             local out = callback_f(pid) 
             if out == false then listener.remove(hash_s, events.OnPlayerActive) end
+        end
+    end
+end
+
+function OnSpectating(spec, target, isMe)
+    local event = onEventFunctions[events.OnSpectating]
+    for _, t in ipairs(event) do
+        local hash_s, callback_f = t["hash"], t["callback"]
+        if not callback_f then 
+            log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
+            listener.remove(hash_s, events.OnSpectating)
+        else 
+            local out = callback_f(spec, target, isMe)
+            if out == false then listener.remove(hash_s, events.OnSpectating) end
+        end
+    end
+end
+
+function OnStopSpectating(spec, target, isMe)
+    local event = onEventFunctions[events.OnStopSpectating]
+    for _, t in ipairs(event) do
+        local hash_s, callback_f = t["hash"], t["callback"]
+        if not callback_f then 
+            log.error("EVENTS_LISTENER", string.format("Invalid callback in registered listener with hash: %s.", hash_s))
+            listener.remove(hash_s, events.OnStopSpectating)
+        else 
+            local out = callback_f(spec, target, isMe)
+            if out == false then listener.remove(hash_s, events.OnStopSpectating) end
         end
     end
 end

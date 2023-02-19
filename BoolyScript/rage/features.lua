@@ -7,7 +7,7 @@ function features.getWaypointCoords()
 end
 
 function features.getDistance(coords1, coords2, useZ)
-    return MISC.GET_DISTANCE_BETWEEN_COORDS(coords1.x, coords1.y, coords1.z, coords2.x, coords2.y, coords2.z, useZ)
+    return math.sqrt((coords1.x - coords2.x)^2 + (coords1.y - coords2.y)^2 + (useZ and (coords1.z - coords2.z)^2 or 0))
 end
 
 function features.setVehiclePreset(vehicle, preset)
@@ -95,6 +95,54 @@ function features.makeFirstLetUpper(text)
 		iter = iter + 1
 	end
 	return output
+end
+
+function features.getFPS()
+	return DrawUI.dbg.fps
+end
+
+function features.isPositionInArea(corner_leftUpper_v2, corner_rightDown_v2, position_v2)
+	local axis_x_b = (position_v2.x >= corner_leftUpper_v2.x) and (corner_rightDown_v2.x >= position_v2.x)
+	local axis_y_b = (position_v2.y >= corner_leftUpper_v2.y) and (corner_rightDown_v2.y >= position_v2.y)
+	return axis_x_b and axis_y_b
+end
+
+function features.getVirtualKeyViaID(id)
+	for name, keyID in pairs(gui.virualKeys) do
+		if keyID == id then return name end
+	end
+	return nil
+end
+
+function features.teleport(...)
+	local args = {...}
+	local entity = nil
+	local coords = nil
+	if type(args[1]) == "number" and (#args == 4 or #args == 2) then
+		if (#args == 2) then
+			if not (type(args[2]) == "userdata") then log.error("Features", "Wrong arg #2 in teleport function.") return false end
+			coords = args[2]
+		elseif #args == 4 then
+			if not ((type(args[2]) == "number") and (type(args[3]) == "number") and (type(args[4]) == "number")) then log.error("Features", "Wrong arg #2, 3, 4 in teleport function.") return false end
+			coords = Vector3(args[2], args[3], args[4])
+		end
+		entity = args[1]
+	elseif type(args[1]) == "userdata" and (#args == 1) then
+		coords = args[1]
+		entity = player.id()
+	elseif (#args == 3) and (type(args[1]) == "number" and type(args[2]) == "number" and type(args[3]) == "number") then
+		coords = Vector3(args[1], args[2], args[3])
+		entity = player.id()
+	end
+	if entity and coords then
+		local out = false
+		callbacks.requestControl(entity, function ()
+			ENTITY.SET_ENTITY_COORDS_NO_OFFSET(entity, coords.x, coords.y, coords.z)
+			out = true
+		end)
+		return out
+	end
+	return false
 end
 
 return features

@@ -1,5 +1,4 @@
-
-BSVERSION = "[Midnight] [0.2]"
+BSVERSION = "0.3"
 DEBUG = false
 
 local temp = require
@@ -27,21 +26,21 @@ gui = require("BoolyScript/globals/gui")
 
 listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
     log.init("Loading BoolyScript...")
-    log.init(string.format("Version -> %s.", BSVERSION))
+    log.init(string.format("Version -> [Midnight] [%s].", BSVERSION))
     log.init("Verifying required directories...")
     do
         local t = {
             paths.folders.user,
-            -- paths.folders.translations,
             paths.folders.outfits,
             -- paths.folders.chat_spammer,
             paths.folders.loadouts,
             paths.folders.logs,
+            paths.folders.misc,
         }
         for _, path in ipairs(t) do
             if not fs.directory_exists(path) then 
                 if not filesys.createDir(path) then
-		            log.error("File system", "Failed to create directory with path:\n\t" .. path .. "\n\tPossible reason: Cyrillic symbols in the path.\n\tTo solve it, create that folder by yourself.")
+		            log.error("File system", "Failed to create directory with path:\n\t" .. path .. "\n\tPlease, create that folder by yourself.")
                 end
             end
         end
@@ -57,7 +56,19 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         parse.json(paths.files.peds, function (content)
             ParsedFiles['peds'] = content
         end)
+        parse.json(paths.files.vehicles, function (content)
+            ParsedFiles['vehicles'] = content
+        end)
+        parse.txt(paths.files.objects, function (content)
+            ParsedFiles['objects'] = content
+        end)
     end
+    -- log.init("Loading localizations...")
+    -- do
+    --     Localizations.russian = require("BoolyScript/localization/russian")
+    --     Localizations.chinese = require("BoolyScript/localization/chinese")
+    --     Localizations.custom = require("BoolyScript/localization/custom")
+    -- end
     do -- Loading all pages added in 'pages' folder; it only loads init.lua so that file has to require everything that's in the page
         local path = filesys.getInitScriptPath() .. '\\BoolyScript\\pages'
         path = path:gsub("\\\\lua", "\\lua")
@@ -70,5 +81,6 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
     end
     task.executeAsScript("Load_Config", function ()
         Configs.loadConfig()
+        HotkeyService.loadHotkeys()
     end)
 end)

@@ -3,8 +3,8 @@ require("BoolyScript/util/notify_system")
 local gui = require("BoolyScript/globals/gui")
 require("BoolyScript/system/events_listener")
 
-Vehicle = Submenu.add_static_submenu("Vehicle", "BS_Vehicle_Submenu")
-Main:add_sub_option("Vehicle", "BS_Vehicle_SubOption", Vehicle)
+Vehicle = Submenu.add_static_submenu("Vehicle", "BS_Vehicle")
+Main:add_sub_option("Vehicle", "BS_Vehicle", Vehicle)
 
 -- function Stuff.vehicleCheck()
 --     local ped = player.id()
@@ -26,7 +26,7 @@ Vehicle:add_choose_option("Switch seat", "BS_Vehicle_SwitchSeat", false, {"Drive
 	PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), vehicle, pos-2)
 end):setConfigIgnore()
 
-local ufoSpawner = Submenu.add_static_submenu("UFO spawner", "BS_Vehicle_UfoSpawner_Submenu") do
+local ufoSpawner = Submenu.add_static_submenu("UFO spawner", "BS_Vehicle_UfoSpawner") do
     local ufoHash = string.joaat("p_spinning_anus_s")
     ufoSpawner:add_click_option("Spawn UFO", "BS_Vehicle_UfoSpawner_Spawn", function ()
         local opressorHash = string.joaat("oppressor2")
@@ -57,7 +57,7 @@ local ufoSpawner = Submenu.add_static_submenu("UFO spawner", "BS_Vehicle_UfoSpaw
         end
         Stuff.ufos = {}
     end)
-    Vehicle:add_sub_option("UFO spawner", "BS_Vehicle_UfoSpawner_SubOption", ufoSpawner)
+    Vehicle:add_sub_option("UFO spawner", "BS_Vehicle_UfoSpawner", ufoSpawner)
 end
 
 Vehicle:add_separator("Movement", "BS_Vehicle_Movement")
@@ -183,6 +183,19 @@ end, function ()
     if vehicle == 0 then return end
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), false)
     ENTITY.SET_ENTITY_COLLISION(vehicle, true, true)
+end)
+
+local brakeForceStep = Vehicle:add_float_option("Brake force intensivity", "BS_Vehicle_Movement_BrakeForceStep", 0.0, 5.0, 0.1):setValue(0.2)
+
+Vehicle:add_looped_option("Enable brake force", "BS_Vehicle_Movement_brakeForceEnable", 0.0, function ()    
+    if not PAD.IS_CONTROL_PRESSED(2, 72) then return end
+    local step = brakeForceStep:getValue()
+    local vehicle = player.get_vehicle_handle(player.index())
+    if vehicle == 0 then return end
+    local currentSpeed = ENTITY.GET_ENTITY_SPEED_VECTOR(vehicle, true)
+    if currentSpeed.y <= 1 then return end
+    local speed = math.max(0, currentSpeed.y - step) + .0
+    VEHICLE.SET_VEHICLE_FORWARD_SPEED(vehicle, speed)
 end)
 
 Stuff.superDrivePower = 5.0
@@ -337,13 +350,13 @@ Vehicle:add_separator("Remote actions", "BS_Vehicle_RemoteActions")
 Vehicle:add_click_option("Teleport (Me -> Vehicle)", "BS_Vehicle_RemoteActions_TpMeToVehicle", function ()
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
     local coords = ENTITY.GET_ENTITY_COORDS(vehicle, true)
-    utils.teleport(coords)
+    features.teleport(coords)
 end)
 
 Vehicle:add_click_option("Teleport (Vehicle -> Me)", "BS_Vehicle_RemoteActions_TpVehicleToMe", function ()
     local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID(), true)
     local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), true)
-    utils.teleport(vehicle, coords)
+    features.teleport(vehicle, coords)
 end)
 
 Vehicle:add_choose_option("Engine", "BS_Vehicle_RemoteActions_ToggleEngine", false, {"ON", "OFF"}, function (val)

@@ -1,9 +1,9 @@
-Weapon = Submenu.add_static_submenu("Weapon", "BS_Weapon_Submenu")
-Main:add_sub_option("Weapon", "BS_Weapon_SubOption", Weapon)
+Weapon = Submenu.add_static_submenu("Weapon", "BS_Weapon")
+Main:add_sub_option("Weapon", "BS_Weapon", Weapon)
 
 local blWepCategories = {["GROUP_DIGISCANNER"] = false, ["GROUP_NIGHTVISION"] = false, ["GROUP_TRANQILIZER"] = false}
 
-local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunation_Submenu") do
+local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunation") do
     Ammunation:add_sub_option("Save & load weapon loadouts", "BS_Self_Ammunation_SaveLoad", PresetsMgr):addTag({"[Link]", 107, 223, 227})
     Ammunation:add_click_option("Give all weapons", "BS_Self_Ammunation_GiveAll", function ()
         for _, hash in pairs(ParsedFiles.weaponHashes) do
@@ -35,19 +35,19 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
             if not createdCateg[category] then
                 local hash = "BS_Weapon_Ammunation_" .. category
                 local name = features.makeFirstLetUpper((category:gsub('GROUP_', '')):lower())
-                local sub = Submenu.add_static_submenu(name, hash .. "_Submenu")
-                Ammunation:add_sub_option(name, hash .. "_SubOption", sub)
+                local sub = Submenu.add_static_submenu(name, hash .. ""):setTranslationIgnore()
+                Ammunation:add_sub_option(name, hash .. "", sub):setTranslationIgnore()
                 createdCateg[category] = sub
             end
             do
                 local hash = "BS_Weapon_Ammunation_" .. category .. "_" .. wepName
                 local name = HUD._GET_LABEL_TEXT(wepName)
-                local sub = Submenu.add_static_submenu(name, hash .. "_Submenu")
-                createdCateg[category]:add_sub_option(name, hash .. "_SubOption", sub)
+                local sub = Submenu.add_static_submenu(name, hash .. ""):setTranslationIgnore()
+                createdCateg[category]:add_sub_option(name, hash .. "", sub):setTranslationIgnore()
                 createdWepSubs[wepName] = sub
             end
             local weaponSub = createdWepSubs[wepName]
-            weaponSub:add_choose_option("Manage", "BS_Weapon_Ammunation_" .. category .. "_" .. wepName .. "_Manage", false, {"Give", "Remove"}, function(pos, option)
+            weaponSub:add_choose_option("Manage", "BS_Weapon_Ammunation_Selected_Manage", false, {"Give", "Remove"}, function(pos, option)
                 if pos == 1 then
                     WEAPON.GIVE_WEAPON_TO_PED(ped, wepHash, 1000, false, true)
                     option:setValue(2, true)
@@ -57,7 +57,7 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
                 end
             end):setConfigIgnore()
             if #wepComponents > 0 then
-                weaponSub:add_separator("Components", "BS_Weapon_Ammunation_" .. category .. "_" .. wepName .. "_Components")
+                weaponSub:add_separator("Components", "BS_Weapon_Ammunation_Selected_Components")
             end
             for _, componentInfo in ipairs(wepComponents) do
                 local name = string.format("Untitled [%s]", componentInfo["Hash"])
@@ -66,7 +66,7 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
                         name = HUD._GET_LABEL_TEXT(componentInfo['TranslatedLabel']['Name'])
                     end
                 end
-                weaponSub:add_choose_option(name, "BS_Weapon_Ammunation_" .. category .. "_" .. wepName .. "_ComponentManage", false, {"Add", "Remove"}, function(pos, option)
+                weaponSub:add_choose_option(name, "BS_Weapon_Ammunation_Selected_ComponentManage", false, {"Add", "Remove"}, function(pos, option)
                     if pos == 1 then
                         WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(PLAYER.PLAYER_PED_ID(), wepHash, componentInfo['Hash'])
                         option:setValue(2, true)
@@ -74,12 +74,12 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
                         WEAPON.REMOVE_WEAPON_COMPONENT_FROM_PED(ped, wepHash, componentInfo['Hash'])
                         option:setValue(1, true)
                     end
-                end):setConfigIgnore()
+                end):setConfigIgnore():setTranslationIgnore()
             end
             local wepTints = {}
             if wepInfo['Tints'] then wepTints = wepInfo['Tints'] end
             if #wepTints > 0 then
-                weaponSub:add_separator("Tints", "BS_Weapon_Ammunation_" .. category .. "_" .. wepName .. "_Tints")
+                weaponSub:add_separator("Tints", "BS_Weapon_Ammunation_Selected_Tints")
             end
             for _, tintInfo in ipairs(wepTints) do
                 local name = string.format("Untitled [%s]", tintInfo["Index"])
@@ -90,11 +90,11 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
                 end
                 weaponSub:add_click_option(name,  "BS_Weapon_Ammunation_" .. category .. "_" .. wepName .. "_Tints_" .. name, function()
                     WEAPON.SET_PED_WEAPON_TINT_INDEX(ped, wepInfo['Hash'], tintInfo['Index'])
-                end):setConfigIgnore()
+                end):setConfigIgnore():setTranslationIgnore()
             end
         end
     end
-    Weapon:add_sub_option("Ammunation", "BS_Weapon_Ammunation_SubOption", Ammunation, function ()
+    Weapon:add_sub_option("Ammunation", "BS_Weapon_Ammunation", Ammunation, function ()
         notify.default("Ammunation", "You can edit your weapons here.\nAlso you can save your weapon loadout in 'Presets' submenu.")
     end)
 end

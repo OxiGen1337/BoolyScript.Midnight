@@ -84,10 +84,10 @@ log = {
         console.log(consoleColors.Red, string.format("[Error] [%s] %s\n", page_s, text_s))
     end,
     default = function (page_s, text_s)
-        console.log(consoleColors.Grey, string.format("[Logs] [%s] %s\n", page_s, text_s))
+        console.log(consoleColors.Grey, string.format("[%s] %s\n", page_s, text_s))
     end,
     success = function (page_s, text_s)
-        console.log(consoleColors.LightGreen, string.format("[Success] [%s] %s\n", page_s, text_s))
+        console.log(consoleColors.LightGreen, string.format("[%s] %s\n", page_s, text_s))
     end,
     warning = function (page_s, text_s)
         console.log(consoleColors.Yellow, string.format("[Warning] [%s] %s\n", page_s, text_s))
@@ -98,23 +98,23 @@ log = {
 }
 
 notify = {
-    default = function (page_s, text_s, icon_i)
+    default = function (page_s, text_s)
         NotifyService:notify(page_s, text_s, 0, 180, 255)
         --utils.notify(page_s, text_s, icon_i, notifyType.default)
     end,
-    success = function (page_s, text_s, icon_i)
+    success = function (page_s, text_s)
         NotifyService:notify(page_s, text_s, 0, 204, 153)
         --utils.notify(page_s, text_s, icon_i, notifyType.success)
     end,
-    warning = function (page_s, text_s, icon_i)
+    warning = function (page_s, text_s)
         NotifyService:notify(page_s, text_s, 255, 204, 51)
         --utils.notify(page_s, text_s, icon_i, notifyType.warning)
     end,
-    important = function (page_s, text_s, icon_i)
-        NotifyService:notify(page_s, text_s, 153, 51, 204)
+    important = function (page_s, text_s)
+        NotifyService:notify(page_s, text_s, 51, 102, 204)
         --utils.notify(page_s, text_s, icon_i, notifyType.important)
     end,
-    fatal = function (page_s, text_s, icon_i)
+    fatal = function (page_s, text_s)
         NotifyService:notify(page_s, text_s, 255, 0, 51)
         --utils.notify(page_s, text_s, icon_i, notifyType.fatal)
     end,

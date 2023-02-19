@@ -6,8 +6,8 @@ local parse = require("BoolyScript/util/parse")
 local filesys = require("BoolyScript/util/file_system")
 require("BoolyScript/globals/stuff")
 
-PresetsMgr = Submenu.add_static_submenu("Presets", "BS_PresetsMgr_Submenu")
-Main:add_sub_option("Presets", "BS_PresetsMgr_SubOption", PresetsMgr)
+PresetsMgr = Submenu.add_static_submenu("Presets", "BS_PresetsMgr")
+Main:add_sub_option("Presets", "BS_PresetsMgr", PresetsMgr)
 
 PresetsMgr:add_separator("Weapons manager", "BS_PresetsMgr_WepManager")
 
@@ -62,6 +62,7 @@ local function loadWepLoadout(path)
         return
     end
     local parsedTable = parse.json(path)
+    if not parsedTable then return end
     WEAPON.REMOVE_ALL_PED_WEAPONS(PLAYER.PLAYER_PED_ID(), false)
     for _, wepInfo in ipairs(parsedTable) do
         local hash = wepInfo.hash
@@ -174,7 +175,7 @@ local function loadOutfit(path)
         notify.fatal("Saved outfits", "Failed to load outfit | File doesnt exist.", GET_NOTIFY_ICONS().self)
         return
     end
-    local content = parse.json(path)
+    local content = parse.json(path) or {}
     for ID_s, value_t in pairs(content.components) do
         local componentID = tonumber(ID_s)
         local drawableID = value_t['drawable']
