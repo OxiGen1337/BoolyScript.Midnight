@@ -1,6 +1,6 @@
 
 BSVERSION = "0.3"
-DEBUG = true
+DEBUG = false
 
 local temp = require
 
