@@ -1300,17 +1300,17 @@ HOME_SUBMENU = Submenu.add_main_submenu("Home", "home_sub")
 
 local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
     HOME_SUBMENU:add_sub_option("Settings", "Main_Settings", settings)
-    settings:add_choose_option("Localization", "Main_Settings_localization", false, {"English", "Russian", "Chinese", "Custom"}, function (pos, option) 
-        if pos == 1 then
-            config.localization = nil
-        elseif pos == 2 then
-            config.localization = Localizations.russian
-        elseif pos == 3 then
-            config.localization = Localizations.chinese        
-        elseif pos == 4 then
-            config.localization = Localizations.custom
-        end
-    end)
+    -- settings:add_choose_option("Localization", "Main_Settings_localization", false, {"English", "Russian", "Chinese", "Custom"}, function (pos, option) 
+    --     if pos == 1 then
+    --         config.localization = nil
+    --     elseif pos == 2 then
+    --         config.localization = Localizations.russian
+    --     elseif pos == 3 then
+    --         config.localization = Localizations.chinese        
+    --     elseif pos == 4 then
+    --         config.localization = Localizations.custom
+    --     end
+    -- end)
     settings:add_choose_option("Controls", "Main_Settings_Controls", true, {"Arrows", "Numpad"}, function (pos, option)
         if pos == 1 then
             controls = arrowsControls
@@ -1700,7 +1700,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         elseif data.type == OPTIONS.FLOAT then
             symbol = string.format("<%s of %s>", data.value, data.maxValue)
         elseif data.type == OPTIONS.CHOOSE then
-            symbol = string.format("<%s (%i/%i)>", data.table[data.value], data.value, #data.table)
+            symbol = #data.table > 0 and string.format("<%s (%i/%i)>", data.table[data.value], data.value, #data.table) or "None"
         elseif data.type == OPTIONS.SUB then
             material = materials.sub
         elseif data.type == OPTIONS.TEXT_INPUT then

@@ -64,12 +64,12 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
             ParsedFiles['objects'] = content
         end)
     end
-    log.init("Loading localizations...")
-    do
-        Localizations.russian = require("BoolyScript/localization/russian")
-        Localizations.chinese = require("BoolyScript/localization/chinese")
-        Localizations.custom = require("BoolyScript/localization/custom")
-    end
+    -- log.init("Loading localizations...")
+    -- do
+    --     Localizations.russian = require("BoolyScript/localization/russian")
+    --     Localizations.chinese = require("BoolyScript/localization/chinese")
+    --     Localizations.custom = require("BoolyScript/localization/custom")
+    -- end
     do -- Loading all pages added in 'pages' folder; it only loads init.lua so that file has to require everything that's in the page
         local path = filesys.getInitScriptPath() .. '\\BoolyScript\\pages'
         path = path:gsub("\\\\lua", "\\lua")

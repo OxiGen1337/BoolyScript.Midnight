@@ -5,7 +5,8 @@ Stuff = {
     attackers = {},
     isTextChatActive = false,
     blacklistedVehicles = {},
-    onBlacklistedVehicle = function () end
+    onBlacklistedVehicle = function () end,
+    trackedPlayers = {},
 }
 
 ParsedFiles = {
@@ -16,11 +17,11 @@ ParsedFiles = {
     vehicles = {},
 }
 
-Localizations = {
-    russian = {},
-    chinese = {},
-    custom = {},
-}
+-- Localizations = {
+--     russian = {},
+--     chinese = {},
+--     custom = {},
+-- }
 
 GetSelectedPlayer = function () end
 

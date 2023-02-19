@@ -795,7 +795,6 @@ PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList", functi
                         end
                     end
                 end
-                PlayerInteractions:setName(player.get_name(pid))
             end):setTags(getPlayerFlags(pid))
         else
             activeActions[pid + 1] = nil
