@@ -1,4 +1,3 @@
-
 BSVERSION = "0.3"
 DEBUG = false
 
