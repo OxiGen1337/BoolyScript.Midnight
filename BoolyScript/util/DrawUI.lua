@@ -240,7 +240,7 @@ Option = {
     minValue = nil,
     maxValue = nil,
     step = 0,
-    execOnSelection = nil,
+    execOnSelection = true,
     getter = nil,
     hint = "",
     default = nil,
@@ -1095,8 +1095,8 @@ Configs.loadConfig = function ()
             for _, option in ipairs(options) do
                 if not option.configIgnore then
                     local value = config[option.hash]
-                    if value and value ~= option.value then
-                        Option.setValue(option, value)
+                    if (value ~= option.value) then
+                        Option.setValue(option, value, not option.execOnSelection)
                     end
                 end
             end
