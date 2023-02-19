@@ -157,18 +157,6 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
             if not selectedPlayer then return "None" end
             return selectedPlayer.rid
         end)
-        playerInteractions:add_state_bar("Rank:", "BS_Network_PlayerHistory_PlayerInteractions_Rank", function ()
-            if not selectedPlayer then return "None" end
-            return selectedPlayer.rank
-        end)
-        playerInteractions:add_state_bar("Money:", "BS_Network_PlayerHistory_PlayerInteractions_Money", function ()
-            if not selectedPlayer then return "None" end
-            return selectedPlayer.money
-        end)
-        playerInteractions:add_state_bar("K/D:", "BS_Network_PlayerHistory_PlayerInteractions_KD", function ()
-            if not selectedPlayer then return "None" end
-            return selectedPlayer.kills .. "/" .. selectedPlayer.deaths
-        end)
         playerInteractions:add_state_bar("Last seen:", "BS_Network_PlayerHistory_PlayerInteractions_LastSeen", function ()
             if not selectedPlayer then return "None" end
             return selectedPlayer.last_seen
@@ -200,15 +188,11 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
             end
         end)
     end
-    local addPlayer = function (rid, name, rank, money, kills, deaths)
+    local addPlayer = function (rid, name)
         local player = 
         {
             name = name,
             rid = rid,
-            rank = rank,
-            money = money,
-            kills = kills,
-            deaths = deaths,
             last_seen = os.date("%x at %X")
         }
         
@@ -243,13 +227,7 @@ local playerHistory = Submenu.add_static_submenu("Player history", "BS_Network_P
         if state then
             listener.register("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerActive, function (pid)
                 if player.is_local(pid) then return end
-                local playerData = {
-                    ["rank"] = script_global:new(1853910):at(1):at(pid, 862):at(205):at(6):get_int64(),
-                    ["money"] = script_global:new(1853910):at(1):at(pid, 862):at(205):at(56):get_int64(),
-                    ["k"] = script_global:new(1853910):at(1):at(pid, 862):at(205):at(28):get_int64(),
-                    ["d"] = script_global:new(1853910):at(1):at(pid, 862):at(205):at(29):get_int64(),
-                }
-                addPlayer(player.get_rid(pid), player.get_name(pid), playerData["rank"], playerData["money"], playerData["k"], playerData["d"])
+                addPlayer(player.get_rid(pid), player.get_name(pid))
             end)
         elseif listener.exists("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerActive) then
             listener.remove("BS_Network_PlayerHistory", GET_EVENTS_LIST().OnPlayerActive)
