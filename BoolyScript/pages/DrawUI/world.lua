@@ -31,6 +31,28 @@ World:add_choose_option("Gravity", "BS_World_Gravity", true, {"Normal", "Lowered
     MISC.SET_GRAVITY_LEVEL(pos-2)
 end)
 
+local weatherTypes = {
+    "CLEAR",
+    "EXTRASUNNY",
+    "CLOUDS",
+    "OVERCAST",
+    "RAIN",
+    "CLEARING",
+    "THUNDER",
+    "SMOG",
+    "FOGGY",
+    "XMAS",
+    "SNOW",
+    "SNOWLIGHT",
+    "BLIZZARD",
+    "HALLOWEEN",
+    "NEUTRAL"
+}
+
+World:add_choose_option("Weather", "BS_World_Weather", true, {"Clear", "Sunny", "Cloudy", "Overcast", "Rain", "Clearing", "Thunder", "Smog", "Foggy", "Christmas", "Snow", "Snowlight", "Blizzard", "Halloween", "Neutral"}, function (pos)
+    MISC.SET_WEATHER_TYPE_OVERTIME_PERSIST(weatherTypes[pos], 10.0)
+end)
+
 local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards") do
     local groups = {}
     local pedsOptions = {}
