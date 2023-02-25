@@ -114,6 +114,12 @@ function features.getVirtualKeyViaID(id)
 	return nil
 end
 
+function features.getVirtualKeyState(id)
+	local key_s = features.getVirtualKeyViaID(id)
+	if not key_s then return nil end
+	return Stuff.guiKeyState[key_s]
+end
+
 function features.teleport(...)
 	local args = {...}
 	local entity = nil

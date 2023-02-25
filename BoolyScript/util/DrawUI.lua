@@ -36,6 +36,8 @@ local config = {
     shiftState = false,
     headerHeight = 90,
     localization = nil,
+    ignoreHotkeysWhenChatting = false,
+    notifyOnHotkey = true,
 }
 
 
@@ -250,6 +252,7 @@ Option = {
     isHotkeyable = false,
     hotkey = nil,
     onDelete = nil,
+    isStatic = false,
 }
 Option.__index = Option
 
@@ -668,7 +671,6 @@ function HotkeyService.removeHotkey(optionHash_s)
     file:close()
 
     HotkeyService.loadHotkeys()
-
     notify.success("Hotkey service", "Successfully removed a hotkey.")
 end
 
@@ -687,7 +689,7 @@ listener.register("DrawUI_Hotkeys", GET_EVENTS_LIST().OnKeyPressed, function (ke
             end
         end
     end
-    if Stuff.isTextChatActive then return end
+    if Stuff.isTextChatActive and config.ignoreHotkeysWhenChatting then return end
     if config.isInputBoxDisplayed then return end
     local keyName = features.getVirtualKeyViaID(key)
     if not HotkeyService.runtimeHotkeys[keyName] then return end
@@ -695,10 +697,12 @@ listener.register("DrawUI_Hotkeys", GET_EVENTS_LIST().OnKeyPressed, function (ke
         if option.type == OPTIONS.BOOL then
             option:setValue(not option.value)
             local strState = option:getValue() and "Enabled" or "Disabled"
-            notify.default("Hotkeys", string.format("%s \'%s\' option.", strState, option:getName()))
+            log.default("Hotkey service", string.format("%s \'%s\' option.", strState, option:getName()))
+            if config.notifyOnHotkey then notify.default("Hotkeys", string.format("%s \'%s\' option.", strState, option:getName())) end
         else
             option:setValue(option.value)
-            notify.default("Hotkeys", string.format("Executed \'%s\' option.", option:getName()))
+            log.default("Hotkey service", string.format("Executed \'%s\' option.", option:getName()))
+            if config.notifyOnHotkey then notify.default("Hotkeys", string.format("Executed \'%s\' option.", option:getName())) end
         end
     end
 end)
@@ -749,7 +753,6 @@ function Option.new(submenu_mt, name_s, hash_s, type_n, value_n, callback_f)
     option.submenu = submenu_mt
     table.insert(submenu_mt.options, option)
     table.insert(options, option)
-    searchOptions[hash_s] = option
     return option
 end
 
@@ -821,6 +824,7 @@ function Submenu:add_num_option(name_s, hash_s, min_n, max_n, step_n, callback_f
     option.minValue = min_n
     option.maxValue = max_n
     option.step = step_n
+    option.value = min_n
     option:setHotkeyable(true)
     return option
 end
@@ -829,6 +833,7 @@ function Submenu:add_float_option(name_s, hash_s, min_n, max_n, step_n, callback
     local option = Option.new(self, name_s, hash_s, OPTIONS.FLOAT, 0.0, callback_f)
     option.minValue = min_n
     option.maxValue = max_n
+    option.value = min_n
     option.step = step_n
     option:setHotkeyable(true)
     return option
@@ -1073,6 +1078,11 @@ function Option:setDeletable(callback_f)
     return self
 end
 
+function Option:setStatic(state_b)
+    self.isStatic = state_b
+    return self
+end
+
 Configs = {}
 Configs.saveConfig = function ()
     local out = {}
@@ -1091,12 +1101,14 @@ end
 
 Configs.loadConfig = function ()
     if fs.doesFileExist(paths.files.config) then
-        parse.json(paths.files.config, function (config)        
+        parse.json(paths.files.config, function (config)
             for _, option in ipairs(options) do
                 if not option.configIgnore then
                     local value = config[option.hash]
-                    if (value ~= option.value) then
-                        Option.setValue(option, value, not option.execOnSelection)
+                    if value then
+                        if (value ~= option:getValue()) then
+                            option:setValue(value, not option.execOnSelection)
+                        end
                     end
                 end
             end
@@ -1118,6 +1130,12 @@ end
 task.createTask("DrawUI_ControlsCheck", 0.0, nil, function ()
     if not config.isInputBoxDisplayed then return end
     PAD.DISABLE_ALL_CONTROL_ACTIONS(2)
+end)
+
+listener.register("DrawUI_GUIKeys", GET_EVENTS_LIST().OnKeyPressed, function (key, isDown)
+    local key_s = features.getVirtualKeyViaID(key)
+    if not key_s then return end
+    Stuff.guiKeyState[key_s] = isDown
 end)
 
 local function onControl(key, isDown, ignoreControlsState)
@@ -1372,6 +1390,12 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
     settings:add_bool_option("Render navigation bar", "Main_Settings_KeysPanel", function (state)
         config.drawKeysPanel = state
     end):setValue(true)
+    settings:add_bool_option("Ignore hotkeys when chatting", "Main_Settings_IgnoreHotkeysWhenChatting", function (state)
+        config.ignoreHotkeysWhenChatting = state
+    end):setValue(config.ignoreHotkeysWhenChatting)
+    settings:add_bool_option("Notify on hotkey usage", "Main_Settings_NotifyOnHotkey", function (state)
+        config.notifyOnHotkey = state
+    end):setValue(config.notifyOnHotkey)
     -- local keys = Submenu.add_static_submenu("Keys", "Main_Settings_Keys") do
     --     keys:add_text_input()
     -- end
@@ -1425,7 +1449,9 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
 
     if submenu.isDynamic then
         for ID, option in ipairs(submenu.options) do
-            Option.remove(option)
+            if not option.isStatic then
+                Option.remove(option)
+            end
         end
         submenu.getter(submenu)
     end
@@ -1675,7 +1701,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
 
     for i = firstOption, lastOption do -- RENDERING OPTIONS NAMES
         optionID = optionID + 1
-        local data = submenu.options[i]
+        local data = submenu.options[i] or {}
 
         local textEnd = {}
         textEnd.leftUpper = {
@@ -1771,7 +1797,17 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             )
             draw.set_thickness(0)
             draw.set_color(0, 255, 255, 255, 255)
+        elseif data.type == OPTIONS.STATE_BAR then
+            draw.set_color(0, 50, 50, 50, 255)
+            draw.set_rounding(3)
+            draw.rect_filled(
+                rd.x - draw.get_text_size_x(symbol) - 10 - 3,
+                (rd.y - (rd.y - lu.y)/2) - draw.get_text_size_y(symbol)/2,
+                rd.x - 10 + 3,
+                (rd.y - (rd.y - lu.y)/2) + draw.get_text_size_y(symbol)/2
+            )
         end
+
         local offset = 5.0
         for _, t in ipairs(data.tags) do                      
             draw.set_color(0, t[2], t[3], t[4], 255)

@@ -1,5 +1,6 @@
-BSVERSION = "0.3"
-DEBUG = false
+BSVERSION = "0.4"
+PATCH = "1.66"
+DEBUG = true
 
 local temp = require
 
@@ -23,6 +24,11 @@ callbacks = require("BoolyScript/rage/callbacks")
 features = require("BoolyScript/rage/features")
 json = require("BoolyScript/modules/JSON")
 gui = require("BoolyScript/globals/gui")
+
+-- if NETWORK._GET_ONLINE_VERSION() ~= PATCH then
+--     notify.fatal("BoolyScript", string.format("You're using the newest game version: %s.\nScript is updated for: %s!", NETWORK._GET_ONLINE_VERSION(), PATCH))
+--     log.error("BoolyScript", string.format("You're using the newest game version: %s. Script is updated for: %s!", NETWORK._GET_ONLINE_VERSION(), PATCH))
+-- end
 
 listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
     log.init("Loading BoolyScript...")

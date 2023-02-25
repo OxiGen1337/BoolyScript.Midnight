@@ -124,7 +124,7 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe") do
         local ped = PLAYER.PLAYER_PED_ID()
         local submenu = Submenu.add_static_submenu(name, "BS_Self_Wardrobe_" .. name .."")
         local drawableVariations = PED.GET_NUMBER_OF_PED_PROP_DRAWABLE_VARIATIONS(ped, ID)
-        local textures
+        local textures = {}
         local variations = submenu:add_num_option("Variation", "BS_Self_Wardrobe_Variation", 0, drawableVariations - 1, 1, function (val)
             local ped = PLAYER.PLAYER_PED_ID()
             PED.SET_PED_PROP_INDEX(ped, ID, val, 0, true, false)
@@ -169,17 +169,19 @@ local wardrobe = Submenu.add_static_submenu("Wardrobe", "BS_Self_Wardrobe") do
         local ped = PLAYER.PLAYER_PED_ID()
         local submenu = Submenu.add_static_submenu(name, "BS_Self_Wardrobe_" .. name .."")
         local drawableVariations = PED.GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS(ped, ID)
-        local textures
+        local textures = {}
         local variations = submenu:add_num_option("Variation", "BS_Self_Wardrobe_Variation", 0, drawableVariations - 1, 1, function (val)
             local ped = PLAYER.PLAYER_PED_ID()
-            PED.SET_PED_COMPONENT_VARIATION(ped, ID, val, 0, 0)
             local textureVariations = PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, val)
             Option.setLimits(textures, 0, textureVariations > 0 and textureVariations - 1 or 0, 1)
             Option.setValue(textures, 0, true)
+            if not PED.IS_PED_COMPONENT_VARIATION_VALID(ped, ID, val, 0) then return notify.fatal("Wardrobe", "Invalid component variation\nPrevented a game crash.") end
+            PED.SET_PED_COMPONENT_VARIATION(ped, ID, val, 0, 0)
         end):setConfigIgnore()
         textures = submenu:add_num_option("Texture", "BS_Self_Wardrobe_Texture", 0, 0, 1, function (val)
             if PED.GET_NUMBER_OF_PED_TEXTURE_VARIATIONS(ped, ID, variations:getValue()) == 0 then return end
             local ped = PLAYER.PLAYER_PED_ID()
+            if not PED.IS_PED_COMPONENT_VARIATION_VALID(ped, ID, variations:getValue(), 0) then return notify.fatal("Wardrobe", "Invalid component variation\nPrevented a game crash.") end
             PED.SET_PED_COMPONENT_VARIATION(ped, ID, variations:getValue(), val, 0)
         end):setConfigIgnore()
         wardrobe:add_sub_option(name, "BS_Self_Wardrobe_" .. name .. "", submenu, function ()

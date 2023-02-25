@@ -37,7 +37,7 @@ local function saveWepLoadout(name)
     local file = io.open(path, 'w+')
     local configTable = {}
     for _, wepInfo in ipairs(ParsedFiles.weapons) do
-        if WEAPON.HAS_PED_GOT_WEAPON(PLAYER.PLAYER_PED_ID(), wepInfo['Hash'], false) then
+        if WEAPON.HAS_PED_GOT_WEAPON(PLAYER.PLAYER_PED_ID(), wepInfo['Hash'], false) and WEAPON.IS_WEAPON_VALID(wepInfo['Hash']) then
             local out = {}
             out.hash = wepInfo['Hash'] or 0
             out.tint = WEAPON.GET_PED_WEAPON_TINT_INDEX(PLAYER.PLAYER_PED_ID(), wepInfo['Hash'])

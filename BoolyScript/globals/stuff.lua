@@ -7,6 +7,7 @@ Stuff = {
     blacklistedVehicles = {},
     onBlacklistedVehicle = function () end,
     trackedPlayers = {},
+    guiKeyState = {},
 }
 
 ParsedFiles = {

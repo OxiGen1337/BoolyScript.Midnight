@@ -50,8 +50,47 @@ local weatherTypes = {
 }
 
 World:add_choose_option("Weather", "BS_World_Weather", true, {"Clear", "Sunny", "Cloudy", "Overcast", "Rain", "Clearing", "Thunder", "Smog", "Foggy", "Christmas", "Snow", "Snowlight", "Blizzard", "Halloween", "Neutral"}, function (pos)
+    MISC.CLEAR_WEATHER_TYPE_PERSIST()
     MISC.SET_WEATHER_TYPE_OVERTIME_PERSIST(weatherTypes[pos], 10.0)
 end)
+
+local clock = Submenu.add_static_submenu("Clock", "BS_World_Clock") do
+    local time = {
+        hour = 0,
+        min = 0,
+        sec = 0,
+    }
+    local currentTime = {
+        hour = "00",
+        min = "00",
+    }
+
+    task.createTask("BS_World_Clock_GetServerTime", 0.0, nil, function ()
+        currentTime = {
+            hour = '0' .. tostring(CLOCK.GET_CLOCK_HOURS()),
+            min = '0' .. tostring(CLOCK.GET_CLOCK_MINUTES()),
+        }
+    end)
+    clock:add_state_bar("Current time: ", "BS_World_Clock_Time", function ()
+        return string.format("%s:%s", currentTime.hour:sub(-2), currentTime.min:sub(-2))
+    end)
+    local hours = clock:add_num_option("Hours", "BS_World_Clock_Hours", 0, 23, 1, function (val)
+        time.hour = val
+        NETWORK.NETWORK_OVERRIDE_CLOCK_TIME(time.hour, time.min, time.sec)
+    end)
+    local minutes = clock:add_num_option("Minutes", "BS_World_Clock_Minutes", 0, 60, 10, function (val)
+        time.min = val
+        NETWORK.NETWORK_OVERRIDE_CLOCK_TIME(time.hour, time.min, time.sec)
+    end)
+    clock:add_looped_option("Lock the time", "BS_World_Clock_Lock", 0.0, function ()
+        NETWORK.NETWORK_OVERRIDE_CLOCK_TIME(time.hour, time.min, time.sec)
+    end)
+    clock:add_looped_option("Use system time", "BS_World_Clock_UseSystemTime", 0.0, function ()
+        local sysTime = os.date("*t")
+        time.hour, time.min, time.sec = sysTime.hour, sysTime.min, sysTime.sec
+    end)
+    World:add_sub_option("Clock", "BS_World_Clock", clock)
+end
 
 local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards") do
     local groups = {}

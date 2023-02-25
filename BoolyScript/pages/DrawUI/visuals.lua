@@ -47,6 +47,10 @@ Visual:add_bool_option("Thermal vision", "BS_Visual_ThermalVision", function(sta
     GRAPHICS.SET_SEETHROUGH(state)
 end)
 
+Visual:add_click_option("Toggle helmet visor", "BS_Visual_ToggleVisor", function ()
+    PED.SET_PED_CONFIG_FLAG(player.id(), 419, true)
+end):setHint("Set a hotkey to make it useful.")
+
 Visual:add_click_option("Skip cutscene", "BS_Visual_SkipCutscene", function ()
     scripts.globals.skipCutscene()
 end)
