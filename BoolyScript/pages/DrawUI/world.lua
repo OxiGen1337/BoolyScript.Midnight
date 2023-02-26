@@ -82,7 +82,7 @@ local clock = Submenu.add_static_submenu("Clock", "BS_World_Clock") do
         time.min = val
         NETWORK.NETWORK_OVERRIDE_CLOCK_TIME(time.hour, time.min, time.sec)
     end)
-    clock:add_looped_option("Lock the time", "BS_World_Clock_Lock", 0.0, function ()
+    clock:add_looped_option("Lock time", "BS_World_Clock_Lock", 0.0, function ()
         NETWORK.NETWORK_OVERRIDE_CLOCK_TIME(time.hour, time.min, time.sec)
     end)
     clock:add_looped_option("Use system time", "BS_World_Clock_UseSystemTime", 0.0, function ()
