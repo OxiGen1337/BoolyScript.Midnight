@@ -76,46 +76,41 @@ GET_NOTIFY_TYPES = function ()
 end
 
 log = {
-    dbg = function (text_s)
+    dbg = function (text_s, ...)
         if not DEBUG_ON then return end
-        console.log(consoleColors.Purple, string.format("[DEBUG] %s\n", text_s))
+        console.log(consoleColors.Purple, string.format("[DEBUG] %s\n", features.format(text_s, table.unpack({...}))))
     end,
-    error = function (page_s, text_s)
-        console.log(consoleColors.Red, string.format("[Error] [%s] %s\n", page_s, text_s))
+    error = function (page_s, text_s, ...)
+        console.log(consoleColors.Red, string.format("[Error] [%s] %s\n", page_s, features.format(text_s, table.unpack({...}))))
     end,
-    default = function (page_s, text_s)
-        console.log(consoleColors.Grey, string.format("[%s] %s\n", page_s, text_s))
+    default = function (page_s, text_s, ...)
+        console.log(consoleColors.Grey, string.format("[%s] %s\n", page_s, features.format(text_s, table.unpack({...}))))
     end,
-    success = function (page_s, text_s)
-        console.log(consoleColors.LightGreen, string.format("[%s] %s\n", page_s, text_s))
+    success = function (page_s, text_s, ...)
+        console.log(consoleColors.LightGreen, string.format("[%s] %s\n", page_s, features.format(text_s, table.unpack({...}))))
     end,
-    warning = function (page_s, text_s)
-        console.log(consoleColors.Yellow, string.format("[Warning] [%s] %s\n", page_s, text_s))
+    warning = function (page_s, text_s, ...)
+        console.log(consoleColors.Yellow, string.format("[Warning] [%s] %s\n", page_s, features.format(text_s, table.unpack({...}))))
     end,
-    init = function (text_s)
-        console.log(consoleColors.LightBlue, string.format("[INIT] %s\n", text_s))
+    init = function (text_s, ...)
+        console.log(consoleColors.LightBlue, string.format("[INIT] %s\n", features.format(text_s, table.unpack({...}))))
     end,
 }
 
 notify = {
-    default = function (page_s, text_s)
-        NotifyService:notify(page_s, text_s, 0, 180, 255)
-        --utils.notify(page_s, text_s, icon_i, notifyType.default)
+    default = function (page_s, text_s, ...)
+        NotifyService:notify(page_s, features.format(text_s, table.unpack({...})), 0, 180, 255)
     end,
-    success = function (page_s, text_s)
-        NotifyService:notify(page_s, text_s, 0, 204, 153)
-        --utils.notify(page_s, text_s, icon_i, notifyType.success)
+    success = function (page_s, text_s, ...)
+        NotifyService:notify(page_s, features.format(text_s, table.unpack({...})), 0, 204, 153)
     end,
-    warning = function (page_s, text_s)
-        NotifyService:notify(page_s, text_s, 255, 204, 51)
-        --utils.notify(page_s, text_s, icon_i, notifyType.warning)
+    warning = function (page_s, text_s, ...)
+        NotifyService:notify(page_s, features.format(text_s, table.unpack({...})), 255, 204, 51)
     end,
-    important = function (page_s, text_s)
-        NotifyService:notify(page_s, text_s, 51, 102, 204)
-        --utils.notify(page_s, text_s, icon_i, notifyType.important)
+    important = function (page_s, text_s, ...)
+        NotifyService:notify(page_s, features.format(text_s, table.unpack({...})), 51, 102, 204)
     end,
-    fatal = function (page_s, text_s)
-        NotifyService:notify(page_s, text_s, 255, 0, 51)
-        --utils.notify(page_s, text_s, icon_i, notifyType.fatal)
+    fatal = function (page_s, text_s, ...)
+        NotifyService:notify(page_s, features.format(text_s, table.unpack({...})), 255, 0, 51)
     end,
 }

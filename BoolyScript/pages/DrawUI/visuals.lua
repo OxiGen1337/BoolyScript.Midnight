@@ -39,6 +39,10 @@ Visual:add_looped_option("Disable speeches", "BS_Visual_DisableSpeeches", 0.0, f
     end
 end)
 
+Visual:add_looped_option("Disable notifications", "BS_Visual_DisableNotifications", 0.0, function ()
+    HUD.THEFEED_HIDE_THIS_FRAME()
+end):setHint("Disables notifications above the minimap.")
+
 Visual:add_bool_option("Night vision", "BS_Visual_NightVision", function(state)
     GRAPHICS.SET_NIGHTVISION(state)
 end)
@@ -46,6 +50,10 @@ end)
 Visual:add_bool_option("Thermal vision", "BS_Visual_ThermalVision", function(state)
     GRAPHICS.SET_SEETHROUGH(state)
 end)
+
+Visual:add_click_option("Toggle helmet visor", "BS_Visual_ToggleVisor", function ()
+    PED.SET_PED_CONFIG_FLAG(player.id(), 419, true)
+end):setHint("Set a hotkey to make it useful.")
 
 Visual:add_click_option("Skip cutscene", "BS_Visual_SkipCutscene", function ()
     scripts.globals.skipCutscene()

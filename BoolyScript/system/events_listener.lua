@@ -106,7 +106,7 @@ function OnInit()
         end
     end
     log.init(string.format("Initialization finished in %s sec.", tostring(os.clock() - startTime):sub(0, 3)))
-    notify.success("BoolyScript", "Script has been loaded successfuly.")
+    notify.success("BoolyScript", "Script has been loaded successfully.")
 end
 
 function OnKeyPressed(key, isDown)

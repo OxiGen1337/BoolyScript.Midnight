@@ -648,7 +648,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
             hash = string.joaat(hash)
             local playerPed = player.get_entity_handle(selectedPlayer)
             if task.exists("BS_PlayerList_Player_Griefing_SendAnimal") then notify.warning("Attackers", "The script hasn't finished previous attacker sending yet.\nTry again later.") return end
-            task.createTask("BS_PlayerList_Player_Griefing_SendAnimal", 0.1, config.count, function ()                
+            task.createTask("BS_PlayerList_Player_Griefing_SendAnimal", 0.1, config.count, function ()
                 callbacks.requestModel(hash, function()
                     local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(playerPed, math.random(-10, 10) + .0, math.random(-10, 10)+ .0, 0.0)
                     entity.spawn_ped(hash, coords, function (attacker)
@@ -779,10 +779,13 @@ local function getPlayerFlags(pid)
     return out
 end
 
-PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList", function ()
+local function sort() end
+
+PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList", function (sub)
+    local options = {}
     for pid = 0, 32 do
         if player.is_connected(pid) then
-            PlayerList:add_sub_option(player.get_name(pid), "Player_" .. pid, PlayerInteractions, function ()
+            table.insert(options, PlayerList:add_sub_option(player.get_name(pid), "Player_" .. pid, PlayerInteractions, function ()
                 selectedPlayer = pid
                 if activeActions[pid + 1] then
                     for option, value in pairs(activeActions[pid + 1]) do
@@ -795,12 +798,34 @@ PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList", functi
                         end
                     end
                 end
-            end):setTags(getPlayerFlags(pid))
+            end):setTags(getPlayerFlags(pid)):setValue(pid, true))
         else
             activeActions[pid + 1] = nil
         end
     end
+    table.sort(options, sort)
+    table.insert(options, 1, sub.options[1]) -- For sort option
+    sub.options = options
 end)
+
+PlayerList:add_choose_option("Sort", "BS_PlayerList_Sort", true, {"Name", "Distance", "Host queue"}, function (pos, option)
+    if pos == 1 then
+        sort = function (a, b)
+            return a:getName():lower() < b:getName():lower()
+        end
+    elseif pos == 2 then
+        sort = function (a, b)
+            local pid1, pid2 = a:getValue(), b:getValue()
+            return player.get_distance(pid1) < player.get_distance(pid2)
+        end
+    elseif pos == 3 then
+        sort = function (a, b)
+            local pid1, pid2 = a:getValue(), b:getValue()
+            return player.get_host_priority(pid1) < player.get_host_priority(pid2)
+        end
+    end
+end):setStatic(true)
+
 
 Main:add_sub_option("Players", "BS_PlayerList", PlayerList)
 
