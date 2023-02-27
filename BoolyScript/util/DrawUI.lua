@@ -1105,7 +1105,7 @@ Configs.loadConfig = function ()
             for _, option in ipairs(options) do
                 if not option.configIgnore then
                     local value = config[option.hash]
-                    if value then
+                    if value ~= nil then
                         if (value ~= option:getValue()) then
                             option:setValue(value, not option.execOnSelection)
                         end
