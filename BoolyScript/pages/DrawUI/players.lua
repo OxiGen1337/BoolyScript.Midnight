@@ -648,7 +648,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
             hash = string.joaat(hash)
             local playerPed = player.get_entity_handle(selectedPlayer)
             if task.exists("BS_PlayerList_Player_Griefing_SendAnimal") then notify.warning("Attackers", "The script hasn't finished previous attacker sending yet.\nTry again later.") return end
-            task.createTask("BS_PlayerList_Player_Griefing_SendAnimal", 0.1, config.count, function ()                
+            task.createTask("BS_PlayerList_Player_Griefing_SendAnimal", 0.1, config.count, function ()
                 callbacks.requestModel(hash, function()
                     local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(playerPed, math.random(-10, 10) + .0, math.random(-10, 10)+ .0, 0.0)
                     entity.spawn_ped(hash, coords, function (attacker)

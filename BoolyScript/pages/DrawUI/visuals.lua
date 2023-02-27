@@ -39,6 +39,10 @@ Visual:add_looped_option("Disable speeches", "BS_Visual_DisableSpeeches", 0.0, f
     end
 end)
 
+Visual:add_looped_option("Disable notifications", "BS_Visual_DisableNotifications", 0.0, function ()
+    HUD.THEFEED_HIDE_THIS_FRAME()
+end):setHint("Disables notifications above the minimap.")
+
 Visual:add_bool_option("Night vision", "BS_Visual_NightVision", function(state)
     GRAPHICS.SET_NIGHTVISION(state)
 end)

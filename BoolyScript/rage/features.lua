@@ -151,4 +151,28 @@ function features.teleport(...)
 	return false
 end
 
+function table.tostring(table_t)
+	local out = ""
+	if #table_t == 0 then
+		for key, value in pairs(table_t) do
+			out = out .. string.format("['%s'] = %s, ", key, value)
+		end
+	else
+		out = table.concat(table_t, ", ")
+	end
+	return out
+end
+
+function features.format(str, ...)
+	local args = {...}
+	local iterations = 0
+	for _ in string.gmatch(str, "{}") do
+		iterations = iterations + 1
+		local out = args[iterations]
+		if type(out) == 'table' then out = table.tostring(out) end
+		str = str:gsub("{}", #args >= iterations and tostring(out) or "?", 1)
+	end
+	return str
+end
+
 return features

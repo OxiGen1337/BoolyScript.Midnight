@@ -1,6 +1,6 @@
 BSVERSION = "0.4"
-PATCH = "1.66"
-DEBUG = true
+-- PATCH = "1.66"
+DEBUG = false
 
 local temp = require
 
@@ -86,7 +86,7 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
         end
     end
     do
-        local a=os.date('%m/%d')if a=='12/31'then notify.important("Happy New Year!")elseif a=='01/01'then notify.important("Happy New Year!")elseif a=='01/07'then notify.important("Merry Christmas!")elseif a=='02/23'then notify.important("Happy Defender of the Fatherland Day!")elseif a=='02/24'then notify.important("Happy Day of the Special Military Operation for the Demilitarization and Denazification of Ukraine!")elseif a=='03/08'then notify.important("Happy International Women Day!")elseif a=='03/18'then notify.important("Happy Day of Accession of Crimea to the Russian Federation!")elseif a=='03/27'then notify.important("Happy Day of the National Guard Troops of the Russian Federation!")elseif a=='04/01'then notify.important("You are ugly!")elseif a=='04/16'then notify.important("Happy Easter!")elseif a=='05/09'then notify.important("Happy Victory Day of the Soviet army and people over Nazi Germany in the Second World War!")elseif a=='06/12'then notify.important("Happy Russia Day!")elseif a=='08/22'then notify.important("Happy Day of the State Flag of the Russian Federation!")elseif a=='09/01'then notify.important("Why not at school bro?")elseif a=='11/04'then notify.important("Happy National Unity Day!")end
+        local a=os.date('%m/%d')if a=='12/31'then notify.important("Holidays", "Happy New Year!")elseif a=='01/01'then notify.important("Holidays", "Happy New Year!")elseif a=='01/07'then notify.important("Holidays", "Merry Christmas!")elseif a=='02/23'then notify.important("Holidays", "Happy Defender of the Fatherland Day!")elseif a=='02/24'then notify.important("Holidays", "Happy Day of the Special Military Operation for the Demilitarization and Denazification of Ukraine!")elseif a=='03/08'then notify.important("Holidays", "Happy International Women Day!")elseif a=='03/18'then notify.important("Holidays", "Happy Day of Accession of Crimea to the Russian Federation!")elseif a=='03/27'then notify.important("Holidays", "Happy Day of the National Guard Troops of the Russian Federation!")elseif a=='04/01'then notify.important("Holidays", "You are ugly!")elseif a=='04/16'then notify.important("Holidays", "Happy Easter!")elseif a=='05/09'then notify.important("Holidays", "Happy Victory Day of the Soviet army and people over Nazi Germany in the Second World War!")elseif a=='06/12'then notify.important("Holidays", "Happy Russia Day!")elseif a=='08/22'then notify.important("Holidays", "Happy Day of the State Flag of the Russian Federation!")elseif a=='09/01'then notify.important("Holidays", "Why not at school bro?")elseif a=='11/04'then notify.important("Holidays", "Happy National Unity Day!")end
     end
     task.executeAsScript("Load_Config", function ()
         Configs.loadConfig()
