@@ -17,6 +17,11 @@ V2:add_click_option("Clubhouse Scam", "BS_RecoveryV2_Clubhouse_Scam", function(o
     option:setTags({{"[Done]", 0, 204, 255}})
 end):setHint("Purchase a Clubhouse -> Activate this option -> Purchase another Clubhouse and replace it")
 
+V2:add_click_option("Auto Shop Scam", "BS_RecoveryV2_AS_Scam", function(option)
+    stats.set_u64(string.joaat("MP" .. character .."_PROP_AUTO_SHOP_VALUE"), ((1000000000*2) + 4500000))
+    option:setTags({{"[Done]", 0, 204, 255}})
+end):setHint("Purchase an Auto Shop -> Activate this option -> Purchase another Auto Shop and replace it")
+
 V2:add_separator("Unlocks", "BS_RecoveryV2_Unl")
 
 V2:add_click_option("Extra", "BS_RecoveryV2_Extra", function(option)
