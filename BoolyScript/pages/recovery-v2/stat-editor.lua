@@ -24,7 +24,7 @@ local INT_MIN = -2147483647
 local iValue = ST:add_text_input("Value", "BS_StatEditor_IntValue"):setConfigIgnore()
 
 ST:add_click_option("Set", "BS_StatEditor_IntSet", function(option)
-    STATS.STAT_SET_INT(string.joaat(tostring(statNameI)), tonumber(iValue), true)
+    STATS.STAT_SET_INT(string.joaat(tostring(statNameI)), s2i(iValue), true)
     STATS.STAT_SAVE(0, 0, 3, 0)
 end)
 --11
