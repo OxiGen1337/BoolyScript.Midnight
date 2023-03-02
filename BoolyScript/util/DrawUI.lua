@@ -382,11 +382,11 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
         corners.background = {
             leftUpper = {
                 x = draw.get_window_width()/2 - settings.width/2,
-                y = draw.get_window_height()/2 - settings.height/2,
+                y = draw.get_screen_height()/2 - settings.height/2,
             },
             rightDown = {
                 x = draw.get_window_width()/2 + settings.width/2,
-                y = draw.get_window_height()/2 + settings.height/2,
+                y = draw.get_screen_height()/2 + settings.height/2,
             },
         }
         corners.textArea = {
@@ -757,18 +757,6 @@ function Option.new(submenu_mt, name_s, hash_s, type_n, value_n, callback_f)
 end
 
 function Submenu:setActive(state)
-    local function getClickableOption(self, selectedOption)
-        if #self.options < 2 then return 1 end
-        if self.isDynamic then return selectedOption end
-        if selectedOption > #self.options then 
-            return getClickableOption(self, 1)
-        end
-        if (self.options[selectedOption].type ~= OPTIONS.SEPARATOR) and (self.options[selectedOption].type ~= OPTIONS.STATE_BAR) then
-            return selectedOption
-        else
-            return getClickableOption(self, selectedOption + 1)
-        end
-    end
     if state then
         table.insert(config.path, self)
     else
@@ -776,7 +764,6 @@ function Submenu:setActive(state)
             table.remove(config.path)
         end
     end
-    config.path[#config.path].selectedOption = getClickableOption(config.path[#config.path], config.path[#config.path].selectedOption)
     return self
 end
 
@@ -1415,6 +1402,26 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
     -- end
 end
 
+local function getClickableOption(submenu, selectedOption)
+    if #submenu.options < 2 then return 1 end
+    if selectedOption < 1 then 
+        return getClickableOption(submenu, #submenu.options)
+    end
+    if selectedOption > #submenu.options then
+        return getClickableOption(submenu, 1)
+    end
+    local option = submenu.options[selectedOption] or {}
+    if option.type ~= OPTIONS.SEPARATOR and option.type ~= OPTIONS.STATE_BAR then
+        return selectedOption
+    else
+        if submenu.prevOption <= submenu.selectedOption then
+            return getClickableOption(submenu, selectedOption + 1)
+        elseif submenu.prevOption > submenu.selectedOption then
+            return getClickableOption(submenu, selectedOption - 1)
+        end
+    end
+end
+
 listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
     draw.set_rounding(0)
 
@@ -1424,27 +1431,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
 
     local submenu = config.path[#config.path]
 
-    local function getClickableOption(selectedOption)
-        if #submenu.options < 2 then return 1 end
-        if selectedOption < 1 then 
-            return getClickableOption(#submenu.options)
-        end
-        if selectedOption > #submenu.options then
-            return getClickableOption(1)
-        end
-        local option = submenu.options[selectedOption] or {}
-        if option.type ~= OPTIONS.SEPARATOR and option.type ~= OPTIONS.STATE_BAR then
-            return selectedOption
-        else
-            if submenu.prevOption < submenu.selectedOption then
-                return getClickableOption(selectedOption + 1)
-            elseif submenu.prevOption > submenu.selectedOption then
-                return getClickableOption(selectedOption - 1)
-            end
-        end
-    end
-
-    submenu.selectedOption = getClickableOption(submenu.selectedOption)
+    submenu.selectedOption = getClickableOption(submenu, submenu.selectedOption)
     submenu.prevOption = submenu.selectedOption
 
     if submenu.isDynamic then
@@ -1582,7 +1569,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         if not submenu.scrollerPos then submenu.scrollerPos = scrollerEnd end
         
         if config.enabelSmoothScroller then
-            local scrollerSpeed = 3
+            local scrollerSpeed = 180 * (1/features.getFPS())
             if submenu.scrollerPos.leftUpper.y < scrollerEnd.leftUpper.y then -- CREDITS TO 1tsPxel
                 submenu.scrollerPos.leftUpper.y = math.min(scrollerEnd.leftUpper.y, submenu.scrollerPos.leftUpper.y + scrollerSpeed)
             elseif submenu.scrollerPos.leftUpper.y > scrollerEnd.leftUpper.y then
@@ -1602,7 +1589,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
 
         if data.hint ~= "" then
             draw.set_color(0, 255, 255, 255, 255)
-            local hint = tostring(submenu.options[submenu.selectedOption].hint)
+            local hint = features.split_text_into_lines(tostring(submenu.options[submenu.selectedOption].hint), config.width - 20)
             if hint ~= "" then
                 local y = bg.rd.y + config.optionHeight + 10
                 draw.set_color(0, 34, 41, 47, 255)
@@ -1660,7 +1647,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         
         if not submenu.sliderPos then submenu.sliderPos = sliderItemEnd end
 
-        local sliderPosSpeed = 3
+        local sliderPosSpeed = 180 * (1/features.getFPS())
 
         if submenu.sliderPos.leftUpper.y < sliderItemEnd.leftUpper.y then -- CREDITS TO 1tsPxel
             submenu.sliderPos.leftUpper.y = math.min(sliderItemEnd.leftUpper.y, submenu.sliderPos.leftUpper.y + sliderPosSpeed)
@@ -1722,18 +1709,18 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             material = materials.toggleOff
             if data.value then material = materials.toggleOn end
         elseif data.type == OPTIONS.NUM then
-            symbol = string.format("<%i of %i>", data.value, data.maxValue)
+            symbol = features.format("<{} of {}>", data.value, data.maxValue)
         elseif data.type == OPTIONS.FLOAT then
-            symbol = string.format("<%s of %s>", data.value, data.maxValue)
+            symbol = features.format("<{} of {}>", data.value, data.maxValue)
         elseif data.type == OPTIONS.CHOOSE then
-            symbol = #data.table > 0 and string.format("<%s (%i/%i)>", data.table[data.value], data.value, #data.table) or "None"
+            symbol = #data.table > 0 and features.format("<{} ({}/{})>", data.table[data.value], math.floor(data.value), #data.table) or "None"
         elseif data.type == OPTIONS.SUB then
             material = materials.sub
         elseif data.type == OPTIONS.TEXT_INPUT then
             if data.value == "" then
                 symbol = "[Empty]"
             else
-                symbol = string.format("[%s]", data.value)
+                symbol = features.format("[{}]", data.value)
             end
         elseif data.type == OPTIONS.STATE_BAR then
             symbol = tostring(data.getter())
@@ -1842,11 +1829,11 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         local coords = {
             leftUpper = {
                 x = draw.get_window_width() - 10 - 10,
-                y = draw.get_window_height() - 10 - config.optionHeight,
+                y = draw.get_screen_height() - 10 - config.optionHeight,
             },
             rightDown = {
                 x = draw.get_window_width() - 10,
-                y = draw.get_window_height() - 10,
+                y = draw.get_screen_height() - 10,
             },
         }
         local keys = {

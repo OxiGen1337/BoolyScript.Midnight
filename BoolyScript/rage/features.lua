@@ -175,4 +175,34 @@ function features.format(str, ...)
 	return str
 end
 
+function string.split(text_s, sep_s)
+	if not sep_s then sep_s = " " end
+	local out = {}
+	local ID = 1
+	out[ID] = ''
+	for symbol in text_s:gmatch('.') do
+		if symbol == sep_s then
+      		ID = ID + 1
+		  	out[ID] = ''
+    	else
+		  	out[ID] = out[ID] .. symbol
+    	end
+	end
+	return out
+end
+
+function features.split_text_into_lines(text_s, maxWidth_n)
+	local out = ""
+	if draw.get_text_size(text_s).x <= maxWidth_n then return text_s end
+	for _, token in ipairs(string.split(text_s, " ")) do
+		local new = out .. token .. " "
+		if draw.get_text_size(new).x > maxWidth_n then
+			out = out .. '\n' .. token .. " "
+		else
+			out = new
+		end
+	end
+	return out
+end
+
 return features
