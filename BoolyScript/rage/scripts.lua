@@ -226,6 +226,12 @@ scripts.globals['getPlayerOtr'] = function(pid)
     return script_global:new(raw.globals.otrState.playerInfo):at(pid, raw.globals.otrState.playerInfo_size):at(raw.globals.otrState.offTheRadarOffset):get_long()
 end
 
+scripts.globals['getCharId'] = function()
+    -- log.error("SCRIPTS", "\'getCharId\' global hasn't been updated yet.")
+    -- return false
+    return script_global:new(1574918):get_long()
+end
+
 scripts.globals['skipCutscene'] = function()
     -- log.error("SCRIPTS", "\'skipCutscene\' global hasn't been updated yet.") 
     script_global:new(2766500):at(3):set_int64(1) -- CUTSCENE::REQUEST_CUTSCENE("HS4_SCP_KNCK", 8);
