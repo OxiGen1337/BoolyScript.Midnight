@@ -1,6 +1,6 @@
 BSVERSION = "0.4"
 -- PATCH = "1.66"
-DEBUG = false
+DEBUG = true
 
 local temp = require
 

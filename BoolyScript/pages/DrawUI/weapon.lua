@@ -15,7 +15,6 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
     end)
     Ammunation:add_separator("Categories", "BS_Weapon_Ammunation_Categories")
     if not filesys.doesFileExist(paths.files.weapons) then return end
-    local ped = PLAYER.PLAYER_PED_ID()
     local createdCateg = {}
     local createdWepSubs = {}
     for _, wepInfo in ipairs(ParsedFiles.weapons) do
@@ -49,10 +48,10 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
             local weaponSub = createdWepSubs[wepName]
             weaponSub:add_choose_option("Manage", "BS_Weapon_Ammunation_Selected_Manage", false, {"Give", "Remove"}, function(pos, option)
                 if pos == 1 then
-                    WEAPON.GIVE_WEAPON_TO_PED(ped, wepHash, 1000, false, true)
+                    WEAPON.GIVE_WEAPON_TO_PED(player.id(), wepHash, 1000, false, true)
                     option:setValue(2, true)
                 else
-                    WEAPON.REMOVE_WEAPON_FROM_PED(ped, wepHash)
+                    WEAPON.REMOVE_WEAPON_FROM_PED(player.id(), wepHash)
                     option:setValue(1, true)
                 end
             end):setConfigIgnore()
@@ -71,7 +70,7 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
                         WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(PLAYER.PLAYER_PED_ID(), wepHash, componentInfo['Hash'])
                         option:setValue(2, true)
                     else
-                        WEAPON.REMOVE_WEAPON_COMPONENT_FROM_PED(ped, wepHash, componentInfo['Hash'])
+                        WEAPON.REMOVE_WEAPON_COMPONENT_FROM_PED(player.id(), wepHash, componentInfo['Hash'])
                         option:setValue(1, true)
                     end
                 end):setConfigIgnore():setTranslationIgnore()
@@ -89,7 +88,7 @@ local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunatio
                     end
                 end
                 weaponSub:add_click_option(name,  "BS_Weapon_Ammunation_" .. category .. "_" .. wepName .. "_Tints_" .. name, function()
-                    WEAPON.SET_PED_WEAPON_TINT_INDEX(ped, wepInfo['Hash'], tintInfo['Index'])
+                    WEAPON.SET_PED_WEAPON_TINT_INDEX(player.id(), wepInfo['Hash'], tintInfo['Index'])
                 end):setConfigIgnore():setTranslationIgnore()
             end
         end

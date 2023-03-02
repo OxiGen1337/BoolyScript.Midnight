@@ -757,18 +757,6 @@ function Option.new(submenu_mt, name_s, hash_s, type_n, value_n, callback_f)
 end
 
 function Submenu:setActive(state)
-    local function getClickableOption(self, selectedOption)
-        if #self.options < 2 then return 1 end
-        if self.isDynamic then return selectedOption end
-        if selectedOption > #self.options then 
-            return getClickableOption(self, 1)
-        end
-        if (self.options[selectedOption].type ~= OPTIONS.SEPARATOR) and (self.options[selectedOption].type ~= OPTIONS.STATE_BAR) then
-            return selectedOption
-        else
-            return getClickableOption(self, selectedOption + 1)
-        end
-    end
     if state then
         table.insert(config.path, self)
     else
@@ -776,7 +764,6 @@ function Submenu:setActive(state)
             table.remove(config.path)
         end
     end
-    config.path[#config.path].selectedOption = getClickableOption(config.path[#config.path], config.path[#config.path].selectedOption)
     return self
 end
 
@@ -1415,6 +1402,26 @@ local settings = Submenu.add_static_submenu("Settings", "Main_Settings") do
     -- end
 end
 
+local function getClickableOption(submenu, selectedOption)
+    if #submenu.options < 2 then return 1 end
+    if selectedOption < 1 then 
+        return getClickableOption(submenu, #submenu.options)
+    end
+    if selectedOption > #submenu.options then
+        return getClickableOption(submenu, 1)
+    end
+    local option = submenu.options[selectedOption] or {}
+    if option.type ~= OPTIONS.SEPARATOR and option.type ~= OPTIONS.STATE_BAR then
+        return selectedOption
+    else
+        if submenu.prevOption <= submenu.selectedOption then
+            return getClickableOption(submenu, selectedOption + 1)
+        elseif submenu.prevOption > submenu.selectedOption then
+            return getClickableOption(submenu, selectedOption - 1)
+        end
+    end
+end
+
 listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
     draw.set_rounding(0)
 
@@ -1424,27 +1431,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
 
     local submenu = config.path[#config.path]
 
-    local function getClickableOption(selectedOption)
-        if #submenu.options < 2 then return 1 end
-        if selectedOption < 1 then 
-            return getClickableOption(#submenu.options)
-        end
-        if selectedOption > #submenu.options then
-            return getClickableOption(1)
-        end
-        local option = submenu.options[selectedOption] or {}
-        if option.type ~= OPTIONS.SEPARATOR and option.type ~= OPTIONS.STATE_BAR then
-            return selectedOption
-        else
-            if submenu.prevOption < submenu.selectedOption then
-                return getClickableOption(selectedOption + 1)
-            elseif submenu.prevOption > submenu.selectedOption then
-                return getClickableOption(selectedOption - 1)
-            end
-        end
-    end
-
-    submenu.selectedOption = getClickableOption(submenu.selectedOption)
+    submenu.selectedOption = getClickableOption(submenu, submenu.selectedOption)
     submenu.prevOption = submenu.selectedOption
 
     if submenu.isDynamic then
@@ -1602,7 +1589,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
 
         if data.hint ~= "" then
             draw.set_color(0, 255, 255, 255, 255)
-            local hint = tostring(submenu.options[submenu.selectedOption].hint)
+            local hint = features.split_text_into_lines(tostring(submenu.options[submenu.selectedOption].hint), config.width - 20)
             if hint ~= "" then
                 local y = bg.rd.y + config.optionHeight + 10
                 draw.set_color(0, 34, 41, 47, 255)
