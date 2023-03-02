@@ -382,11 +382,11 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
         corners.background = {
             leftUpper = {
                 x = draw.get_window_width()/2 - settings.width/2,
-                y = draw.get_window_height()/2 - settings.height/2,
+                y = draw.get_screen_height()/2 - settings.height/2,
             },
             rightDown = {
                 x = draw.get_window_width()/2 + settings.width/2,
-                y = draw.get_window_height()/2 + settings.height/2,
+                y = draw.get_screen_height()/2 + settings.height/2,
             },
         }
         corners.textArea = {
@@ -1569,7 +1569,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         if not submenu.scrollerPos then submenu.scrollerPos = scrollerEnd end
         
         if config.enabelSmoothScroller then
-            local scrollerSpeed = 3
+            local scrollerSpeed = 180 * (1/features.getFPS())
             if submenu.scrollerPos.leftUpper.y < scrollerEnd.leftUpper.y then -- CREDITS TO 1tsPxel
                 submenu.scrollerPos.leftUpper.y = math.min(scrollerEnd.leftUpper.y, submenu.scrollerPos.leftUpper.y + scrollerSpeed)
             elseif submenu.scrollerPos.leftUpper.y > scrollerEnd.leftUpper.y then
@@ -1647,7 +1647,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         
         if not submenu.sliderPos then submenu.sliderPos = sliderItemEnd end
 
-        local sliderPosSpeed = 3
+        local sliderPosSpeed = 180 * (1/features.getFPS())
 
         if submenu.sliderPos.leftUpper.y < sliderItemEnd.leftUpper.y then -- CREDITS TO 1tsPxel
             submenu.sliderPos.leftUpper.y = math.min(sliderItemEnd.leftUpper.y, submenu.sliderPos.leftUpper.y + sliderPosSpeed)
@@ -1709,18 +1709,18 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
             material = materials.toggleOff
             if data.value then material = materials.toggleOn end
         elseif data.type == OPTIONS.NUM then
-            symbol = string.format("<%i of %i>", data.value, data.maxValue)
+            symbol = features.format("<{} of {}>", data.value, data.maxValue)
         elseif data.type == OPTIONS.FLOAT then
-            symbol = string.format("<%s of %s>", data.value, data.maxValue)
+            symbol = features.format("<{} of {}>", data.value, data.maxValue)
         elseif data.type == OPTIONS.CHOOSE then
-            symbol = #data.table > 0 and string.format("<%s (%i/%i)>", data.table[data.value], data.value, #data.table) or "None"
+            symbol = #data.table > 0 and features.format("<{} ({}/{})>", data.table[data.value], math.floor(data.value), #data.table) or "None"
         elseif data.type == OPTIONS.SUB then
             material = materials.sub
         elseif data.type == OPTIONS.TEXT_INPUT then
             if data.value == "" then
                 symbol = "[Empty]"
             else
-                symbol = string.format("[%s]", data.value)
+                symbol = features.format("[{}]", data.value)
             end
         elseif data.type == OPTIONS.STATE_BAR then
             symbol = tostring(data.getter())
@@ -1829,11 +1829,11 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         local coords = {
             leftUpper = {
                 x = draw.get_window_width() - 10 - 10,
-                y = draw.get_window_height() - 10 - config.optionHeight,
+                y = draw.get_screen_height() - 10 - config.optionHeight,
             },
             rightDown = {
                 x = draw.get_window_width() - 10,
-                y = draw.get_window_height() - 10,
+                y = draw.get_screen_height() - 10,
             },
         }
         local keys = {

@@ -1,4 +1,4 @@
-v2r = require("BoolyScript/pages/recovery-v2/include")
+v2r = require("BoolyScript/pages/DrawUI_Recovery/include")
 
 local c = scripts.globals.getCharId()
 

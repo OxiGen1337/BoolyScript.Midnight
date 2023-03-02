@@ -1,4 +1,4 @@
-BSVERSION = "0.4"
+BSVERSION = "0.5"
 -- PATCH = "1.66"
 DEBUG = true
 
