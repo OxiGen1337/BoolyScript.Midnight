@@ -1,5 +1,5 @@
-local TRUE = 1
-local FALSE = 0
+local TRUE = true
+local FALSE = false
 
 local i2s = tostring
 

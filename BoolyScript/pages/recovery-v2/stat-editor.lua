@@ -5,7 +5,7 @@ local statNameB = ST:add_text_input("Name", "BS_StatEditor_BoolName"):setConfigI
 local bValue = false
 
 ST:add_choose_option("Value", "BS_StatEditor_BoolValue", true, {"FALSE", "TRUE"}, function (value, option)
-    bValue = value - 1
+    if value == 0 then bValue = false else bValue = true end
 end):setConfigIgnore()
 
 ST:add_click_option("Set", "BS_StatEditor_BoolSet", function(option)
