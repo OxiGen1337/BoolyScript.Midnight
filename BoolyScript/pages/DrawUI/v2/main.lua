@@ -5,22 +5,22 @@ local character = script_global:new(1574918):get_long()
 V2:add_click_option("Nightclub Scam", "BS_RecoveryV2_Nightclub_Scam", function(option)
     stats.set_u64(string.joaat("MP" .. character .."_PROP_NIGHTCLUB_VALUE"), 2004500000)
     option:setTags({{"[Done]", 0, 204, 255}})
-end):setHint("Purchase a Nightclub -> Activate this option -> Purchase another Nightclub and replace it")
+end):setHint("Step 1: Purchase a Nightclub\nStep 2: Activate this option\nStep 3: Purchase another Nightclub and replace it")
 
 V2:add_click_option("Hangar Scam", "BS_RecoveryV2_Hangar_Scam", function(option)
     stats.set_u64(string.joaat("MP" .. character .."_PROP_HANGAR_VALUE"), 2004500000)
     option:setTags({{"[Done]", 0, 204, 255}})
-end):setHint("Purchase a Hangar -> Activate this option -> Purchase another Hangar and replace it")
+end):setHint("Step 1: Purchase a Hangar\nStep 2: Activate this option\nStep 3: Purchase another Hangar and replace it")
 
 V2:add_click_option("Clubhouse Scam", "BS_RecoveryV2_Clubhouse_Scam", function(option)
     stats.set_u64(string.joaat("MP" .. character .."_PROP_CLUBHOUSE_VALUE"), 2004500000)
     option:setTags({{"[Done]", 0, 204, 255}})
-end):setHint("Purchase a Clubhouse -> Activate this option -> Purchase another Clubhouse and replace it")
+end):setHint("Step 1: Purchase a Clubhouse Scam\nStep 2: Activate this option\nStep 3: Purchase another Clubhouse Scam and replace it")
 
 V2:add_click_option("Auto Shop Scam", "BS_RecoveryV2_AS_Scam", function(option)
     stats.set_u64(string.joaat("MP" .. character .."_PROP_AUTO_SHOP_VALUE"), 2004500000)
     option:setTags({{"[Done]", 0, 204, 255}})
-end):setHint("Purchase an Auto Shop -> Activate this option -> Purchase another Auto Shop and replace it")
+end):setHint("Step 1: Purchase an Auto Shop\nStep 2: Activate this option\nStep 3: Purchase another Auto Shop and replace it")
 
 V2:add_separator("Unlocks", "BS_RecoveryV2_Unl")
 
