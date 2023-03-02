@@ -71,4 +71,4 @@ local cardsSub = Submenu.add_static_submenu("Cards", "BS_Recovery_Collectibles_C
     Recovery:add_sub_option("Cards", "BS_Recovery_Collectibles_Cards", cardsSub)
 end
 
-require("BoolyScript/pages/DrawUI/v2/init")
+require("BoolyScript/pages/recovery-v2/init")
