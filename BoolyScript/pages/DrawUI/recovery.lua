@@ -70,3 +70,7 @@ local cardsSub = Submenu.add_static_submenu("Cards", "BS_Recovery_Collectibles_C
     end
     Recovery:add_sub_option("Cards", "BS_Recovery_Collectibles_Cards", cardsSub)
 end
+
+task.executeAsScript("Load_RecoveryV2", function ()
+	require("BoolyScript/pages/DrawUI/v2/init")
+end)
