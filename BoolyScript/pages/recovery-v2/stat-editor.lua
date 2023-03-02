@@ -17,10 +17,6 @@ ST:add_separator("Int", "BS_StatEditor_IntSeparator")
 
 local statNameI = ST:add_text_input("Name", "BS_StatEditor_IntName"):setConfigIgnore()
 
-local INT_MAX = 2147483647
-
-local INT_MIN = -2147483647
-
 local iValue = ST:add_text_input("Value", "BS_StatEditor_IntValue"):setValue("1"):setConfigIgnore()
 
 ST:add_click_option("Set", "BS_StatEditor_IntSet", function(option)
