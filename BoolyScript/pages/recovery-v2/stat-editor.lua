@@ -9,7 +9,7 @@ ST:add_choose_option("Value", "BS_StatEditor_BoolValue", true, {"FALSE", "TRUE"}
 end):setConfigIgnore()
 
 ST:add_click_option("Set", "BS_StatEditor_BoolSet", function(option)
-    STATS.STAT_SET_BOOL(string.joaat(tostring(statNameB)), bValue, true)
+    STATS.STAT_SET_BOOL(string.joaat(tostring(statNameB:getValue())), bValue, true)
     STATS.STAT_SAVE(0, 0, 3, 0)
 end)
 
@@ -21,10 +21,10 @@ local INT_MAX = 2147483647
 
 local INT_MIN = -2147483647
 
-local iValue = ST:add_text_input("Value", "BS_StatEditor_IntValue"):setConfigIgnore()
+local iValue = ST:add_text_input("Value", "BS_StatEditor_IntValue"):setValue("1"):setConfigIgnore()
 
 ST:add_click_option("Set", "BS_StatEditor_IntSet", function(option)
-    STATS.STAT_SET_INT(string.joaat(tostring(statNameI)), s2i(iValue), true)
+    STATS.STAT_SET_INT(string.joaat(tostring(statNameI:getValue())), tonumber(iValue:getValue()), true)
     STATS.STAT_SAVE(0, 0, 3, 0)
 end)
 --11
