@@ -31,3 +31,4 @@ ST:add_click_option("Set", "BS_StatEditor_IntSet", function(option)
     STATS.STAT_SET_INT(string.joaat(tostring(statNameI)), iValue, true)
     STATS.STAT_SAVE(0, 0, 3, 0)
 end)
+--11
