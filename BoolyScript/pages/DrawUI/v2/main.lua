@@ -1,6 +1,6 @@
 v2r = require("BoolyScript/pages/DrawUI/v2/include")
 
-local character = script_global:new(1574918):get_long()
+local character = scripts.globals.getCharId()
 
 V2:add_click_option("Nightclub Scam", "BS_RecoveryV2_Nightclub_Scam", function(option)
     stats.set_u64(string.joaat("MP" .. character .."_PROP_NIGHTCLUB_VALUE"), 2004500000)
