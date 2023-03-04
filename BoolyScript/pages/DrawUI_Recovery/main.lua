@@ -172,7 +172,7 @@ V2:add_click_option("Health", "BS_RecoveryV2_HLT", function(option)
 end)
 
 V2:add_choose_option("Permanent Musket", "BS_RecoveryV2_MUS", false, {"Give", "Remove"}, function (value, option)
-    if option == 1 then
+    if value == 1 then
         v2r.giveMusket(c)
         option:setTags({{"[Given]", math.random(255), math.random(255), math.random(255)}})
         notify.success("Give Musket", "Success")
@@ -184,7 +184,7 @@ V2:add_choose_option("Permanent Musket", "BS_RecoveryV2_MUS", false, {"Give", "R
 end)
 
 V2:add_choose_option("Permanent Firework Launcher", "BS_RecoveryV2_FIR", false, {"Give", "Remove"}, function (value, option)
-    if option == 1 then
+    if value == 1 then
         v2r.giveFirework(c)
         option:setTags({{"[Given]", math.random(255), math.random(255), math.random(255)}})
         notify.success("Give Firework Launcher", "Success")
@@ -194,4 +194,3 @@ V2:add_choose_option("Permanent Firework Launcher", "BS_RecoveryV2_FIR", false, 
         notify.success("Remove Firework Launcher", "Success")
     end
 end)
---11

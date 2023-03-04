@@ -17,26 +17,53 @@ end):setConfigIgnore()
 ST:add_click_option("Set", "BS_StatEditor_BoolSet", function(option)
     STATS.STAT_SET_BOOL(string.joaat(sMP .. tostring(statNameB:getValue())), bValue, true)
     STATS.STAT_SAVE(0, 0, 3, 0)
+    notify.success("Set Bool", "Modified stat " .. name .. " with value " .. tonumber(bValue:getValue()))
 end)
 
-ST:add_separator("Int", "BS_StatEditor_IntSeparator")
+ST:add_separator("Number", "BS_StatEditor_NumSeparator")
 
-local statNameI = ST:add_text_input("Name", "BS_StatEditor_IntName"):setConfigIgnore()
+local iVar = 1
 
-local iValue = ST:add_text_input("Value", "BS_StatEditor_IntValue"):setValue("1"):setConfigIgnore()
+ST:add_choose_option("Var", "BS_StatEditor_NumVar", true, {"Int", "Float"}, function (value, option)
+    iVar = value
+end):setValue(1):setConfigIgnore()
 
-ST:add_click_option("Set", "BS_StatEditor_IntSet", function(option)
-    STATS.STAT_SET_INT(string.joaat(sMP .. tostring(statNameI:getValue())), tonumber(iValue:getValue()), true)
+local statNameN = ST:add_text_input("Name", "BS_StatEditor_NumName"):setConfigIgnore()
+
+local nValue = ST:add_text_input("Value", "BS_StatEditor_NumValue"):setValue("1"):setConfigIgnore()
+
+ST:add_choose_option("Set", "BS_StatEditor_NumSet", false, {"Force", "Increment"}, function (value, option)
+    local name = sMP .. tostring(statNameN:getValue())
+    if value == 1 then
+        if iVar == 1 then
+            STATS.STAT_SET_INT(string.joaat(name), tonumber(nValue:getValue()), true)
+        else
+            STATS.STAT_SET_FLOAT(string.joaat(name), s2f(nValue:getValue()), true)
+        end
+        notify.success("Set Number", "Modified stat " .. name .. " with value " .. nValue:getValue())
+    else
+        STATS.STAT_INCREMENT(string.joaat(name), s2f(nValue:getValue()))
+        notify.success("Number Increment", "Modified stat " .. name .. " with value " .. nValue:getValue())
+    end
     STATS.STAT_SAVE(0, 0, 3, 0)
 end)
 
-ST:add_separator("Float", "BS_StatEditor_FloatSeparator")
+ST:add_separator("String", "BS_StatEditor_StringSeparator")
 
-local statNameF = ST:add_text_input("Name", "BS_StatEditor_FloatName"):setConfigIgnore()
+local statNameS = ST:add_text_input("Name", "BS_StatEditor_StringName"):setConfigIgnore()
 
-local fValue = ST:add_text_input("Value", "BS_StatEditor_FloatValue"):setValue("1.0"):setConfigIgnore()
+local sValue = ST:add_text_input("Value", "BS_StatEditor_StringValue"):setValue("BOOLY"):setConfigIgnore()
 
-ST:add_click_option("Set", "BS_StatEditor_FloatSet", function(option)
-    STATS.STAT_SET_FLOAT(string.joaat(sMP .. tostring(statNameF:getValue())), s2f(fValue:getValue()), true)
+ST:add_click_option("Set", "BS_StatEditor_StringSet", function(option)
+    local name = sMP .. tostring(statNameS:getValue())
+    STATS.STAT_SET_STRING(string.joaat(name), sValue:getValue(), true)
     STATS.STAT_SAVE(0, 0, 3, 0)
+    notify.success("Set String", "Modified stat " .. name .. " with value " .. sValue:getValue())
 end)
+
+ST:add_separator("Other", "BS_StatEditor_DangerZone")
+
+ST:add_click_option("Disable tracking", "BS_StatEditor_DangerZoneDT", function(option)
+    STATS.STAT_DISABLE_STATS_TRACKING()
+    notify.warning("Stat Editor", "Stat tracking & updates are now disabled")
+end):setTags({{"[!]", 255, 5, 10}}):setHint("Prevents stat tracking & updates to CStatsMgr")

@@ -238,25 +238,18 @@ v2r['unlockTattoos'] = function(c)
 end
 
 v2r['unlockWeapons'] = function(c)
+	for i = 1, 4 do
+		STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_ADDON_" .. i .. "_UNLCK"), -1, TRUE)
+		STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_WEAP_ADDON_" .. i .. "_UNLCK"), -1, TRUE)
+		STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_WEAP_FM_ADDON_PURCH" .. i + 1), -1, TRUE)
+	end
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_UNLOCKED"), -1, TRUE)
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_UNLOCKED2"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_ADDON_1_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_ADDON_2_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_ADDON_3_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_ADDON_4_UNLCK"), -1, TRUE)
     STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_WEAP_FM_ADDON_PURCH"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_WEAP_FM_ADDON_PURCH2"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_WEAP_FM_ADDON_PURCH3"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_WEAP_FM_ADDON_PURCH4"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_WEAP_FM_ADDON_PURCH5"), -1, TRUE)
     STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_PURCHASED"), -1, TRUE)
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_PURCHASED2"), -1, TRUE)
     STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_FM_PURCHASE"), -1, TRUE)
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_WEAP_FM_PURCHASE2"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_WEAP_ADDON_1_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_WEAP_ADDON_2_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_WEAP_ADDON_3_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_WEAP_ADDON_4_UNLCK"), -1, TRUE)
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_WEAP_ADDON_5_UNLCK"), -1, TRUE)
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_WEAP_UNLOCKED"), -1, TRUE)
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_WEAP_UNLOCKED2"), -1, TRUE)
@@ -552,30 +545,13 @@ v2r['unlockVehicleMods'] = function(c)
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_CARMOD_7_UNLCK"), -1, TRUE)
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_VEHICLE_1_UNLCK"), -1, TRUE)
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_FM_VEHICLE_2_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_1_FM_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_2_FM_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_3_FM_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_4_FM_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_5_FM_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_6_FM_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_7_FM_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_8_FM_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_9_FM_UNLCK"), -1, TRUE)
-    STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_10_FM_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_11_FM_UNLCK"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_12_FM_UNLCK"), -1, TRUE)
+	for i = 1, 12 do
+		STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_" .. i .. "_FM_UNLCK"), -1, TRUE)
+	end
 	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE2"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE3"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE4"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE5"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE6"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE7"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE8"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE9"), -1, TRUE)
-    STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE10"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE11"), -1, TRUE)
-	STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE12"), -1, TRUE)
+	for i = 2, 12 do
+		STATS.STAT_SET_INT(string.joaat("MP" .. i2s(c) .. "_CHAR_KIT_FM_PURCHASE" .. i), -1, TRUE)
+	end
     STATS.STAT_SAVE(0, 0, 3, 0)
 end
 
@@ -722,4 +698,3 @@ v2r['unlockExtra'] = function(c)
 end
 
 return v2r
---11
