@@ -1,4 +1,4 @@
-local sMP, iMP = "", 0 -- TODO: char ID 
+local sMP, iMP = "", scripts.globals.getCharId()
 
 ST:add_bool_option("Add MP0_/MP1_", "BS_StatEditor_MP01", function (state, option)
     if state then sMP = "MP" .. iMP .. "_" else sMP = "" end
