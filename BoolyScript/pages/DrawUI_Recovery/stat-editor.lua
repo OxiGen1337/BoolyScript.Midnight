@@ -23,4 +23,14 @@ ST:add_click_option("Set", "BS_StatEditor_IntSet", function(option)
     STATS.STAT_SET_INT(string.joaat(tostring(statNameI:getValue())), tonumber(iValue:getValue()), true)
     STATS.STAT_SAVE(0, 0, 3, 0)
 end)
---11
+
+ST:add_separator("Float", "BS_StatEditor_FloatSeparator")
+
+local statNameF = ST:add_text_input("Name", "BS_StatEditor_FloatName"):setConfigIgnore()
+
+local fValue = ST:add_text_input("Value", "BS_StatEditor_FloatValue"):setValue("1.0"):setConfigIgnore()
+
+ST:add_click_option("Set", "BS_StatEditor_FloatSet", function(option)
+    STATS.STAT_SET_FLOAT(string.joaat(tostring(statNameF:getValue())), s2f(fValue:getValue()), true)
+    STATS.STAT_SAVE(0, 0, 3, 0)
+end)
