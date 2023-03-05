@@ -12,10 +12,15 @@ do
         "MP_PLAYING_TIME_NEW",
         MP .. "TOTAL_PLAYING_TIME",
         "MPPLY_CREW_LOCAL_XP_0",
+        "MPPLY_CREW_GLOBAL_XP_0",
         "MPPLY_CREW_LOCAL_XP_1",
+        "MPPLY_CREW_GLOBAL_XP_1",
         "MPPLY_CREW_LOCAL_XP_2",
+        "MPPLY_CREW_GLOBAL_XP_2",
         "MPPLY_CREW_LOCAL_XP_3",
+        "MPPLY_CREW_GLOBAL_XP_3",
         "MPPLY_CREW_LOCAL_XP_4",
+        "MPPLY_CREW_GLOBAL_XP_4",
         "MPPLY_TOTAL_RACES_WON",
         "MPPLY_TOTAL_CUSTOM_RACES_WON",
         "MPPLY_TOTAL_RACES_LOST",
@@ -126,7 +131,7 @@ do
                     else
                         return stats.get_u64(sJ(statList[i]))
                     end
-                end)
+                end):setSelectable(true)
             end    
         end
     end):setConfigIgnore()
