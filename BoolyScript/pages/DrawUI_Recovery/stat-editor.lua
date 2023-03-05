@@ -11,7 +11,11 @@ do
         "MP_PLAYING_TIME",
         "MP_PLAYING_TIME_NEW",
         MP .. "TOTAL_PLAYING_TIME",
-        "MPPLY_CREW_LOCAL_XP",
+        "MPPLY_CREW_LOCAL_XP_0",
+        "MPPLY_CREW_LOCAL_XP_1",
+        "MPPLY_CREW_LOCAL_XP_2",
+        "MPPLY_CREW_LOCAL_XP_3",
+        "MPPLY_CREW_LOCAL_XP_4",
         "MPPLY_TOTAL_RACES_WON",
         "MPPLY_TOTAL_CUSTOM_RACES_WON",
         "MPPLY_TOTAL_RACES_LOST",
@@ -91,10 +95,6 @@ do
             statOpt[i] = ST_CH:add_text_input(statList[i], "BS_StatEditorCharacter_" .. statList[i], function (enteredText)
                 if statList[i] == "MPPLY_KILL_DEATH_RATIO" then
                     stats.set_float(sJ(statList[i]), s2f(enteredText))
-                elseif statList[i] == "MPPLY_CREW_LOCAL_XP" then
-                    for a = 0, 4 do
-                        stats.set_u64(sJ(statList[i] .. "_" .. a), s2i(enteredText))
-                    end
                 else
                     stats.set_u64(sJ(statList[i]), s2i(enteredText))
                 end
@@ -123,8 +123,6 @@ do
                 statOpt[i] = ST_CH:add_state_bar(statList[i], "BS_StatEditorCharacter_" .. statList[i], function ()
                     if statList[i] == "MPPLY_KILL_DEATH_RATIO" then
                         return stats.get_float(sJ(statList[i]))
-                    elseif statList[i] == "MPPLY_CREW_LOCAL_XP" then
-                        return "N/A"
                     else
                         return stats.get_u64(sJ(statList[i]))
                     end
