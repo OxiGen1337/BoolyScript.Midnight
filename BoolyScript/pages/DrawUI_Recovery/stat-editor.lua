@@ -142,9 +142,9 @@ end):setValue(false):setConfigIgnore()
 
 local saveValue = true
 
-ST:add_choose_option("Save", "BS_StatEditor_SaveValue", true, {"TRUE", "FALSE"}, function (value, option)
-    saveValue = value == 1
-end):setValue(1):setConfigIgnore()
+ST:add_bool_option("Save", "BS_StatEditor_SaveValue", function (state, option)
+    saveValue = state
+end):setValue(true):setConfigIgnore()
 
 ST:add_separator("Bool", "BS_StatEditor_BoolSeparator")
 
