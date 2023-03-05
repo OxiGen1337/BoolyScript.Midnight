@@ -81,10 +81,10 @@ do
     ST:add_sub_option("Character", "BS_StatEditorCharacter", ST_CH):setTags({{"[Pre-defined]", 247, 79, 236}})
 
     local saveValue = true
-    ST_CH:add_choose_option("Save", "BS_StatEditorCharacter_SaveValue", true, {"TRUE", "FALSE"}, function (value, option)
-        saveValue = value == 1
-    end):setValue(1):setConfigIgnore()
-
+    ST_CH:add_bool_option("Save", "BS_StatEditorCharacter_SaveValue", function (state, option)
+        saveValue = state
+    end):setValue(true):setConfigIgnore()
+    
     local function execStats()
         statOpt[0] = ST_CH:add_separator("Stats", "BS_StatEditorCharacter_Stats")
         for i = 1, #statList do
@@ -141,7 +141,6 @@ ST:add_bool_option("Add MP0_/MP1_", "BS_StatEditor_MP01", function (state, optio
 end):setValue(false):setConfigIgnore()
 
 local saveValue = true
-
 ST:add_bool_option("Save", "BS_StatEditor_SaveValue", function (state, option)
     saveValue = state
 end):setValue(true):setConfigIgnore()
