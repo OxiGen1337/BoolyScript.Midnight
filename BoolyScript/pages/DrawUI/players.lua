@@ -186,26 +186,14 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         if not PED.IS_PED_IN_ANY_VEHICLE(player.get_entity_handle(pid), false) then return end
         addActiveAction(pid, option, value)
         local vehicle = player.get_vehicle_handle(pid)
-        local function f(func)
-            return func()
-        end
         local force = 10.0
         local vector = {
-            x = f(function ()
-                if value == 1 then return force end
-                if value == 2 then return -force end
-            end),
-            y = f(function ()
-                if value == 3 then return force end
-                if value == 4 then return -force end
-            end),
-            z = f(function ()
-                if value == 5 then return force end
-                if value == 6 then return -force end
-            end)
+            x = value == 1 and force or value == 2 and -force or 0.0,
+            y = value == 3 and force or value == 4 and -force or 0.0,
+            z = value == 5 and force or value == 6 and -force or 0.0
         }
         entity.request_control(vehicle, function (hdl)
-            ENTITY.APPLY_FORCE_TO_ENTITY(hdl, vector.x, vector.y, vector.z, 0.0, 0.0, 0.0, 0, true, true, true, false, true)
+            ENTITY.APPLY_FORCE_TO_ENTITY(hdl, 1, vector.x, vector.y, vector.z, 0.0, 0.0, 0.0, 0, true, true, true, false, true)
         end)
     end):setConfigIgnore()
     PlayerVehicle:add_choose_option("Upgrade", "BS_PlayerList_Player_Vehicle_Upgrade", false, {"Default", "Random", "Power", "Max"}, function (pos, option)
@@ -808,7 +796,7 @@ PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList", functi
     sub.options = options
 end)
 
-PlayerList:add_choose_option("Sort", "BS_PlayerList_Sort", true, {"Name", "Distance", "Host queue"}, function (pos, option)
+PlayerList:add_choose_option("Sort", "BS_PlayerList_Sort", true, {"Name", "Distance", "Host queue", "Join time"}, function (pos, option)
     if pos == 1 then
         sort = function (a, b)
             return a:getName():lower() < b:getName():lower()
@@ -822,6 +810,11 @@ PlayerList:add_choose_option("Sort", "BS_PlayerList_Sort", true, {"Name", "Dista
         sort = function (a, b)
             local pid1, pid2 = a:getValue(), b:getValue()
             return player.get_host_priority(pid1) < player.get_host_priority(pid2)
+        end
+    elseif pos == 4 then
+        sort = function (a, b)
+            local pid1, pid2 = a:getValue(), b:getValue()
+            return player.get_join_time(pid1) < player.get_join_time(pid2)
         end
     end
 end):setStatic(true)
