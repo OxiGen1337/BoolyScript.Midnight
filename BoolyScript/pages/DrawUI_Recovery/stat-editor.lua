@@ -127,9 +127,9 @@ do
             for i = 1, #statList do
                 statOpt[i] = ST_CH:add_state_bar(statList[i], "BS_StatEditorCharacter_" .. statList[i], function ()
                     if statList[i] == "MPPLY_KILL_DEATH_RATIO" then
-                        return stats.get_float(sJ(statList[i]))
+                        return stats.get_float(string.joaat(statList[i]))
                     else
-                        return stats.get_u64(sJ(statList[i]))
+                        return stats.get_u64(string.joaat(statList[i]))
                     end
                 end):setSelectable(true)
             end    
