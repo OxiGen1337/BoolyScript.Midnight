@@ -122,11 +122,11 @@ do
             for i = 1, #statList do
                 statOpt[i] = ST_CH:add_state_bar(statList[i], "BS_StatEditorCharacter_" .. statList[i], function ()
                     if statList[i] == "MPPLY_KILL_DEATH_RATIO" then
-                        return get_float(sJ(statList[i]))
+                        return stats.get_float(sJ(statList[i]))
                     elseif statList[i] == "MPPLY_CREW_LOCAL_XP" then
                         return "N/A"
                     else
-                        return get_u64(sJ(statList[i]))
+                        return stats.get_u64(sJ(statList[i]))
                     end
                 end)
             end    
