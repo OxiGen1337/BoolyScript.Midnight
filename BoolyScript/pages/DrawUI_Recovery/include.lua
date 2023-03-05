@@ -2,7 +2,6 @@ local TRUE = true
 local FALSE = false
 
 local i2s = tostring
-
 local sJ = string.joaat
 
 local S_SS = STATS.STAT_SAVE
