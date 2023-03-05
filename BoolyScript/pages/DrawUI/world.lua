@@ -103,7 +103,11 @@ local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards
         ["M16"] = 3520460075, 
         ["MG"] = 2634544996, 
         ["Shotgun"] = 487013001, 
-        ["RPG"] = 2982836145, 
+        ["RPG"] = 2982836145,
+        ["Railgun"] = 1834241177,
+        ["Up-n-Atomizer"] = 2939590305,
+        ["Stun gun"] = 911657153,
+        ["Flare gun"] = 1198879012,
     }
     local config = {
         godmode = false,
@@ -142,7 +146,7 @@ local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards
         settings:add_bool_option("Invincibility", "BS_World_Bodyguards_Settings_Godmode", function (state)
             config.godmode = state
         end)
-        local variations = {"None", "Pistol", "AK-74", "M4", "M16", "MG", "Shotgun", "RPG"}
+        local variations = {"None", "Pistol", "AK-74", "M4", "M16", "MG", "Shotgun", "RPG", "Railgun", "Up-n-Atomizer", "Stun gun", "Flare gun"}
         settings:add_choose_option("Weapon", "BS_World_Bodyguards_Settings_Weapons", true, variations, function (pos)
             config.weapon = weapons[variations[pos]]
         end)
@@ -253,7 +257,7 @@ local bodyguards = Submenu.add_static_submenu("Bodyguards", "BS_World_Bodyguards
                             ENTITY.SET_ENTITY_INVINCIBLE(ped, pos == 1)
                             option:setValue((pos == 1) and 2 or 1, true)
                         end):setConfigIgnore()
-                        local variations = {"None", "Pistol", "AK-74", "M4", "M16", "MG", "Shotgun", "RPG"}
+                        local variations = {"None", "Pistol", "AK-74", "M4", "M16", "MG", "Shotgun", "RPG", "Railgun", "Up-n-Atomizer", "Stun gun", "Flare gun"}
                         sub:add_choose_option("Weapon",  "BS_World_Bodyguards_Spawned_Weapons", false, variations, function (pos)
                             WEAPON.GIVE_WEAPON_TO_PED(ped, weapons[variations[pos]], -1, false, true)
                             WEAPON.SET_CURRENT_PED_WEAPON(ped, weapons[variations[pos]], false)

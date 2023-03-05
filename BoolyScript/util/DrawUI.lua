@@ -253,6 +253,8 @@ Option = {
     hotkey = nil,
     onDelete = nil,
     isStatic = false,
+    isSelectable = true,
+
 }
 Option.__index = Option
 
@@ -382,11 +384,11 @@ function InputService:displayInputBox(name_s, type_s, callback_f)
         corners.background = {
             leftUpper = {
                 x = draw.get_window_width()/2 - settings.width/2,
-                y = draw.get_screen_height()/2 - settings.height/2,
+                y = draw.get_window_height()/2 - settings.height/2,
             },
             rightDown = {
                 x = draw.get_window_width()/2 + settings.width/2,
-                y = draw.get_screen_height()/2 + settings.height/2,
+                y = draw.get_window_height()/2 + settings.height/2,
             },
         }
         corners.textArea = {
@@ -690,6 +692,7 @@ listener.register("DrawUI_Hotkeys", GET_EVENTS_LIST().OnKeyPressed, function (ke
         end
     end
     if Stuff.isTextChatActive and config.ignoreHotkeysWhenChatting then return end
+    if menu.is_input_active() then return end
     if config.isInputBoxDisplayed then return end
     local keyName = features.getVirtualKeyViaID(key)
     if not HotkeyService.runtimeHotkeys[keyName] then return end
@@ -837,12 +840,14 @@ end
 function Submenu:add_separator(name_s, hash_s)
     local option = Option.new(self, name_s, hash_s, OPTIONS.SEPARATOR, nil, nil)
     option:setConfigIgnore()
+    option.isSelectable = false
     return option
 end
 
 function Submenu:add_state_bar(name_s, hash_s, getter_f)
     local option = Option.new(self, name_s, hash_s, OPTIONS.STATE_BAR, nil, nil)
     option.getter = getter_f
+    option.isSelectable = false
     option:setConfigIgnore()
     return option
 end
@@ -1068,6 +1073,10 @@ end
 function Option:setStatic(state_b)
     self.isStatic = state_b
     return self
+end
+
+function Option:setSelectable(state_b)
+    self.isSelectable = state_b
 end
 
 Configs = {}
@@ -1411,7 +1420,7 @@ local function getClickableOption(submenu, selectedOption)
         return getClickableOption(submenu, 1)
     end
     local option = submenu.options[selectedOption] or {}
-    if option.type ~= OPTIONS.SEPARATOR and option.type ~= OPTIONS.STATE_BAR then
+    if option.isSelectable then
         return selectedOption
     else
         if submenu.prevOption <= submenu.selectedOption then
@@ -1456,11 +1465,8 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
     }
     bg.rd = {
         x = bg.lu.x + config.width, 
-        y = bg.lu.y + #submenu.options*config.optionHeight
+        y = bg.lu.y + math.min(#submenu.options, config.maxOptions)*config.optionHeight
     }
-    if #submenu.options > config.maxOptions then
-        bg.rd.y = bg.lu.y + config.maxOptions*config.optionHeight
-    end
     draw.set_color(0, 14, 17, 19, 255) -- BACKGROUND
     draw.rect_filled(
         bg.lu.x, 
@@ -1569,7 +1575,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         if not submenu.scrollerPos then submenu.scrollerPos = scrollerEnd end
         
         if config.enabelSmoothScroller then
-            local scrollerSpeed = 180 * (1/features.getFPS())
+            local scrollerSpeed = 180 * utils.get_frame_rate()
             if submenu.scrollerPos.leftUpper.y < scrollerEnd.leftUpper.y then -- CREDITS TO 1tsPxel
                 submenu.scrollerPos.leftUpper.y = math.min(scrollerEnd.leftUpper.y, submenu.scrollerPos.leftUpper.y + scrollerSpeed)
             elseif submenu.scrollerPos.leftUpper.y > scrollerEnd.leftUpper.y then
@@ -1647,7 +1653,7 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         
         if not submenu.sliderPos then submenu.sliderPos = sliderItemEnd end
 
-        local sliderPosSpeed = 180 * (1/features.getFPS())
+        local sliderPosSpeed = 180 * utils.get_frame_rate()
 
         if submenu.sliderPos.leftUpper.y < sliderItemEnd.leftUpper.y then -- CREDITS TO 1tsPxel
             submenu.sliderPos.leftUpper.y = math.min(sliderItemEnd.leftUpper.y, submenu.sliderPos.leftUpper.y + sliderPosSpeed)
@@ -1829,11 +1835,11 @@ listener.register("DrawUI_render", GET_EVENTS_LIST().OnFrame, function ()
         local coords = {
             leftUpper = {
                 x = draw.get_window_width() - 10 - 10,
-                y = draw.get_screen_height() - 10 - config.optionHeight,
+                y = draw.get_window_height() - 10 - config.optionHeight,
             },
             rightDown = {
                 x = draw.get_window_width() - 10,
-                y = draw.get_screen_height() - 10,
+                y = draw.get_window_height() - 10,
             },
         }
         local keys = {

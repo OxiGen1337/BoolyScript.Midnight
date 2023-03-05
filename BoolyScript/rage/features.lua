@@ -114,11 +114,11 @@ function features.getVirtualKeyViaID(id)
 	return nil
 end
 
-function features.getVirtualKeyState(id)
-	local key_s = features.getVirtualKeyViaID(id)
-	if not key_s then return nil end
-	return Stuff.guiKeyState[key_s]
-end
+-- function features.getVirtualKeyState(id)
+-- 	local key_s = features.getVirtualKeyViaID(id)
+-- 	if not key_s then return nil end
+-- 	return Stuff.guiKeyState[key_s]
+-- end
 
 function features.teleport(...)
 	local args = {...}
@@ -204,5 +204,14 @@ function features.split_text_into_lines(text_s, maxWidth_n)
 	end
 	return out
 end
+
+function table.contains(table, element)
+	for _, value in pairs(table) do
+	  if value == element then
+		return true
+	  end
+	end
+	return false
+  end
 
 return features
