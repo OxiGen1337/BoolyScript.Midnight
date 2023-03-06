@@ -205,6 +205,14 @@ function features.split_text_into_lines(text_s, maxWidth_n)
 	return out
 end
 
+function features.randomPlayer()
+	local pids = math.random(0, 32)
+	while pids == player.index() or not player.is_valid(pids) do
+		pids = math.random(0, 32)
+	end
+	return pids
+end
+
 function table.contains(table, element)
 	for _, value in pairs(table) do
 	  if value == element then

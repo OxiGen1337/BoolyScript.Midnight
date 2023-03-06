@@ -396,11 +396,11 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
 end
 
 local kickvalues = {
-    "Host/Vote", "Script Events", "IDM"
+    "H", "SE", "SEN", "IDM"
 }
 
 local crashvalues = {
-    "Script Event", "Vehicle Task", "Invalid Animation"
+    "SE", "SEN", "VT", "AC", "AA"
 }
 
 PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Removals") do
@@ -411,24 +411,58 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
         pussy_func(pid, 30, "Manual | Kick [" .. kickvalues[value] .. "]")
         if value == 1 then player.kick(pid) end
         if value == 2 then player.kick_brute(pid) end
-        if value == 3 then player.kick_idm(pid) end
+        if value == 3 then scripts.events.notifKick(pid) end
+        if value == 4 then player.kick_idm(pid) end
     end):setConfigIgnore()
     PlayerRemovals:add_choose_option("Crash", "BS_PlayerList_Player_Removals_Crash", false, crashvalues, function (value, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
-        if value == 2 and player.get_vehicle_handle(pid) == 0 then return end
         local ped = player.get_entity_handle(pid)
         addActiveAction(pid, option, value)
         pussy_func(pid, 30, "Manual | Crash [" .. crashvalues[value] .. "]")
-        if value == 1 then 
-            scripts.events.crash(pid) 
+        if value == 1 then
+            scripts.events.crash(pid)
         elseif value == 2 then
-            local vehicle = player.get_vehicle_handle(pid)
-            for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(ped, vehicle, val, 1488) end
+            scripts.events.notifCrash(pid)
         elseif value == 3 then
-            local pos = ENTITY.GET_ENTITY_COORDS(ped, true)
-            TASK.TASK_SWEEP_AIM_POSITION(ped, "NIGGER", "HOHOL", "GAY", "FAGGOT", 10, pos.x, pos.y, pos.z, 1.0, 1.0)
-            TASK.UPDATE_TASK_SWEEP_AIM_POSITION(ped, pos.x, pos.y, pos.z)
+            do
+                local vehicle = player.get_vehicle_handle(pid)
+                if vehicle == 0 then
+                    notify.warning("Interactions", "Player is not in a vehicle")
+                    return
+                end
+                for val = 16, 18 do
+                    TASK.TASK_VEHICLE_TEMP_ACTION(ped, vehicle, val, 1488)
+                end
+            end
+        elseif value == 4 or value == 5 then
+            local coords = ENTITY.GET_ENTITY_COORDS(ped, false)
+            if coords.z == -50 then
+                notify.warning("Interactions", "Player is out of render distance")
+                return
+            end
+            local hashes = {2633113103, 3471458123, 630371791, 3602674979, 3852654278}
+            if value == 4 then
+                hashes = {390902130, -1881846085}
+            end
+            local spawnedVehs = {}
+            for i = 1, #hashes do
+                callbacks.requestModel(hashes[i], function ()
+                    entity.spawn_veh(hashes[i], coords, function (veh)
+                        spawnedVehs[i] = veh
+                    end)
+                end)
+            end
+            if value == 4 then
+                for i = 1, #hashes do
+                    ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[i], ped, 0, 0.0, 0.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
+                end
+            else
+                for i = 1, #hashes do
+                    ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[i], spawnedVehs[#hashes], 0, 0.0, 8.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
+                end
+                ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[#hashes], ped, 0, 0.0, 0.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
+            end
         end
     end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Removals", "BS_PlayerList_Player_Removals", PlayerRemovals)
@@ -560,7 +594,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         addActiveAction(pid, option, value)
-        script.send(pid, 1920583171, pid, 1 - value)
+        scripts.events.passiveMode(pid, 1 - value)
     end):setConfigIgnore()
     local optionNotifSpam
     optionNotifSpam = PlayerGriefing:add_looped_option("Notification spam", "BS_Players_Neutral_NotifSpam", 1.0, function ()
@@ -572,6 +606,10 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         local pid = selectedPlayer
         addActiveAction(pid, optionNotifSpam, false)
     end):setConfigIgnore()
+    do
+        PlayerGriefing:add_separator("Cages", "BS_PlayerList_Player_Griefing_Cages")
+        -- TODO
+    end
     do
         PlayerGriefing:add_separator("Attackers", "BS_PlayerList_Player_Griefing_Attackers")
         local attackersSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Griefing_Attackers_Settings")
