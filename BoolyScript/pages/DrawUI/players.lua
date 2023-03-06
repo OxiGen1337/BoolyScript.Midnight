@@ -388,7 +388,7 @@ local kickvalues = {
 }
 
 local crashvalues = {
-    "Script Event", "Vehicle Task", "Invalid Animation"
+    "Script Event", "Vehicle Task", "Attach Cluster", "Attach Array"
 }
 
 PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Removals") do
@@ -413,10 +413,36 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
         elseif value == 2 then
             local vehicle = player.get_vehicle_handle(pid)
             for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(ped, vehicle, val, 1488) end
-        elseif value == 3 then
-            local pos = ENTITY.GET_ENTITY_COORDS(ped, true)
-            TASK.TASK_SWEEP_AIM_POSITION(ped, "NIGGER", "HOHOL", "GAY", "FAGGOT", 10, pos.x, pos.y, pos.z, 1.0, 1.0)
-            TASK.UPDATE_TASK_SWEEP_AIM_POSITION(ped, pos.x, pos.y, pos.z)
+        elseif value == 3 or value == 4 then
+            local coords = ENTITY.GET_ENTITY_COORDS(ped, false)
+            if coords.z == -50 then
+                notify.warning("Interactions", "Player is out of render distance")
+                return
+            end
+            local hashes = {}
+            if value == 3 then
+                hashes = {390902130, -1881846085}
+            else
+                hashes = {2633113103, 3471458123, 630371791, 3602674979, 3852654278}
+            end
+            local spawnedVehs = {}
+            for i = 1, #hashes do
+                callbacks.requestModel(hashes[i], function ()
+                    entity.spawn_veh(hashes[i], coords, function (veh)
+                        spawnedVehs[i] = veh
+                    end)
+                end)
+            end
+            if value == 3 then
+                for i = 1, #hashes do
+                    ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[i], ped, 0, 0.0, 0.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
+                end
+            else
+                for i = 1, #hashes do
+                    ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[i], spawnedVehs[#hashes], 0, 0.0, 8.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
+                end
+                ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[#hashes], ped, 0, 0.0, 0.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
+            end
         end
     end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Removals", "BS_PlayerList_Player_Removals", PlayerRemovals)
