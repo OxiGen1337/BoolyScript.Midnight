@@ -676,7 +676,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
                     features.delete_entities_by_model(V)
                 end
             end)
-        end)
+        end):setConfigIgnore()
     end
     do
         PlayerGriefing:add_separator("Attackers", "BS_PlayerList_Player_Griefing_Attackers")
