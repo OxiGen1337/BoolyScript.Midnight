@@ -647,7 +647,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
                             ENTITY.SET_ENTITY_VISIBLE(veh[i], false)
                         end
                     end
-                    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])        
+                    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])
                 end,
                 ["Spawn stunt tube"] = function()
                     coords.z = coords.z - 0.9
@@ -657,10 +657,13 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
                             local rot = ENTITY.GET_ENTITY_ROTATION(cage_object)
                             ENTITY.SET_ENTITY_ROTATION(cage_object, rot.x, 90, rot.z, 1, true)
                             ENTITY.FREEZE_ENTITY_POSITION(cage_object, true)
+                            if cage_object == 0 then
+                                notify.fatal("Spawn stunt tube", "Something went wrong creating cage")
+                            end
                             if invCage then
                                 ENTITY.SET_ENTITY_VISIBLE(cage_object, false)
                             end
-                            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])                    
+                            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])
                         end)
                     end)
                 end
