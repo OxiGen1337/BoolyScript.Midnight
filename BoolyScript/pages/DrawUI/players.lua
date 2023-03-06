@@ -613,7 +613,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         PlayerGriefing:add_bool_option("Invisible", "BS_PlayerList_Player_Griefing_CagesInvisible", function (state)
             invCage = state
         end):setConfigIgnore()
-        PlayerGriefing:add_choose_option("Action", "BS_PlayerList_Griefing_Attackers_Settings_Weapon", false, cages, function (pos)
+        PlayerGriefing:add_choose_option("Action", "BS_PlayerList_Player_Griefing_CagesAction", false, cages, function (pos)
             local pid = selectedPlayer
             local ped = player.get_entity_handle(pid)
             local coords = ENTITY.GET_ENTITY_COORDS(ped, false)
