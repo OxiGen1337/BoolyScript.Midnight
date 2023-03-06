@@ -384,11 +384,11 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
 end
 
 local kickvalues = {
-    "Host/Vote", "Script Events", "IDM"
+    "H", "SE", "SEN", "IDM"
 }
 
 local crashvalues = {
-    "Script Event", "Vehicle Task", "Attach Cluster", "Attach Array"
+    "SE", "SEN", "VT", "AC", "AA"
 }
 
 PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Removals") do
@@ -399,31 +399,39 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
         pussy_func(pid, 30, "Manual | Kick [" .. kickvalues[value] .. "]")
         if value == 1 then player.kick(pid) end
         if value == 2 then player.kick_brute(pid) end
-        if value == 3 then player.kick_idm(pid) end
+        if value == 3 then scripts.events.notifKick(pid) end
+        if value == 4 then player.kick_idm(pid) end
     end):setConfigIgnore()
     PlayerRemovals:add_choose_option("Crash", "BS_PlayerList_Player_Removals_Crash", false, crashvalues, function (value, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
-        if value == 2 and player.get_vehicle_handle(pid) == 0 then return end
         local ped = player.get_entity_handle(pid)
         addActiveAction(pid, option, value)
         pussy_func(pid, 30, "Manual | Crash [" .. crashvalues[value] .. "]")
-        if value == 1 then 
-            scripts.events.crash(pid) 
+        if value == 1 then
+            scripts.events.crash(pid)
         elseif value == 2 then
-            local vehicle = player.get_vehicle_handle(pid)
-            for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(ped, vehicle, val, 1488) end
-        elseif value == 3 or value == 4 then
+            scripts.events.notifCrash(pid)
+        elseif value == 3 then
+            do
+                local vehicle = player.get_vehicle_handle(pid)
+                if vehicle == 0 then
+                    notify.warning("Interactions", "Player is not in a vehicle")
+                    return
+                end
+                for val = 16, 18 do
+                    TASK.TASK_VEHICLE_TEMP_ACTION(ped, vehicle, val, 1488)
+                end
+            end
+        elseif value == 4 or value == 5 then
             local coords = ENTITY.GET_ENTITY_COORDS(ped, false)
             if coords.z == -50 then
                 notify.warning("Interactions", "Player is out of render distance")
                 return
             end
-            local hashes = {}
-            if value == 3 then
+            local hashes = {2633113103, 3471458123, 630371791, 3602674979, 3852654278}
+            if value == 4 then
                 hashes = {390902130, -1881846085}
-            else
-                hashes = {2633113103, 3471458123, 630371791, 3602674979, 3852654278}
             end
             local spawnedVehs = {}
             for i = 1, #hashes do
@@ -433,7 +441,7 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
                     end)
                 end)
             end
-            if value == 3 then
+            if value == 4 then
                 for i = 1, #hashes do
                     ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[i], ped, 0, 0.0, 0.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
                 end
@@ -588,7 +596,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
     end):setConfigIgnore()
     do
         PlayerGriefing:add_separator("Cages", "BS_PlayerList_Player_Griefing_Cages")
-        
+        -- TODO
     end
     do
         PlayerGriefing:add_separator("Attackers", "BS_PlayerList_Player_Griefing_Attackers")
