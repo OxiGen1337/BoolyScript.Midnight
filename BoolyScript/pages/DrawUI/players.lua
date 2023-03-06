@@ -607,8 +607,73 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         addActiveAction(pid, optionNotifSpam, false)
     end):setConfigIgnore()
     do
+        local invCage = false
+        local cages = {"Spawn cable car", "Spawn stunt tube", "Remove"}
         PlayerGriefing:add_separator("Cages", "BS_PlayerList_Player_Griefing_Cages")
-        -- TODO
+        PlayerGriefing:add_bool_option("Invisible", "BS_PlayerList_Player_Griefing_CagesInvisible", function (state)
+            invCage = state
+        end):setConfigIgnore()
+        PlayerGriefing:add_choose_option("Action", "BS_PlayerList_Griefing_Attackers_Settings_Weapon", false, cages, function (pos)
+            local pid = selectedPlayer
+            local ped = player.get_entity_handle(pid)
+            local coords = ENTITY.GET_ENTITY_COORDS(ped, false)
+            local hashes = {
+                string.joaat("cablecar"),
+                string.joaat("stt_prop_stunt_tube_s")
+            }
+            switch(cages[pos], {
+                ["Spawn cable car"] = function()
+                    coords.z = coords.z - 0.9
+                    local veh = {}
+                    callbacks.requestModel(hashes[pos], function ()
+                        for i = 1, 4 do
+                            entity.spawn_veh(hashes[pos], coords, function (vehsp)
+                                veh[i] = vehsp
+                            end)
+                        end
+                    end)
+                    local rot_3 = ENTITY.GET_ENTITY_ROTATION(veh[3])
+                    ENTITY.SET_ENTITY_ROTATION(veh[3], rot_3.x, rot_3.y, -90, 1, true)
+                    local rot_4 = ENTITY.GET_ENTITY_ROTATION(veh[4])
+                    ENTITY.SET_ENTITY_ROTATION(veh[4], rot_4.x, rot_4.y, -90, 1, true)
+                    for key, value in pairs(veh) do
+                        ENTITY.FREEZE_ENTITY_POSITION(value, true)
+                        if value == 0 then
+                            notify.fatal("Spawn cable car", "Something went wrong creating cage")
+                        end
+                    end
+                    if invCage then
+                        for i = 1, 4 do
+                            ENTITY.SET_ENTITY_VISIBLE(veh[i], false)
+                        end
+                    end
+                    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])        
+                end,
+                ["Spawn stunt tube"] = function()
+                    coords.z = coords.z - 0.9
+                    local veh = {}
+                    callbacks.requestModel(hashes[pos], function ()
+                        entity.spawn_obj(hashes[pos], coords, function (cage_object)
+                            local rot = ENTITY.GET_ENTITY_ROTATION(cage_object)
+                            ENTITY.SET_ENTITY_ROTATION(cage_object, rot.x, 90, rot.z, 1, true)
+                            ENTITY.FREEZE_ENTITY_POSITION(cage_object, true)
+                            if invCage then
+                                ENTITY.SET_ENTITY_VISIBLE(cage_object, false)
+                            end
+                            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])                    
+                        end)
+                    end)
+                end
+            }, function()
+                local cage_models = {
+                    "cablecar",
+                    "stt_prop_stunt_tube_s"
+                }
+                for Z, V in pairs(cage_models) do
+                    features.delete_entities_by_model(V)
+                end
+            end)
+        end)
     end
     do
         PlayerGriefing:add_separator("Attackers", "BS_PlayerList_Player_Griefing_Attackers")

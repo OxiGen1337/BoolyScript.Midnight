@@ -222,6 +222,45 @@ function table.contains(table, element)
 	return false
 end
 
+function features.delete_entities_by_model(model)
+	local hash = string.joaat(model)
+	if STREAMING.IS_MODEL_A_VEHICLE(hash) then
+		for k, vehicle in pairs(pools.get_all_vehicles()) do
+			if ENTITY.GET_ENTITY_MODEL(vehicle) == hash then
+				for k, ped in pairs(pools.get_all_peds()) do
+					if PED.GET_VEHICLE_PED_IS_IN(ped, true) == vehicle then
+						if not PED.IS_PED_A_PLAYER(ped) then
+							ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ped, false, false)
+							entity.delete(ped)
+						end
+					end
+				end
+				ENTITY.SET_ENTITY_AS_MISSION_ENTITY(vehicle, false, false)
+				entity.delete(vehicle)
+			end
+		end
+		return
+	end
+	if STREAMING.IS_MODEL_A_PED(hash) then
+		for k, ped in pairs(pools.get_all_peds()) do
+			if ENTITY.GET_ENTITY_MODEL(ped) == hash then
+				if not PED.IS_PED_A_PLAYER(ped) then
+					ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ped, false, false)
+					entity.delete(ped)
+				end
+			end
+		end
+		return
+	end
+	for k, object in pairs(pools.get_all_objects()) do
+		if ENTITY.GET_ENTITY_MODEL(object) == hash then
+			ENTITY.SET_ENTITY_AS_MISSION_ENTITY(object, false, false)
+			entity.delete(object)
+		end
+	end
+end
+
+
 -- local temp = WEAPON.GIVE_WEAPON_TO_PED
 
 -- function WEAPON.GIVE_WEAPON_TO_PED(ped, wepHash, ammo, isHidden, bForceInHand)
@@ -236,7 +275,7 @@ end
 -- 	temp(ped, wepHash, componentHash)
 -- end
 
-function switch (value_any, table_t, default_f)
+function switch(value_any, table_t, default_f)
 	if not value_any and default_f then return default_f() end
 	return pcall(table_t[value_any] or default_f)
 end
