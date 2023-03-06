@@ -33,18 +33,6 @@ PlayerInteractions = Submenu.add_static_submenu("Player", "BS_PlayerList_Player"
         return player.get_name(selectedPlayer)
     end)
     table.insert(submenus, PlayerInteractions)
-    PlayerInteractions:add_bool_option("Spectate", "BS_PlayerList_Player_Spectate", function (state, option)
-        if state then
-            if Stuff.spectatingPlayer then
-                addActiveAction(Stuff.spectatingPlayer, option, false)
-            end
-            Stuff.spectatingPlayer = GetSelectedPlayer()
-        else
-            Stuff.spectatingPlayer = nil
-        end
-        NETWORK.NETWORK_SET_IN_SPECTATOR_MODE(state, player.get_entity_handle(GetSelectedPlayer()))
-        addActiveAction(GetSelectedPlayer(), option, state)
-    end)
 end
 
 PlayerSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Player_Settings") do
@@ -56,6 +44,19 @@ PlayerSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Player_Se
     PlayerInteractions:add_sub_option("Settings", "BS_PlayerList_Settings", PlayerSettings)
     table.insert(submenus, PlayerSettings)
 end
+
+PlayerInteractions:add_bool_option("Spectate", "BS_PlayerList_Player_Spectate", function (state, option)
+    if state then
+        if Stuff.spectatingPlayer then
+            addActiveAction(Stuff.spectatingPlayer, option, false)
+        end
+        Stuff.spectatingPlayer = GetSelectedPlayer()
+    else
+        Stuff.spectatingPlayer = nil
+    end
+    NETWORK.NETWORK_SET_IN_SPECTATOR_MODE(state, player.get_entity_handle(GetSelectedPlayer()))
+    addActiveAction(GetSelectedPlayer(), option, state)
+end)
 
 PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Teleport") do
     PlayerTeleport:add_click_option("Teleport to player", "BS_PlayerList_Player_Teleport_ToPlayer", function ()
