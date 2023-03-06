@@ -574,7 +574,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         addActiveAction(pid, option, value)
-        script.send(pid, 1920583171, pid, 1 - value)
+        scripts.events.passiveMode(pid, 1 - value)
     end):setConfigIgnore()
     local optionNotifSpam
     optionNotifSpam = PlayerGriefing:add_looped_option("Notification spam", "BS_Players_Neutral_NotifSpam", 1.0, function ()
@@ -586,6 +586,10 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         local pid = selectedPlayer
         addActiveAction(pid, optionNotifSpam, false)
     end):setConfigIgnore()
+    do
+        PlayerGriefing:add_separator("Cages", "BS_PlayerList_Player_Griefing_Cages")
+        
+    end
     do
         PlayerGriefing:add_separator("Attackers", "BS_PlayerList_Player_Griefing_Attackers")
         local attackersSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Griefing_Attackers_Settings")
