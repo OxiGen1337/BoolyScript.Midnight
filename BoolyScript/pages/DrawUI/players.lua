@@ -656,7 +656,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
                     callbacks.requestModel(hashes[pos], function ()
                         entity.spawn_obj(hashes[pos], coords, function (cage_object)
                             local rot = ENTITY.GET_ENTITY_ROTATION(cage_object)
-                            ENTITY.SET_ENTITY_ROTATION(cage_object, rot.x, 90, rot.z, 1, true)
+                            --ENTITY.SET_ENTITY_ROTATION(cage_object, rot.x, 90, rot.z, 1, true)
                             ENTITY.FREEZE_ENTITY_POSITION(cage_object, true)
                             if cage_object == 0 then
                                 notify.fatal("Spawn stunt tube", "Something went wrong creating cage")
