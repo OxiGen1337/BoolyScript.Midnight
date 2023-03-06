@@ -610,12 +610,13 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
     do
         local invCage = false
         local cages = {"Spawn cable car", "Spawn stunt tube", "Remove"}
+        local spawnedCages = {}
         PlayerGriefing:add_separator("Cages", "BS_PlayerList_Player_Griefing_Cages")
         PlayerGriefing:add_bool_option("Invisible", "BS_PlayerList_Player_Griefing_CagesInvisible", function (state)
             invCage = state
         end):setConfigIgnore()
         PlayerGriefing:add_choose_option("Action", "BS_PlayerList_Player_Griefing_CagesAction", false, cages, function (pos)
-            local pid = selectedPlayer
+            local pid = GetSelectedPlayer()
             local ped = player.get_entity_handle(pid)
             local coords = ENTITY.GET_ENTITY_COORDS(ped, false)
             local hashes = {
@@ -625,61 +626,39 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
             switch(cages[pos], {
                 ["Spawn cable car"] = function()
                     coords.z = coords.z - 0.9
-                    local veh = {}
-                    callbacks.requestModel(hashes[pos], function ()
-                        for i = 1, 4 do
-                            entity.spawn_veh(hashes[pos], coords, function (vehsp)
-                                veh[i] = vehsp
-                            end)
-                        end
-                    end)
-                    local rot_3 = ENTITY.GET_ENTITY_ROTATION(veh[3])
-                    ENTITY.SET_ENTITY_ROTATION(veh[3], rot_3.x, rot_3.y, -90, 1, true)
-                    local rot_4 = ENTITY.GET_ENTITY_ROTATION(veh[4])
-                    ENTITY.SET_ENTITY_ROTATION(veh[4], rot_4.x, rot_4.y, -90, 1, true)
-                    for key, value in pairs(veh) do
-                        ENTITY.FREEZE_ENTITY_POSITION(value, true)
-                        if value == 0 then
-                            notify.fatal("Spawn cable car", "Something went wrong creating cage")
-                        end
-                    end
-                    if invCage then
-                        for i = 1, 4 do
-                            ENTITY.SET_ENTITY_VISIBLE(veh[i], false)
-                        end
+                    for i = 1, 4 do
+                        entity.spawn_veh(hashes[pos], coords, function (handle)
+                            table.insert(spawnedCages, handle)
+                            ENTITY.FREEZE_ENTITY_POSITION(handle, true)
+                            ENTITY.SET_ENTITY_VISIBLE(handle, not invCage)
+                            if table.contains({3, 4}, i) then
+                                local rot = ENTITY.GET_ENTITY_ROTATION(handle, 5)
+                                ENTITY.SET_ENTITY_ROTATION(handle, rot.x, rot.y, -90.0, 5, true)
+                            end
+                        end)
                     end
                     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])
                 end,
                 ["Spawn stunt tube"] = function()
                     coords.z = coords.z - 0.9
-                    local veh = {}
                     callbacks.requestModel(hashes[pos], function ()
-                        entity.spawn_obj(hashes[pos], coords, function (cage_object)
-                            local rot = ENTITY.GET_ENTITY_ROTATION(cage_object)
-                            --ENTITY.SET_ENTITY_ROTATION(cage_object, rot.x, 90, rot.z, 1, true)
-                            ENTITY.FREEZE_ENTITY_POSITION(cage_object, true)
-                            if cage_object == 0 then
-                                notify.fatal("Spawn stunt tube", "Something went wrong creating cage")
-                            end
-                            if invCage then
-                                ENTITY.SET_ENTITY_VISIBLE(cage_object, false)
-                            end
-                            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])
+                        entity.spawn_obj(hashes[pos], coords, function (handle)
+                            table.insert(spawnedCages, handle)
+                            local rot = ENTITY.GET_ENTITY_ROTATION(handle, 5)
+                            ENTITY.SET_ENTITY_ROTATION(handle, rot.x, 90.0, rot.z, 5, true)
+                            ENTITY.FREEZE_ENTITY_POSITION(handle, true)
+                            ENTITY.SET_ENTITY_VISIBLE(handle, not invCage)
                         end)
                     end)
+                    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])
                 end,
                 ["Remove"] = function()
-                    local cage_models = {
-                        "cablecar",
-                        "stt_prop_stunt_tube_s"
-                    }
-                    for Z, V in pairs(cage_models) do
-                        features.delete_entities_by_model(V)
+                    for _, handle in ipairs(spawnedCages) do
+                        entity.delete(handle)
                     end
+                    spawnedCages = {}
                 end
-            }, function()
-                --N
-            end)
+            })
         end):setConfigIgnore()
     end
     do
