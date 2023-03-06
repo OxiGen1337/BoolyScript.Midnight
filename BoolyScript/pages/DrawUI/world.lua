@@ -71,14 +71,15 @@ local clock = Submenu.add_static_submenu("Clock", "BS_World_Clock") do
             min = '0' .. tostring(CLOCK.GET_CLOCK_MINUTES()),
         }
     end)
+    
     clock:add_state_bar("Current time: ", "BS_World_Clock_Time", function ()
         return string.format("%s:%s", currentTime.hour:sub(-2), currentTime.min:sub(-2))
     end)
-    local hours = clock:add_num_option("Hours", "BS_World_Clock_Hours", 0, 23, 1, function (val)
+    clock:add_num_option("Hours", "BS_World_Clock_Hours", 0, 23, 1, function (val)
         time.hour = val
         NETWORK.NETWORK_OVERRIDE_CLOCK_TIME(time.hour, time.min, time.sec)
     end)
-    local minutes = clock:add_num_option("Minutes", "BS_World_Clock_Minutes", 0, 60, 10, function (val)
+    clock:add_num_option("Minutes", "BS_World_Clock_Minutes", 0, 60, 10, function (val)
         time.min = val
         NETWORK.NETWORK_OVERRIDE_CLOCK_TIME(time.hour, time.min, time.sec)
     end)

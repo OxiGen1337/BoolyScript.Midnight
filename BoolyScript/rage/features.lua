@@ -212,6 +212,25 @@ function table.contains(table, element)
 	  end
 	end
 	return false
-  end
+end
+
+-- local temp = WEAPON.GIVE_WEAPON_TO_PED
+
+-- function WEAPON.GIVE_WEAPON_TO_PED(ped, wepHash, ammo, isHidden, bForceInHand)
+-- 	log.dbg("'GIVE_WEAPON_TO_PED': Hash: {}", wepHash)
+-- 	temp(ped, wepHash, ammo, isHidden, bForceInHand)
+-- end
+
+-- local temp2 = WEAPON.GIVE_WEAPON_COMPONENT_TO_PED
+
+-- function WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(ped, wepHash, componentHash)
+-- 	log.dbg("'GIVE_WEAPON_COMPONENT_TO_PED': Weapon hash: {}; Component hash: {}", wepHash, componentHash)
+-- 	temp(ped, wepHash, componentHash)
+-- end
+
+function switch (value_any, table_t, default_f)
+	if not value_any and default_f then return default_f() end
+	return pcall(table_t[value_any] or default_f)
+end
 
 return features

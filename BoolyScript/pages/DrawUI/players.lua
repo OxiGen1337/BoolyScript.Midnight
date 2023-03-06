@@ -33,6 +33,18 @@ PlayerInteractions = Submenu.add_static_submenu("Player", "BS_PlayerList_Player"
         return player.get_name(selectedPlayer)
     end)
     table.insert(submenus, PlayerInteractions)
+    PlayerInteractions:add_bool_option("Spectate", "BS_PlayerList_Player_Spectate", function (state, option)
+        if state then
+            if Stuff.spectatingPlayer then
+                addActiveAction(Stuff.spectatingPlayer, option, false)
+            end
+            Stuff.spectatingPlayer = GetSelectedPlayer()
+        else
+            Stuff.spectatingPlayer = nil
+        end
+        NETWORK.NETWORK_SET_IN_SPECTATOR_MODE(state, player.get_entity_handle(GetSelectedPlayer()))
+        addActiveAction(GetSelectedPlayer(), option, state)
+    end)
 end
 
 PlayerSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Player_Settings") do
@@ -747,6 +759,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
     end
     PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Griefing", PlayerGriefing)
     table.insert(submenus, PlayerGriefing)
+    
 end
 
 local function getPlayerFlags(pid)
@@ -819,7 +832,6 @@ PlayerList:add_choose_option("Sort", "BS_PlayerList_Sort", true, {"Name", "Dista
     end
 end):setStatic(true)
 
-
 Main:add_sub_option("Players", "BS_PlayerList", PlayerList)
 
 PlayerInteractions:add_click_option("Copy info", "BS_Players_Info_CopyInfo", function ()
@@ -828,6 +840,17 @@ PlayerInteractions:add_click_option("Copy info", "BS_Players_Info_CopyInfo", fun
     local out = string.format("Player info\nName: %s\nRID: %i\nIP: %s", player.get_name(pid), player.get_rid(pid), player.get_ip_string(pid))
     utils.set_clipboard(out)
     notify.success("Players", "Copied player info to clipboard.")
+end)
+
+task.createTask("Ckeck_Players_On_Leaving", 0.0, nil, function ()
+    if player.is_connected(GetSelectedPlayer()) then return end
+    for _, sub in ipairs(submenus) do
+        if sub:isOpened() then
+            sub:setActive(false)
+        end
+    end
+    activeActions[selectedPlayer + 1] = nil
+    selectedPlayer = -1
 end)
 
 -- END
