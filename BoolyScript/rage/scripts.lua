@@ -244,6 +244,10 @@ scripts.globals['getCharId'] = function()
     return script_global:new(1574918):get_long()
 end
 
+scripts.globals['getCharIdStr'] = function()
+    return tostring("MP" .. scripts.globals.getCharId() .. "_")
+end
+
 scripts.globals['skipCutscene'] = function()
     -- log.error("SCRIPTS", "\'skipCutscene\' global hasn't been updated yet.") 
     script_global:new(2766500):at(3):set_int64(1) -- CUTSCENE::REQUEST_CUTSCENE("HS4_SCP_KNCK", 8);

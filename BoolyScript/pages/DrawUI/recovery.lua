@@ -24,11 +24,9 @@ Recovery:add_bool_option("Nightclub money loop", "BS_Recovery_Nightclub_Enable",
         task.createTask("BS_Recovery_Nightclub_Enable", 5.0, nil, function ()
             script_global:new(262145):at(24045):set_int64(300000) -- KEEP AT 300000 OR YOU WILL NEED TO DELETE & RE-MAKE YOUR CHARACTER, IT WILL BUG THE NIGHTCLUB SAFE!
             script_global:new(262145):at(24041):set_int64(300000) -- KEEP AT 300000 OR YOU WILL NEED TO DELETE & RE-MAKE YOUR CHARACTER, IT WILL BUG THE NIGHTCLUB SAFE!
-            for _, char in ipairs({"MP0_", "MP1_"}) do
-                STATS.STAT_SET_INT(string.joaat(char .. "CLUB_POPULARITY"), 10000, true)
-                STATS.STAT_SET_INT(string.joaat(char .. "CLUB_PAY_TIME_LEFT"), -1, true)
-                STATS.STAT_SET_INT(string.joaat(char .. "CLUB_POPULARITY"), 100000, true)
-            end
+            STATS.STAT_SET_INT(string.joaat(scripts.globals.getCharIdStr() .. "CLUB_POPULARITY"), 10000, true)
+            STATS.STAT_SET_INT(string.joaat(scripts.globals.getCharIdStr() .. "CLUB_PAY_TIME_LEFT"), -1, true)
+            STATS.STAT_SET_INT(string.joaat(scripts.globals.getCharIdStr() .. "CLUB_POPULARITY"), 100000, true)
         end)
     elseif task.exists("BS_Recovery_Nightclub_Enable") then
         task.removeTask("BS_Recovery_Nightclub_Enable")

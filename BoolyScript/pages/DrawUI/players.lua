@@ -666,15 +666,18 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
                             STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])
                         end)
                     end)
+                end,
+                ["Remove"] = function()
+                    local cage_models = {
+                        "cablecar",
+                        "stt_prop_stunt_tube_s"
+                    }
+                    for Z, V in pairs(cage_models) do
+                        features.delete_entities_by_model(V)
+                    end
                 end
             }, function()
-                local cage_models = {
-                    "cablecar",
-                    "stt_prop_stunt_tube_s"
-                }
-                for Z, V in pairs(cage_models) do
-                    features.delete_entities_by_model(V)
-                end
+                --N
             end)
         end):setConfigIgnore()
     end
