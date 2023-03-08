@@ -1077,6 +1077,7 @@ end
 
 function Option:setSelectable(state_b)
     self.isSelectable = state_b
+    return self
 end
 
 Configs = {}

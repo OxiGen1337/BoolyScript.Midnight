@@ -93,50 +93,44 @@ do
     ST_CH:add_bool_option("Save", "BS_StatEditorCharacter_SaveValue", function (state, option)
         saveValue = state
     end):setValue(true):setConfigIgnore()
-    
-    local function execStats()
-        statOpt[0] = ST_CH:add_separator("Stats", "BS_StatEditorCharacter_Stats")
-        for i = 1, #statList do
-            statOpt[i] = ST_CH:add_text_input(statList[i], "BS_StatEditorCharacter_" .. statList[i], function (enteredText)
-                if statList[i] == "MPPLY_KILL_DEATH_RATIO" then
-                    stats.set_float(sJ(statList[i]), s2f(enteredText))
-                else
-                    stats.set_u64(sJ(statList[i]), s2i(enteredText))
-                end
-                if saveValue then STATS.STAT_SAVE(0, 0, 3, 0) end
-                notify.success("Character Stat", "Modified stat " .. statList[i] .. " with value " .. enteredText)
-            end):setConfigIgnore()
-        end
-    end
+
 
     ST_CH:add_choose_option("Action", "BS_StatEditorCharacter_StatAction", true, {"Modify", "View"}, function (value, option)
-        if value == 1 then
-            if statOpt[0] ~= nil then
-                for i = 0, #statList do
-                    statOpt[i]:remove()
-                end
-            end
-            execStats()
-        else
-            if statOpt[0] ~= nil then
-                for i = 0, #statList do
-                    statOpt[i]:remove()
-                end
-            end
-            statOpt[0] = ST_CH:add_separator("Stats", "BS_StatEditorCharacter_Stats")
-            for i = 1, #statList do
-                statOpt[i] = ST_CH:add_state_bar(statList[i], "BS_StatEditorCharacter_" .. statList[i], function ()
-                    if statList[i] == "MPPLY_KILL_DEATH_RATIO" then
-                        return stats.get_float(sJ(statList[i]))
-                    else
-                        return stats.get_u64(sJ(statList[i]))
-                    end
-                end):setSelectable(true)
-            end    
+        for _, opt in ipairs(statOpt) do
+            opt:remove()
         end
-    end):setConfigIgnore()
+        statOpt = {}
 
-    execStats()
+        table.insert(statOpt, ST_CH:add_separator("Stats", "BS_StatEditorCharacter_Stats"))
+
+        switch(option:getTable()[value], {
+            ["Modify"] = function ()
+                for _, stat in ipairs(statList) do
+                    table.insert(statOpt, ST_CH:add_text_input(stat, "BS_StatEditorCharacter_" .. stat, function (enteredText)
+                        if stat == "MPPLY_KILL_DEATH_RATIO" then
+                            stats.set_float(sJ(stat), s2f(enteredText))
+                        else
+                            stats.set_u64(sJ(stat), s2i(enteredText))
+                        end
+                        if saveValue then STATS.STAT_SAVE(0, 0, 3, 0) end
+                        notify.success("Character Stat", "Modified stat '{}' with value {}", stat, enteredText)
+                    end):setConfigIgnore())
+                end
+            end,
+            ["View"] = function ()
+                for _, stat in ipairs(statList) do
+                    log.dbg("{}", stat)
+                    table.insert(statOpt, ST_CH:add_state_bar(stat, "BS_StatEditorCharacter_" .. stat, function ()
+                        if stat == "MPPLY_KILL_DEATH_RATIO" then
+                            return stats.get_float(sJ(stat))
+                        else
+                            return stats.get_u32(sJ(stat))
+                        end
+                    end):setSelectable(true))
+                end  
+            end
+        })
+    end):setValue(1)
 end
 
 ST:add_bool_option("Add MP0_/MP1_", "BS_StatEditor_MP01", function (state, option)

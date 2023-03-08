@@ -277,7 +277,7 @@ end
 
 function switch(value_any, table_t, default_f)
 	if not value_any and default_f then return default_f() end
-	return pcall(table_t[value_any] or default_f)
+	return pcall(table_t[value_any] or default_f or function () return end)
 end
 
 return features

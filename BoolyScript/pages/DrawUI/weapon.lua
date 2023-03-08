@@ -6,8 +6,13 @@ local blWepCategories = {["GROUP_DIGISCANNER"] = false, ["GROUP_NIGHTVISION"] = 
 local Ammunation = Submenu.add_static_submenu("Ammunation", "BS_Weapon_Ammunation") do
     Ammunation:add_sub_option("Save & load weapon loadouts", "BS_Self_Ammunation_SaveLoad", PresetsMgr):addTag({"[Link]", 107, 223, 227})
     Ammunation:add_click_option("Give all weapons", "BS_Self_Ammunation_GiveAll", function ()
-        for _, hash in pairs(ParsedFiles.weaponHashes) do
-            WEAPON.GIVE_WEAPON_TO_PED(PLAYER.PLAYER_PED_ID(), hash, 1000, false, true)
+        local ped = player.id()
+        for name, hash in pairs(ParsedFiles.weaponHashes) do
+            if WEAPON.IS_WEAPON_VALID(hash) then
+                WEAPON.GIVE_WEAPON_TO_PED(ped, hash, 1000, false, true)
+            else
+                log.error("Invalid weapon", "Name: {}; Hash: {}", name, hash)
+            end
         end
     end)
     Ammunation:add_click_option("Remove all weapons", "BS_Self_Ammunation_RemoveAll", function ()
@@ -129,6 +134,7 @@ Weapon:add_bool_option("Debug gun [E]", "BS_Weapon_DebugGun", function (state)
                 if player.is_aiming(PLAYER.PLAYER_ID()) and PLAYER.GET_ENTITY_PLAYER_IS_FREE_AIMING_AT(PLAYER.PLAYER_ID(), pEntity) then
                     local entity = memory.read_int64(pEntity)
                     local etype = "Unknown"
+                    local owner = entity.get_owner(entity) ~= -1 and player.get_name(entity.get_owner(entity)) or "None"
                     local ehealth = ENTITY.GET_ENTITY_HEALTH(entity)
                     local emaxhealth = ENTITY.GET_ENTITY_MAX_HEALTH(entity)
                     local coords = ENTITY.GET_ENTITY_COORDS(entity, true)
@@ -138,7 +144,7 @@ Weapon:add_bool_option("Debug gun [E]", "BS_Weapon_DebugGun", function (state)
                     elseif ENTITY.GET_ENTITY_TYPE(entity) == 3 then etype = "Object"
                     end
                     if entity ~= 0 then
-                        log.default("Weapon", string.format("[Debug gun]\n\tEntity hash: %s\n\tID: %s\n\tType: %s\n\tHealth: %s\t Max heath: %s\n\tCoords: \n\tX: %s\tY: %s\tZ: %s\n", hash, entity, etype, ehealth, emaxhealth, coords.x, coords.y, coords.z))
+                        log.default("Weapon", string.format("[Debug gun]\n\tEntity hash: %s\n\tID: %s\n\tType: %s\n\tHealth: %s\t Max heath: %s\n\tOwner: %s\n\tCoords: \n\tX: %s\tY: %s\tZ: %s\n", hash, entity, etype, ehealth, emaxhealth, owner, coords.x, coords.y, coords.z))
                     end
                     notify.success("Weapon", "Copied entity info in console.", GET_NOTIFY_ICONS().weapons)
                 end
