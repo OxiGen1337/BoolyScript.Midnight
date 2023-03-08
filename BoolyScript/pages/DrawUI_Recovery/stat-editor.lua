@@ -8,7 +8,7 @@ do
         "MPPLY_DEATHS_PLAYER",
         "MPPLY_DEATHS_PLAYER_SUICIDE",
         "MPPLY_KILL_DEATH_RATIO",
-        "MP_PLAYING_TIME",
+        -- "MP_PLAYING_TIME",
         --"MP_PLAYING_TIME_NEW",
         --MP .. "TOTAL_PLAYING_TIME",
         "MPPLY_CREW_LOCAL_XP_0",
@@ -118,7 +118,7 @@ do
                         if stat == "MPPLY_KILL_DEATH_RATIO" then
                             return stats.get_float(sJ(stat))
                         else
-                            return stats.get_u64(sJ(stat))
+                            return stats.get_u32(sJ(stat))
                         end
                     end):setSelectable(true))
                 end  
