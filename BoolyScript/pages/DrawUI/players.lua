@@ -625,7 +625,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
                 string.joaat("stt_prop_stunt_tube_s"),
                 string.joaat("prop_fnclink_03e")
             }
-            switch(cages[pos], {
+            switch(cageActList[pos], {
                 ["Spawn cable car"] = function()
                     for i = 1, 4 do
                         entity.spawn_veh(hashes[pos], coords, function (handle)

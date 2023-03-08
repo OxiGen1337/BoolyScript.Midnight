@@ -48,7 +48,7 @@ local unlockOptions = {
     ["Objectives"] = v2r.unlockObjectives,
 }
 
-for name, func in ipairs(unlockOptions) do
+for name, func in pairs(unlockOptions) do
     V2:add_click_option(name, "BS_RecoveryV2_" .. name, function(option)
         func(c)
         option:setTags({{"[Unlocked]", 10, 245, 18}})
