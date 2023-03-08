@@ -119,7 +119,6 @@ do
             end,
             ["View"] = function ()
                 for _, stat in ipairs(statList) do
-                    log.dbg("{}", stat)
                     table.insert(statOpt, ST_CH:add_state_bar(stat, "BS_StatEditorCharacter_" .. stat, function ()
                         if stat == "MPPLY_KILL_DEATH_RATIO" then
                             return stats.get_float(sJ(stat))
