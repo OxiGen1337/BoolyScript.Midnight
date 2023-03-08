@@ -520,12 +520,12 @@ v2r['awards'] = function(c)
     STATS.STAT_SAVE(0, 0, 3, 0)
 end
 
-v2r['unlockExclusiveContent'] = function()
+v2r['unlockExclusiveContent'] = function(c)
     S_SI(sJ("MPPLY_UNLOCK_EXCLUS_CONTENT"), -1, TRUE)
     STATS.STAT_SAVE(0, 0, 3, 0)
 end
 
-v2r['unlockChallenges'] = function()
+v2r['unlockChallenges'] = function(c)
 	S_SB(sJ("MPPLY_MELEECHLENGECOMPLETED"), TRUE, TRUE)
 	S_SB(sJ("MPPLY_HEADSHOTCHLENGECOMPLETED"), TRUE, TRUE)
 	S_SB(sJ("MPPLY_NAVYREVOLVERCOMPLETED"), TRUE, TRUE)

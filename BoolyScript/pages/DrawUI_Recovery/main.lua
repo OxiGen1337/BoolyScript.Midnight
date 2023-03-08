@@ -30,130 +30,43 @@ end):setTags({{"[Risky]", 252, 43, 85}}):setHint("Purchase an Auto Shop -> Activ
 
 V2:add_separator("Unlocks", "BS_RecoveryV2_Unl")
 
-V2:add_click_option("Everything", "BS_RecoveryV2_Everything", function(option)
-    v2r.unlockClothes(c)
-    v2r.unlockAdminStuff(c)
-    v2r.unlockTattoos(c)
-    v2r.unlockWeapons(c)
-    v2r.unlockExclusiveContent()
-    v2r.unlockChallenges()
-    v2r.unlockFastRunPlusReload(c)
-    v2r.unlockVehicleMods(c)
-    v2r.unlockXmas(c)
-    v2r.unlockValentines(c)
-    v2r.unlockMovieProps(c)
-    v2r.unlockPilotSchool(c)
-    v2r.unlockPropertyAccess(c)
-    v2r.unlockObjectives(c)
-    v2r.unlockShotaro(c)
-    v2r.unlockArmoredParagon(c)
-    v2r.awards(c)
-    v2r.health(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Everything", "Success")
-end):setHint("Unlocks everything below except Extra, Musket, Firework Launcher")
+local unlockOptions = {
+    ["Extra"] = v2r.unlockExtra,
+    ["Clothes"] = v2r.unlockClothes,
+    ["Rockstar Clothes"] = v2r.unlockAdminStuff,
+    ["Tattoos"] = v2r.unlockTattoos,
+    ["Weapons"] = v2r.unlockWeapons,
+    ["Exclusive Content"] = v2r.unlockExclusiveContent,
+    ["Challenges"] = v2r.unlockChallenges,
+    ["Fast Run + Reload"] = v2r.unlockFastRunPlusReload,
+    ["Vehicle Mods"] = v2r.unlockVehicleMods,
+    ["Xmas Stuff"] = v2r.unlockXmas,
+    ["Valentines"] = v2r.unlockValentines,
+    ["Movie Props"] = v2r.unlockMovieProps,
+    ["Pilot School"] = v2r.unlockPilotSchool,
+    ["Property Access"] = v2r.unlockPropertyAccess,
+    ["Objectives"] = v2r.unlockObjectives,
+}
 
-V2:add_click_option("Extra", "BS_RecoveryV2_Extra", function(option)
-    v2r.unlockExtra(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Extra", "Success")
-end)
+for name, func in ipairs(unlockOptions) do
+    V2:add_click_option(name, "BS_RecoveryV2_" .. name, function(option)
+        func(c)
+        option:setTags({{"[Unlocked]", 10, 245, 18}})
+        notify.success("Unlock " .. name, "Success")
+    end)
+end
 
-V2:add_click_option("Clothes", "BS_RecoveryV2_CL", function(option)
-    v2r.unlockClothes(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Clothes", "Success")
-end)
-
-V2:add_click_option("Rockstar Clothes", "BS_RecoveryV2_RCL", function(option)
-    v2r.unlockAdminStuff(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Rockstar Stuff", "Success")
-end)
-
-V2:add_click_option("Tattoos", "BS_RecoveryV2_TT", function(option)
-    v2r.unlockTattoos(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Tattoos", "Success")
-end)
-
-V2:add_click_option("Weapons", "BS_RecoveryV2_WP", function(option)
-    v2r.unlockWeapons(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Weapons", "Success")
-end)
-
-V2:add_click_option("Exclusive Content", "BS_RecoveryV2_EC", function(option)
-    v2r.unlockExclusiveContent()
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Exclusive Content", "Success")
-end)
-
-V2:add_click_option("Challenges", "BS_RecoveryV2_CLL", function(option)
-    v2r.unlockChallenges()
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Challenges", "Success")
-end)
-
-V2:add_click_option("Fast Run + Reload", "BS_RecoveryV2_FRR", function(option)
-    v2r.unlockFastRunPlusReload(c)
-    option:setTags({{"[Applied]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Apply Fast Run + Reload", "Switch session to apply")
-end)
-
-V2:add_click_option("Vehicle Mods", "BS_RecoveryV2_VM", function(option)
-    v2r.unlockVehicleMods(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Vehicle Mods", "Success")
-end)
-
-V2:add_click_option("Xmas Stuff", "BS_RecoveryV2_XMAS", function(option)
-    v2r.unlockXmas(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Xmas Stuff", "Success")
-end)
-
-V2:add_click_option("Valentines", "BS_RecoveryV2_VAL", function(option)
-    v2r.unlockValentines(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Valentines", "Success")
-end)
-
-V2:add_click_option("Movie Props", "BS_RecoveryV2_MOV", function(option)
-    v2r.unlockMovieProps(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Movie Props", "Success")
-end)
-
-V2:add_click_option("Pilot School", "BS_RecoveryV2_PLT", function(option)
-    v2r.unlockPilotSchool(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Pilot School", "Success")
-end)
-
-V2:add_click_option("Property Access", "BS_RecoveryV2_PAC", function(option)
-    v2r.unlockPropertyAccess(c)
-    option:setTags({{"[Granted]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Grant Property Access", "Success")
-end)
-
-V2:add_click_option("Objectives", "BS_RecoveryV2_OCS", function(option)
-    v2r.unlockObjectives(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
-    notify.success("Unlock Objectives", "Success")
-end)
-
-V2:add_separator("Vehicles", "BS_RecoveryV2_Stats")
+V2:add_separator("Vehicles", "BS_RecoveryV2_Vehicles")
 
 V2:add_click_option("Shotaro", "BS_RecoveryV2_SHT", function(option)
     v2r.unlockShotaro(c)
-    option:setTags({{"[Now Available]", math.random(255), math.random(255), math.random(255)}})
+    option:setTags({{"[Now Available]", 210, 255, 48}})
     notify.success("Unlock Shotaro", "Success")
 end)
 
 V2:add_click_option("Armored Paragon", "BS_RecoveryV2_ARP", function(option)
     v2r.unlockArmoredParagon(c)
-    option:setTags({{"[Now Available]", math.random(255), math.random(255), math.random(255)}})
+    option:setTags({{"[Now Available]", 210, 255, 48}})
     notify.success("Unlock Armored Paragon", "Success")
 end)
 
@@ -161,24 +74,24 @@ V2:add_separator("Stats", "BS_RecoveryV2_Stats")
 
 V2:add_click_option("Awards", "BS_RecoveryV2_AWD", function(option)
     v2r.awards(c)
-    option:setTags({{"[Unlocked]", math.random(255), math.random(255), math.random(255)}})
+    option:setTags({{"[Unlocked]", 247, 72, 171}})
     notify.success("Unlock Awards", "Success")
 end)
 
 V2:add_click_option("Health", "BS_RecoveryV2_HLT", function(option)
     v2r.health(c)
-    option:setTags({{"[Modified]", math.random(255), math.random(255), math.random(255)}})
+    option:setTags({{"[Modified]", 247, 72, 171}})
     notify.success("Modify Health", "Switch session to apply")
 end)
 
 V2:add_choose_option("Permanent Musket", "BS_RecoveryV2_MUS", false, {"Give", "Remove"}, function (value, option)
     if value == 1 then
         v2r.giveMusket(c)
-        option:setTags({{"[Given]", math.random(255), math.random(255), math.random(255)}})
+        option:setTags({{"[Given]", 70, 234, 242}})
         notify.success("Give Musket", "Success")
     else
         v2r.removeMusket(c)
-        option:setTags({{"[Removed]", math.random(255), math.random(255), math.random(255)}})
+        option:setTags({{"[Removed]", 245, 26, 10}})
         notify.success("Remove Musket", "Success")
     end
 end)
@@ -186,11 +99,11 @@ end)
 V2:add_choose_option("Permanent Firework Launcher", "BS_RecoveryV2_FIR", false, {"Give", "Remove"}, function (value, option)
     if value == 1 then
         v2r.giveFirework(c)
-        option:setTags({{"[Given]", math.random(255), math.random(255), math.random(255)}})
+        option:setTags({{"[Given]", 70, 234, 242}})
         notify.success("Give Firework Launcher", "Success")
     else
         v2r.removeFirework(c)
-        option:setTags({{"[Removed]", math.random(255), math.random(255), math.random(255)}})
+        option:setTags({{"[Removed]", 245, 26, 10}})
         notify.success("Remove Firework Launcher", "Success")
     end
 end)
