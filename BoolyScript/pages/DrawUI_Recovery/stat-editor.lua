@@ -102,11 +102,22 @@ do
             ["Modify"] = function ()
                 for _, stat in ipairs(statList) do
                     table.insert(statOpt, ST_CH:add_text_input(stat, "BS_StatEditorCharacter_" .. stat, function (enteredText)
-                        if stat == "MPPLY_KILL_DEATH_RATIO" then
-                            stats.set_float(sJ(stat), s2f(enteredText))
-                        else
-                            stats.set_u64(sJ(stat), s2i(enteredText))
-                        end
+                        switch (stats.get_stat_type_name(sJ(stat)), {
+                            ["UINT32"] = function ()
+                                stats.set_u32(sJ(stat), s2i(enteredText))
+                            end,
+                            ["INT"] = function ()
+                                stats.set_u32(sJ(stat), s2i(enteredText))
+                            end,
+                            ["UINT64"] = function ()
+                                stats.set_u64(sJ(stat), s2i(enteredText))
+                            end,
+                            ["FLOAT"] = function ()
+                                stats.set_float(sJ(stat), s2f(enteredText))
+                            end,
+                        }, function ()
+                            notify.fatal("Character Stat", "Unknown stat variable")
+                        end)
                         if saveValue then STATS.STAT_SAVE(0, 0, 3, 0) end
                         notify.success("Character Stat", "Modified stat '{}' with value {}", stat, enteredText)
                     end):setConfigIgnore())
