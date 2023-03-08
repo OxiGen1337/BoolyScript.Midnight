@@ -114,12 +114,26 @@ do
             end,
             ["View"] = function ()
                 for _, stat in ipairs(statList) do
+                    local hash = sJ(stat)
                     table.insert(statOpt, ST_CH:add_state_bar(stat, "BS_StatEditorCharacter_" .. stat, function ()
-                        if stat == "MPPLY_KILL_DEATH_RATIO" then
-                            return stats.get_float(sJ(stat))
-                        else
-                            return stats.get_u32(sJ(stat))
-                        end
+                        local value = nil
+                        switch (stats.get_stat_type_name(hash), {
+                            ["UINT32"] = function ()
+                                value = stats.get_u32(hash)
+                            end,
+                            ["INT"] = function ()
+                                value = stats.get_u32(hash)
+                            end,
+                            ["UINT64"] = function ()
+                                value = stats.get_u64(hash)
+                            end,
+                            ["FLOAT"] = function ()
+                                value = stats.get_float(hash)
+                            end,
+                        }, function ()
+                            value = "N/A"
+                        end)
+                        return value
                     end):setSelectable(true))
                 end  
             end
