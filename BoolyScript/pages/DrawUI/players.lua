@@ -45,6 +45,19 @@ PlayerSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Player_Se
     table.insert(submenus, PlayerSettings)
 end
 
+PlayerInteractions:add_bool_option("Spectate", "BS_PlayerList_Player_Spectate", function (state, option)
+    if state then
+        if Stuff.spectatingPlayer then
+            addActiveAction(Stuff.spectatingPlayer, option, false)
+        end
+        Stuff.spectatingPlayer = GetSelectedPlayer()
+    else
+        Stuff.spectatingPlayer = nil
+    end
+    NETWORK.NETWORK_SET_IN_SPECTATOR_MODE(state, player.get_entity_handle(GetSelectedPlayer()))
+    addActiveAction(GetSelectedPlayer(), option, state)
+end)
+
 PlayerTeleport = Submenu.add_static_submenu("Teleport", "BS_PlayerList_Player_Teleport") do
     PlayerTeleport:add_click_option("Teleport to player", "BS_PlayerList_Player_Teleport_ToPlayer", function ()
         local pid = selectedPlayer
@@ -186,26 +199,14 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
         if not PED.IS_PED_IN_ANY_VEHICLE(player.get_entity_handle(pid), false) then return end
         addActiveAction(pid, option, value)
         local vehicle = player.get_vehicle_handle(pid)
-        local function f(func)
-            return func()
-        end
         local force = 10.0
         local vector = {
-            x = f(function ()
-                if value == 1 then return force end
-                if value == 2 then return -force end
-            end),
-            y = f(function ()
-                if value == 3 then return force end
-                if value == 4 then return -force end
-            end),
-            z = f(function ()
-                if value == 5 then return force end
-                if value == 6 then return -force end
-            end)
+            x = value == 1 and force or value == 2 and -force or 0.0,
+            y = value == 3 and force or value == 4 and -force or 0.0,
+            z = value == 5 and force or value == 6 and -force or 0.0
         }
         entity.request_control(vehicle, function (hdl)
-            ENTITY.APPLY_FORCE_TO_ENTITY(hdl, vector.x, vector.y, vector.z, 0.0, 0.0, 0.0, 0, true, true, true, false, true)
+            ENTITY.APPLY_FORCE_TO_ENTITY(hdl, 1, vector.x, vector.y, vector.z, 0.0, 0.0, 0.0, 0, true, true, true, false, true)
         end)
     end):setConfigIgnore()
     PlayerVehicle:add_choose_option("Upgrade", "BS_PlayerList_Player_Vehicle_Upgrade", false, {"Default", "Random", "Power", "Max"}, function (pos, option)
@@ -396,11 +397,11 @@ PlayerVehicle = Submenu.add_static_submenu("Vehicle", "BS_PlayerList_Player_Vehi
 end
 
 local kickvalues = {
-    "Host/Vote", "Script Events", "IDM"
+    "H", "SE", "SEN", "IDM"
 }
 
 local crashvalues = {
-    "Script Event", "Vehicle Task", "Invalid Animation"
+    "SE", "SEN", "VT", "AC", "AA"
 }
 
 PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Removals") do
@@ -411,24 +412,58 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
         pussy_func(pid, 30, "Manual | Kick [" .. kickvalues[value] .. "]")
         if value == 1 then player.kick(pid) end
         if value == 2 then player.kick_brute(pid) end
-        if value == 3 then player.kick_idm(pid) end
+        if value == 3 then scripts.events.notifKick(pid) end
+        if value == 4 then player.kick_idm(pid) end
     end):setConfigIgnore()
     PlayerRemovals:add_choose_option("Crash", "BS_PlayerList_Player_Removals_Crash", false, crashvalues, function (value, option)
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
-        if value == 2 and player.get_vehicle_handle(pid) == 0 then return end
         local ped = player.get_entity_handle(pid)
         addActiveAction(pid, option, value)
         pussy_func(pid, 30, "Manual | Crash [" .. crashvalues[value] .. "]")
-        if value == 1 then 
-            scripts.events.crash(pid) 
+        if value == 1 then
+            scripts.events.crash(pid)
         elseif value == 2 then
-            local vehicle = player.get_vehicle_handle(pid)
-            for val = 16, 18 do TASK.TASK_VEHICLE_TEMP_ACTION(ped, vehicle, val, 1488) end
+            scripts.events.notifCrash(pid)
         elseif value == 3 then
-            local pos = ENTITY.GET_ENTITY_COORDS(ped, true)
-            TASK.TASK_SWEEP_AIM_POSITION(ped, "NIGGER", "HOHOL", "GAY", "FAGGOT", 10, pos.x, pos.y, pos.z, 1.0, 1.0)
-            TASK.UPDATE_TASK_SWEEP_AIM_POSITION(ped, pos.x, pos.y, pos.z)
+            do
+                local vehicle = player.get_vehicle_handle(pid)
+                if vehicle == 0 then
+                    notify.warning("Interactions", "Player is not in a vehicle")
+                    return
+                end
+                for val = 16, 18 do
+                    TASK.TASK_VEHICLE_TEMP_ACTION(ped, vehicle, val, 1488)
+                end
+            end
+        elseif value == 4 or value == 5 then
+            local coords = ENTITY.GET_ENTITY_COORDS(ped, false)
+            if coords.z == -50 then
+                notify.warning("Interactions", "Player is out of render distance")
+                return
+            end
+            local hashes = {2633113103, 3471458123, 630371791, 3602674979, 3852654278}
+            if value == 4 then
+                hashes = {390902130, -1881846085}
+            end
+            local spawnedVehs = {}
+            for i = 1, #hashes do
+                callbacks.requestModel(hashes[i], function ()
+                    entity.spawn_veh(hashes[i], coords, function (veh)
+                        spawnedVehs[i] = veh
+                    end)
+                end)
+            end
+            if value == 4 then
+                for i = 1, #hashes do
+                    ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[i], ped, 0, 0.0, 0.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
+                end
+            else
+                for i = 1, #hashes do
+                    ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[i], spawnedVehs[#hashes], 0, 0.0, 8.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
+                end
+                ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[#hashes], ped, 0, 0.0, 0.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
+            end
         end
     end):setConfigIgnore()
     PlayerInteractions:add_sub_option("Removals", "BS_PlayerList_Player_Removals", PlayerRemovals)
@@ -560,7 +595,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         local pid = selectedPlayer
         if not pid or not player.is_connected(pid) then return end
         addActiveAction(pid, option, value)
-        script.send(pid, 1920583171, pid, 1 - value)
+        scripts.events.passiveMode(pid, 1 - value)
     end):setConfigIgnore()
     local optionNotifSpam
     optionNotifSpam = PlayerGriefing:add_looped_option("Notification spam", "BS_Players_Neutral_NotifSpam", 1.0, function ()
@@ -572,6 +607,78 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
         local pid = selectedPlayer
         addActiveAction(pid, optionNotifSpam, false)
     end):setConfigIgnore()
+    do
+        local invCage = false
+        local spawnedCages = {}
+        local cageActList = {"Spawn cable car", "Spawn stunt tube", "Spawn fence", "Remove"}
+        PlayerGriefing:add_separator("Cages", "BS_PlayerList_Player_Griefing_Cages")
+        PlayerGriefing:add_bool_option("Invisible", "BS_PlayerList_Player_Griefing_CagesInvisible", function (state)
+            invCage = state
+        end):setConfigIgnore()
+        PlayerGriefing:add_choose_option("Action", "BS_PlayerList_Player_Griefing_CagesAction", false, cageActList, function (pos)
+            local pid = GetSelectedPlayer()
+            local ped = player.get_entity_handle(pid)
+            local coords = ENTITY.GET_ENTITY_COORDS(ped, false)
+            coords.z = coords.z - 0.9
+            local hashes = {
+                string.joaat("cablecar"),
+                string.joaat("stt_prop_stunt_tube_s"),
+                string.joaat("prop_fnclink_03e")
+            }
+            switch(cageActList[pos], {
+                ["Spawn cable car"] = function()
+                    for i = 1, 4 do
+                        entity.spawn_veh(hashes[pos], coords, function (handle)
+                            table.insert(spawnedCages, handle)
+                            ENTITY.FREEZE_ENTITY_POSITION(handle, true)
+                            ENTITY.SET_ENTITY_VISIBLE(handle, not invCage)
+                            if table.contains({3, 4}, i) then
+                                local rot = ENTITY.GET_ENTITY_ROTATION(handle, 5)
+                                ENTITY.SET_ENTITY_ROTATION(handle, rot.x, rot.y, -90.0, 5, true)
+                            end
+                        end)
+                    end
+                    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])
+                end,
+                ["Spawn stunt tube"] = function()
+                    callbacks.requestModel(hashes[pos], function ()
+                        entity.spawn_obj(hashes[pos], coords, function (handle)
+                            table.insert(spawnedCages, handle)
+                            local rot = ENTITY.GET_ENTITY_ROTATION(handle, 5)
+                            ENTITY.SET_ENTITY_ROTATION(handle, rot.x, 90.0, rot.z, 5, true)
+                            ENTITY.FREEZE_ENTITY_POSITION(handle, true)
+                            ENTITY.SET_ENTITY_VISIBLE(handle, not invCage)
+                        end)
+                    end)
+                    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])
+                end,
+                ["Spawn fence"] = function()
+                    local fX = {coords.x-1.5, coords.x-1.5, coords.x+1.5, coords.x-1.5}
+                    local fY = {coords.y+1.5, coords.y-1.5, coords.y+1.5, coords.y+1.5}
+                    for i = 1, 4 do
+                        coords.x = fX[i]
+                        coords.y = fY[i]
+                        entity.spawn_obj(hashes[pos], coords, function (handle)
+                            table.insert(spawnedCages, handle)
+                            ENTITY.FREEZE_ENTITY_POSITION(handle, true)
+                            ENTITY.SET_ENTITY_VISIBLE(handle, not invCage)
+                            if table.contains({3, 4}, i) then
+                                local rot = ENTITY.GET_ENTITY_ROTATION(handle, 5)
+                                ENTITY.SET_ENTITY_ROTATION(handle, rot.x, rot.y, -90.0, 5, true)
+                            end
+                        end)
+                    end
+                end
+            }, function()
+                for _, handle in ipairs(spawnedCages) do
+                    if not features.isEmpty(handle) then
+                        entity.delete(handle)
+                    end
+                end
+                spawnedCages = {}
+            end)
+        end):setConfigIgnore()
+    end
     do
         PlayerGriefing:add_separator("Attackers", "BS_PlayerList_Player_Griefing_Attackers")
         local attackersSettings = Submenu.add_static_submenu("Settings", "BS_PlayerList_Griefing_Attackers_Settings")
@@ -759,6 +866,7 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
     end
     PlayerInteractions:add_sub_option("Griefing", "BS_PlayerList_Griefing", PlayerGriefing)
     table.insert(submenus, PlayerGriefing)
+    
 end
 
 local function getPlayerFlags(pid)
@@ -808,7 +916,7 @@ PlayerList = Submenu.add_dynamic_submenu("Players list", "BS_PlayerList", functi
     sub.options = options
 end)
 
-PlayerList:add_choose_option("Sort", "BS_PlayerList_Sort", true, {"Name", "Distance", "Host queue"}, function (pos, option)
+PlayerList:add_choose_option("Sort", "BS_PlayerList_Sort", true, {"Name", "Distance", "Host queue", "Join time"}, function (pos, option)
     if pos == 1 then
         sort = function (a, b)
             return a:getName():lower() < b:getName():lower()
@@ -823,9 +931,13 @@ PlayerList:add_choose_option("Sort", "BS_PlayerList_Sort", true, {"Name", "Dista
             local pid1, pid2 = a:getValue(), b:getValue()
             return player.get_host_priority(pid1) < player.get_host_priority(pid2)
         end
+    elseif pos == 4 then
+        sort = function (a, b)
+            local pid1, pid2 = a:getValue(), b:getValue()
+            return player.get_join_time(pid1) < player.get_join_time(pid2)
+        end
     end
 end):setStatic(true)
-
 
 Main:add_sub_option("Players", "BS_PlayerList", PlayerList)
 
@@ -835,6 +947,17 @@ PlayerInteractions:add_click_option("Copy info", "BS_Players_Info_CopyInfo", fun
     local out = string.format("Player info\nName: %s\nRID: %i\nIP: %s", player.get_name(pid), player.get_rid(pid), player.get_ip_string(pid))
     utils.set_clipboard(out)
     notify.success("Players", "Copied player info to clipboard.")
+end)
+
+task.createTask("Ckeck_Players_On_Leaving", 0.0, nil, function ()
+    if player.is_connected(GetSelectedPlayer()) then return end
+    for _, sub in ipairs(submenus) do
+        if sub:isOpened() then
+            sub:setActive(false)
+        end
+    end
+    activeActions[selectedPlayer + 1] = nil
+    selectedPlayer = -1
 end)
 
 -- END

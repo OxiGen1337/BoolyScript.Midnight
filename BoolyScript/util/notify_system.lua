@@ -1,5 +1,3 @@
-local DEBUG_ON = false
-
 local consoleColors = 
 {
 	['Black'] = 0,
@@ -77,7 +75,6 @@ end
 
 log = {
     dbg = function (text_s, ...)
-        if not DEBUG_ON then return end
         console.log(consoleColors.Purple, string.format("[DEBUG] %s\n", features.format(text_s, table.unpack({...}))))
     end,
     error = function (page_s, text_s, ...)

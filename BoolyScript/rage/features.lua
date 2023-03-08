@@ -114,11 +114,11 @@ function features.getVirtualKeyViaID(id)
 	return nil
 end
 
-function features.getVirtualKeyState(id)
-	local key_s = features.getVirtualKeyViaID(id)
-	if not key_s then return nil end
-	return Stuff.guiKeyState[key_s]
-end
+-- function features.getVirtualKeyState(id)
+-- 	local key_s = features.getVirtualKeyViaID(id)
+-- 	if not key_s then return nil end
+-- 	return Stuff.guiKeyState[key_s]
+-- end
 
 function features.teleport(...)
 	local args = {...}
@@ -203,6 +203,81 @@ function features.split_text_into_lines(text_s, maxWidth_n)
 		end
 	end
 	return out
+end
+
+function features.randomPlayer()
+	local pids = math.random(0, 32)
+	while pids == player.index() or not player.is_valid(pids) do
+		pids = math.random(0, 32)
+	end
+	return pids
+end
+
+function table.contains(table, element)
+	for _, value in pairs(table) do
+	  if value == element then
+		return true
+	  end
+	end
+	return false
+end
+
+function features.delete_entities_by_model(model)
+	local hash = string.joaat(model)
+	if STREAMING.IS_MODEL_A_VEHICLE(hash) then
+		for k, vehicle in pairs(pools.get_all_vehicles()) do
+			if ENTITY.GET_ENTITY_MODEL(vehicle) == hash then
+				for k, ped in pairs(pools.get_all_peds()) do
+					if PED.GET_VEHICLE_PED_IS_IN(ped, true) == vehicle then
+						if not PED.IS_PED_A_PLAYER(ped) then
+							ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ped, false, false)
+							entity.delete(ped)
+						end
+					end
+				end
+				ENTITY.SET_ENTITY_AS_MISSION_ENTITY(vehicle, false, false)
+				entity.delete(vehicle)
+			end
+		end
+		return
+	end
+	if STREAMING.IS_MODEL_A_PED(hash) then
+		for k, ped in pairs(pools.get_all_peds()) do
+			if ENTITY.GET_ENTITY_MODEL(ped) == hash then
+				if not PED.IS_PED_A_PLAYER(ped) then
+					ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ped, false, false)
+					entity.delete(ped)
+				end
+			end
+		end
+		return
+	end
+	for k, object in pairs(pools.get_all_objects()) do
+		if ENTITY.GET_ENTITY_MODEL(object) == hash then
+			ENTITY.SET_ENTITY_AS_MISSION_ENTITY(object, false, false)
+			entity.delete(object)
+		end
+	end
+end
+
+
+-- local temp = WEAPON.GIVE_WEAPON_TO_PED
+
+-- function WEAPON.GIVE_WEAPON_TO_PED(ped, wepHash, ammo, isHidden, bForceInHand)
+-- 	log.dbg("'GIVE_WEAPON_TO_PED': Hash: {}", wepHash)
+-- 	temp(ped, wepHash, ammo, isHidden, bForceInHand)
+-- end
+
+-- local temp2 = WEAPON.GIVE_WEAPON_COMPONENT_TO_PED
+
+-- function WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(ped, wepHash, componentHash)
+-- 	log.dbg("'GIVE_WEAPON_COMPONENT_TO_PED': Weapon hash: {}; Component hash: {}", wepHash, componentHash)
+-- 	temp(ped, wepHash, componentHash)
+-- end
+
+function switch(value_any, table_t, default_f)
+	if not value_any and default_f then return default_f() end
+	return pcall(table_t[value_any] or default_f or function () return end)
 end
 
 return features

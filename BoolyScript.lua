@@ -2,13 +2,15 @@ BSVERSION = "0.5"
 -- PATCH = "1.66"
 DEBUG = false
 
-local temp = require
+do
+    local require_temp = require
 
-function require(path)
-    if DEBUG then
-        return temp("Git/" .. path)
+    function require(path)
+        if DEBUG then
+            return require_temp("Git/" .. path)
+        end
+        return require_temp(path)
     end
-    return temp(path)
 end
 
 require("BoolyScript/util/notify_system")
@@ -75,7 +77,12 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
     --     Localizations.chinese = require("BoolyScript/localization/chinese")
     --     Localizations.custom = require("BoolyScript/localization/custom")
     -- end
-    do -- Loading all pages added in 'pages' folder; it only loads init.lua so that file has to require everything that's in the page
+    -- if not native.is_invoker_ready() then 
+    --     notify.warning("Native", "Native invoker is not ready yet.\nWaiting for the game to completely load.")
+    --     log.warning("Native", "Native invoker is not ready yet. Waiting for the game to completely load.")
+    -- end
+    task.executeAsScript("Init_LoadPages", function () -- Loading all pages added in 'pages' folder; it only loads init.lua so that file has to require everything that's in the page
+        log.init("Loading modules from 'BoolyScript\\pages'...")
         local path = filesys.getInitScriptPath() .. '\\BoolyScript\\pages'
         path = path:gsub("\\\\lua", "\\lua")
         for line in io.popen("dir \"" .. path .. "\" /a /b", "r"):lines() do
@@ -84,12 +91,17 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
                 require("BoolyScript/pages/" .. line .. "/" .. "init")
             end
         end
-    end
-    do
-        local a=os.date('%m/%d')if a=='12/31'then notify.important("Holidays", "Happy New Year!")elseif a=='01/01'then notify.important("Holidays", "Happy New Year!")elseif a=='01/07'then notify.important("Holidays", "Merry Christmas!")elseif a=='02/23'then notify.important("Holidays", "Happy Defender of the Fatherland Day!")elseif a=='02/24'then notify.important("Holidays", "Happy Day of the Special Military Operation for the Demilitarization and Denazification of Ukraine!")elseif a=='03/08'then notify.important("Holidays", "Happy International Women Day!")elseif a=='03/18'then notify.important("Holidays", "Happy Day of Accession of Crimea to the Russian Federation!")elseif a=='03/27'then notify.important("Holidays", "Happy Day of the National Guard Troops of the Russian Federation!")elseif a=='04/01'then notify.important("Holidays", "You are ugly!")elseif a=='04/16'then notify.important("Holidays", "Happy Easter!")elseif a=='05/09'then notify.important("Holidays", "Happy Victory Day of the Soviet army and people over Nazi Germany in the Second World War!")elseif a=='06/12'then notify.important("Holidays", "Happy Russia Day!")elseif a=='08/22'then notify.important("Holidays", "Happy Day of the State Flag of the Russian Federation!")elseif a=='09/01'then notify.important("Holidays", "Why not at school bro?")elseif a=='11/04'then notify.important("Holidays", "Happy National Unity Day!")end
-    end
-    task.executeAsScript("Load_Config", function ()
+        HOME_SUBMENU:add_separator("Services", "Home_Services")
+        HOME_SUBMENU:add_click_option("Stop script", "Home_StopScript", function ()
+            utils.stop_script()
+        end)
+        HOME_SUBMENU:add_click_option("Reload script", "Home_ReloadScript", function ()
+            utils.reload_script()
+        end)
         Configs.loadConfig()
         HotkeyService.loadHotkeys()
     end)
+    do
+        local a=os.date('%m/%d')if a=='12/31'then notify.important("Holidays", "Happy New Year!")elseif a=='01/01'then notify.important("Holidays", "Happy New Year!")elseif a=='01/07'then notify.important("Holidays", "Merry Christmas!")elseif a=='02/23'then notify.important("Holidays", "Happy Defender of the Fatherland Day!")elseif a=='03/08'then notify.important("Holidays", "Happy International Women Day!")elseif a=='03/18'then notify.important("Holidays", "Happy Day of Accession of Crimea to the Russian Federation!")elseif a=='03/27'then notify.important("Holidays", "Happy Day of the National Guard Troops of the Russian Federation!")elseif a=='04/01'then notify.important("Holidays", "You are ugly!")elseif a=='04/16'then notify.important("Holidays", "Happy Easter!")elseif a=='05/09'then notify.important("Holidays", "Happy Victory Day of the Soviet army and people over Nazi Germany in the Second World War!")elseif a=='06/12'then notify.important("Holidays", "Happy Russia Day!")elseif a=='08/22'then notify.important("Holidays", "Happy Day of the State Flag of the Russian Federation!")elseif a=='09/01'then notify.important("Holidays", "Why not at school bro?")elseif a=='11/04'then notify.important("Holidays", "Happy National Unity Day!")end
+    end
 end)

@@ -8,6 +8,7 @@ Stuff = {
     onBlacklistedVehicle = function () end,
     trackedPlayers = {},
     guiKeyState = {},
+    spectatingPlayer = nil,
 }
 
 ParsedFiles = {
