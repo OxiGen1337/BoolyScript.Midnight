@@ -123,7 +123,7 @@ do
                         if stat == "MPPLY_KILL_DEATH_RATIO" then
                             return stats.get_float(sJ(stat))
                         else
-                            return stats.get_u32(sJ(stat))
+                            return stats.get_u64(sJ(stat))
                         end
                     end):setSelectable(true))
                 end  

@@ -53,7 +53,7 @@ local jammersSub = Submenu.add_static_submenu("Signal jammers", "BS_Recovery_Col
         jammersSub:add_click_option("#" .. ID, "#", function (option)
             features.teleport(Vector3(table.unpack(coords)))
             option:setTags({{"[Collected]",	0, 204, 255}})
-        end):setHint("Enable NoClip before. You have to explode\nthe jammer by yourself.")
+        end):setHint("Enable NoClip before using. You have to explode the jammer by yourself.")
     end
     Recovery:add_sub_option("Signal jammers", "BS_Recovery_Collectibles_Jammers", jammersSub)
 end

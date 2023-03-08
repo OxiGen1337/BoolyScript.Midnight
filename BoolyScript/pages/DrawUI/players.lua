@@ -609,23 +609,24 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
     end):setConfigIgnore()
     do
         local invCage = false
-        local cages = {"Spawn cable car", "Spawn stunt tube", "Remove"}
         local spawnedCages = {}
+        local cageActList = {"Spawn cable car", "Spawn stunt tube", "Spawn fence", "Remove"}
         PlayerGriefing:add_separator("Cages", "BS_PlayerList_Player_Griefing_Cages")
         PlayerGriefing:add_bool_option("Invisible", "BS_PlayerList_Player_Griefing_CagesInvisible", function (state)
             invCage = state
         end):setConfigIgnore()
-        PlayerGriefing:add_choose_option("Action", "BS_PlayerList_Player_Griefing_CagesAction", false, cages, function (pos)
+        PlayerGriefing:add_choose_option("Action", "BS_PlayerList_Player_Griefing_CagesAction", false, cageActList, function (pos)
             local pid = GetSelectedPlayer()
             local ped = player.get_entity_handle(pid)
             local coords = ENTITY.GET_ENTITY_COORDS(ped, false)
+            coords.z = coords.z - 0.9
             local hashes = {
                 string.joaat("cablecar"),
-                string.joaat("stt_prop_stunt_tube_s")
+                string.joaat("stt_prop_stunt_tube_s"),
+                string.joaat("prop_fnclink_03e")
             }
             switch(cages[pos], {
                 ["Spawn cable car"] = function()
-                    coords.z = coords.z - 0.9
                     for i = 1, 4 do
                         entity.spawn_veh(hashes[pos], coords, function (handle)
                             table.insert(spawnedCages, handle)
@@ -640,7 +641,6 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
                     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])
                 end,
                 ["Spawn stunt tube"] = function()
-                    coords.z = coords.z - 0.9
                     callbacks.requestModel(hashes[pos], function ()
                         entity.spawn_obj(hashes[pos], coords, function (handle)
                             table.insert(spawnedCages, handle)
@@ -652,13 +652,31 @@ PlayerGriefing = Submenu.add_static_submenu("Griefing", "BS_PlayerList_Player_Gr
                     end)
                     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hashes[pos])
                 end,
-                ["Remove"] = function()
-                    for _, handle in ipairs(spawnedCages) do
+                ["Spawn fence"] = function()
+                    local fX = {coords.x-1.5, coords.x-1.5, coords.x+1.5, coords.x-1.5}
+                    local fY = {coords.y+1.5, coords.y-1.5, coords.y+1.5, coords.y+1.5}
+                    for i = 1, 4 do
+                        coords.x = fX[i]
+                        coords.y = fY[i]
+                        entity.spawn_obj(hashes[pos], coords, function (handle)
+                            table.insert(spawnedCages, handle)
+                            ENTITY.FREEZE_ENTITY_POSITION(handle, true)
+                            ENTITY.SET_ENTITY_VISIBLE(handle, not invCage)
+                            if table.contains({3, 4}, i) then
+                                local rot = ENTITY.GET_ENTITY_ROTATION(handle, 5)
+                                ENTITY.SET_ENTITY_ROTATION(handle, rot.x, rot.y, -90.0, 5, true)
+                            end
+                        end)
+                    end
+                end
+            }, function()
+                for _, handle in ipairs(spawnedCages) do
+                    if not features.isEmpty(handle) then
                         entity.delete(handle)
                     end
-                    spawnedCages = {}
                 end
-            })
+                spawnedCages = {}
+            end)
         end):setConfigIgnore()
     end
     do
