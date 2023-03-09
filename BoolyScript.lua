@@ -1,4 +1,4 @@
-BSVERSION = "0.5"
+BSVERSION = "0.6"
 -- PATCH = "1.66"
 DEBUG = true
 
@@ -24,8 +24,10 @@ parse = require("BoolyScript/util/parse")
 scripts = require("BoolyScript/rage/scripts")
 callbacks = require("BoolyScript/rage/callbacks")
 features = require("BoolyScript/rage/features")
+gui = require("BoolyScript/rage/model")
 json = require("BoolyScript/modules/JSON")
 gui = require("BoolyScript/globals/gui")
+
 
 -- if NETWORK._GET_ONLINE_VERSION() ~= PATCH then
 --     notify.fatal("BoolyScript", string.format("You're using the newest game version: %s.\nScript is updated for: %s!", NETWORK._GET_ONLINE_VERSION(), PATCH))
@@ -77,10 +79,10 @@ listener.register("BS_Init", GET_EVENTS_LIST().OnInit, function ()
     --     Localizations.chinese = require("BoolyScript/localization/chinese")
     --     Localizations.custom = require("BoolyScript/localization/custom")
     -- end
-    -- if not native.is_invoker_ready() then 
-    --     notify.warning("Native", "Native invoker is not ready yet.\nWaiting for the game to completely load.")
-    --     log.warning("Native", "Native invoker is not ready yet. Waiting for the game to completely load.")
-    -- end
+    if not native.is_invoker_ready() then 
+        notify.warning("Native", "Native invoker is not ready yet.\nWaiting for the game to completely load.")
+        log.warning("Native", "Native invoker is not ready yet. Waiting for the game to completely load.")
+    end
     task.executeAsScript("Init_LoadPages", function () -- Loading all pages added in 'pages' folder; it only loads init.lua so that file has to require everything that's in the page
         log.init("Loading modules from 'BoolyScript\\pages'...")
         local path = filesys.getInitScriptPath() .. '\\BoolyScript\\pages'

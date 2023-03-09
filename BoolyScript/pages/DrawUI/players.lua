@@ -456,6 +456,7 @@ PlayerRemovals = Submenu.add_static_submenu("Removals", "BS_PlayerList_Player_Re
             end
             if value == 4 then
                 for i = 1, #hashes do
+                    log.dbg("{} {}", i, spawnedVehs[i])
                     ENTITY.ATTACH_ENTITY_TO_ENTITY(spawnedVehs[i], ped, 0, 0.0, 0.0, 0.0, math.random(0.0, 180.0), math.random(0.0, 180.0), math.random(0.0, 180.0), false, true, true, false, 0, true, false)
                 end
             else
