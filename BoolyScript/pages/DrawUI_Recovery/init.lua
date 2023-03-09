@@ -5,8 +5,6 @@ HOME_SUBMENU:add_sub_option("BoolyUnlocker", "BS_Recovery_V2", V2):setTags({{"[N
 ST = Submenu.add_static_submenu("BoolyStatEditor", "BS_StatEditor")
 HOME_SUBMENU:add_sub_option("BoolyStatEditor", "BS_StatEditor", ST):setTags({{"[New]", 20, 217, 197}})
 
-task.executeAsScript("Load_RecoveryV2", function ()
-    require("BoolyScript/pages/DrawUI_Recovery/include")
-    require("BoolyScript/pages/DrawUI_Recovery/main")
-    require("BoolyScript/pages/DrawUI_Recovery/stat-editor")
-end)
+require("BoolyScript/pages/DrawUI_Recovery/include")
+require("BoolyScript/pages/DrawUI_Recovery/main")
+require("BoolyScript/pages/DrawUI_Recovery/stat-editor")
